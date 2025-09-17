@@ -1,0 +1,33 @@
+# MonArk PiCam Configuration Example
+# This file shows all available configuration options for the MonArk PiCam system
+
+# Camera resolution (width, height)
+resolution:
+- 1920
+- 1080
+
+# Frame rate for streaming (frames per second)
+framerate: 30
+
+# Image format
+format: RGB888
+
+# Automatic settings
+auto_exposure: true
+auto_white_balance: true
+
+# Manual adjustments (only used when auto settings are disabled)
+brightness: 0.0      # Range: -1.0 to 1.0
+contrast: 1.0        # Range: 0.0 to 2.0
+saturation: 1.0      # Range: 0.0 to 2.0
+sharpness: 1.0       # Range: 0.0 to 2.0
+
+# Image orientation
+rotation: 0          # Degrees: 0, 90, 180, 270
+hflip: false         # Horizontal flip
+vflip: false         # Vertical flip
+
+# Output settings
+output_directory: ./captures
+filename_prefix: capture
+timestamp_format: '%Y%m%d_%H%M%S'

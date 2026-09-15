@@ -51,7 +51,7 @@ LENS_FIT = 0.8  # radial clearance: the saddle cradles, it does not grip
 
 PI_L, PI_W = 85.0, 56.0
 PI_HOLE_X, PI_HOLE_Y = 58.0, 49.0
-PI_HOLE_CLEAR = 2.9
+PI_HOLE_TAP = 2.2  # M2.5 self-taps into the boss; no nut under the mounting face
 PI_STANDOFF_H = 6.0  # clears the microSD slot and underside components
 PI_STANDOFF_D = 7.0
 
@@ -247,7 +247,7 @@ def pi5_tray():
         .workplane(centerOption="CenterOfBoundBox")
         .rect(PI_HOLE_X, PI_HOLE_Y, forConstruction=True)
         .vertices()
-        .hole(PI_HOLE_CLEAR)
+        .hole(PI_HOLE_TAP)
     )
 
     # ventilation, kept clear of the standoff pattern and the mount pattern

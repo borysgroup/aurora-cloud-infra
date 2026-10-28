@@ -141,7 +141,8 @@ def build_static_scene(plotter, cutaway=True):
     plotter.add_mesh(big, color=eq.STAINLESS, specular=0.6)
     plotter.add_mesh(mini, color=eq.STAINLESS, specular=0.6)
     add_parts(plotter, eq.exfoliator())
-    scara_parts, _ = eq.scara()
+    # arm parked toward the back so the overhead camera sees the tray
+    scara_parts, _ = eq.scara(target=(eq.PNP_C[0] + 60, eq.PNP_C[1] + 360))
     add_parts(plotter, scara_parts)
     add_parts(plotter, eq.unpack_area())
     add_parts(plotter, eq.mother_tape_area())

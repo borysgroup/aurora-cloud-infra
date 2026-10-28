@@ -3,8 +3,8 @@
     xvfb-run -a python design/aurora-camera-layout/render_camera_layout.py [--stills-only]
 
 Writes PNG stills, an MP4 and a GIF next to this file. Needs pyvista, imageio,
-imageio-ffmpeg and pillow, plus ffmpeg on PATH for the GIF; on a headless
-machine run it under xvfb-run.
+imageio-ffmpeg and pillow, plus ffmpeg on PATH (gifsicle optional, shrinks the GIF);
+on a headless machine run it under xvfb-run.
 """
 
 import argparse
@@ -509,6 +509,9 @@ def run(size, fps, out_dir, stills_only=False):
     subprocess.run([ff, "-y", "-v", "error", "-i", str(mp4), "-i", str(palette), "-lavfi",
                     f"{vf}[x];[x][1:v]paletteuse=dither=none:diff_mode=rectangle",
                     str(out_dir / "aurora_camera_layout.gif")], check=True)
+    if shutil.which("gifsicle"):
+        gif = str(out_dir / "aurora_camera_layout.gif")
+        subprocess.run(["gifsicle", "-O3", "--lossy=40", gif, "-o", gif], check=True)
     shutil.rmtree(frames_dir)
 
 

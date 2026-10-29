@@ -35,9 +35,10 @@ jobs:
     # security boundary: the action refuses bot actors on its own before any
     # session starts. See "Why the write grant cannot make the job trigger
     # itself" in docs/claude-yml-model-fallback.md.
+    # The !contains(...'@claude-youtube') clause skips comments for
+    # claude-youtube.yml, since that phrase also contains @claude.
     if: |
       github.event.sender.type != 'Bot' &&
-      # @claude-youtube also contains @claude; claude-youtube.yml handles it.
       !contains(github.event.comment.body || github.event.review.body || format('{0} {1}', github.event.issue.title, github.event.issue.body), '@claude-youtube') &&
       ((github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
        (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||

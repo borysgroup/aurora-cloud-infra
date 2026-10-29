@@ -37,6 +37,8 @@ jobs:
     # itself" in docs/claude-yml-model-fallback.md.
     if: |
       github.event.sender.type != 'Bot' &&
+      # @claude-youtube also contains @claude; claude-youtube.yml handles it.
+      !contains(github.event.comment.body || github.event.review.body || format('{0} {1}', github.event.issue.title, github.event.issue.body), '@claude-youtube') &&
       ((github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
        (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
        (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
@@ -68,6 +70,9 @@ jobs:
       # Read-only access to the sgbaird/agent-staging drop box, for files staged
       # from other repos (see CLAUDE.md, "Receiving files from other repos").
       GH_READ_PAT_STAGING: ${{ secrets.GH_READ_PAT_STAGING }}
+      # Aurora PCL Hardware Streams, upload + read + analytics only (Google won't
+      # let it delete or edit). Full control is @claude-youtube only; see CLAUDE.md.
+      YOUTUBE_UPLOAD_TOKEN_PICKLE_B64: ${{ secrets.YOUTUBE_UPLOAD_TOKEN_PICKLE_B64 }}
       ONSHAPE_ACCESS_KEY: ${{ secrets.ONSHAPE_ACCESS_KEY }}
       ONSHAPE_SECRET_KEY: ${{ secrets.ONSHAPE_SECRET_KEY }}
 

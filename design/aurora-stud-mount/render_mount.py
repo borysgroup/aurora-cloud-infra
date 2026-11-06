@@ -185,7 +185,7 @@ def main():
     y += 40
     rows = ["1 x M6 hex nut (pressed into the knob) - MEASURE stud thread",
             "1 x M4 x 16 bolt + M4 nyloc nut (hinge)",
-            "1 x M2 x 12 screw (tilt index pin)",
+            "1 x M2 x 12 screw (tilt index pin, self-taps into the cradle)",
             "4 x M2 x 6 self-tapping screws (Camera Module 3)",
             "4 x M2.5 x 6 self-tapping screws (Pi Zero 2 W)",
             "1 x Pi Zero camera cable, 22-to-15 pin, 150 mm",

@@ -115,7 +115,8 @@ def stud_camera(key, title, detail, stud, target):
 
 
 # overhead camera: straight above the tray, hung flat from the ceiling, above the SCARA's swept volume
-PNP_CAM_Z = eq.GB_H - 135.0
+PNP_CAM_Z = eq.GB_H - 60.0
+PNP_LENS_FRONT = PNP_CAM_Z - 18.0 - 68.3  # HQ Camera mount + 8-50 mm zoom (camera_models.hq_camera)
 
 # Numbered in the order a sample passes them, from the antechamber to the tray.
 CAMERAS = [
@@ -129,7 +130,7 @@ CAMERAS = [
         "zero", (TIP[0] - 150.0, TIP[1] - 120.0, TIP[2] + 25.0), tuple(TIP), CM3, overshoot=1.3),
     CameraPlacement(
         "pnp", "Overhead: pick-and-place",
-        f"Pi 5 + HQ Camera, straight above the tray, {PNP_CAM_Z - eq.SCARA_TOP:.0f} mm clear of the SCARA",
+        f"Pi 5 + HQ Camera, straight above the tray, lens {PNP_LENS_FRONT - eq.SCARA_TOP:.0f} mm above the SCARA",
         "hq", (eq.PNP_C[0], eq.PNP_C[1], PNP_CAM_Z), (eq.PNP_C[0], eq.PNP_C[1] + 1.0, 0.0), HQ_12MM,
         up_hint=(0, 1, 0), aspect=4 / 3, overshoot=1.0),
     CameraPlacement(

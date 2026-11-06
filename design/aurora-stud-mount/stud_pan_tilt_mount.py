@@ -12,9 +12,10 @@ Writes STL (to print) and STEP (for Onshape/SolidWorks) for three parts:
     cm3_cradle   hinge disc, arm and a plate carrying a Camera Module 3 on four standoffs
 
 Pan: loosen the knob, turn the whole pod about the stud (any angle), tighten.
-Tilt: an M4 bolt with a nyloc nut is the hinge. A 2 mm pin (an M2 x 12 screw) through
-one of seven holes sets the tilt every 15 deg, from straight down (0) to horizontal
-(90), so an angle can be set again exactly. Without the pin it is a friction hinge.
+Tilt: an M4 bolt with a nyloc nut is the hinge. An M2 x 12 screw through one of seven
+holes in the hinge plate, self-tapped into the cradle, sets the tilt every 15 deg from
+straight down (0) to horizontal (90), so an angle can be set again exactly and the pin
+can't drop out. Without it the hinge holds by friction.
 
 The hinge, index pin and camera cradle follow the PiPER enclosure camera head
 (vertical-cloud-lab/robot-arms PR #9, robot-arm/enclosure/cameras/build.py); the PVC
@@ -164,7 +165,7 @@ def cm3_cradle():
     for s, t in holes:
         body = body.union(_cyl(2.6, STANDOFF, "z", board_point(s, t, -STANDOFF / 2) + (0, 0, 0.01)))
     body = body.cut(_cyl(M4 / 2, 30, "y", (0, 0, 0)))
-    body = body.cut(_cyl(PIN / 2, 30, "y", (0, 0, -INDEX_R)))
+    body = body.cut(_cyl(M2_TAP / 2, 30, "y", (0, 0, -INDEX_R)))  # the index screw self-taps into the cradle
     for s, t in holes:
         body = body.cut(_cyl(M2_TAP / 2, 2 * (PLATE_T + STANDOFF), "z", board_point(s, t, -STANDOFF)))
     return body

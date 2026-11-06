@@ -165,13 +165,13 @@ def animation(out, fps=24):
     p.camera_position = [(-190.0, -700.0, -470.0), (-10.0, 0.0, -115.0), (0.0, 0.0, 1.0)]
     p.camera.view_angle = 30.0
     # (seconds, caption, pan from -> to, tilt from -> to)
-    acts = [(1.5, "Each mount hangs from one ceiling stud. Pi Zero 2 W + CM3 (left), Pi 5 + HQ zoom + CM3 Wide (right)",
+    acts = [(1.5, "One ceiling stud per mount. Left: Pi Zero 2 W + CM3. Right: Pi 5 + HQ zoom + CM3 Wide",
              (0, 0), (0, 0)),
             (2.5, "Pan: loosen the thumb nut on the stud a quarter turn, turn the yoke, retighten", (0, 60), (0, 0)),
             (2.5, "", (60, -45), (0, 0)),
-            (3.0, "Tilt: loosen the two side knobs; the head turns between the yoke's arms, level to straight down",
+            (3.0, "Tilt: loosen the two side knobs; the head turns between the yoke's arms",
              (-45, -45), (0, 90)),
-            (2.0, "The HQ head looks straight down (overhead pick-and-place), the Zero head forward and down",
+            (2.0, "HQ head straight down (overhead), Zero head forward and down",
              (-45, 0), (90, 90)),
             (1.5, "", (0, 0), (90, 90))]
     frames = []

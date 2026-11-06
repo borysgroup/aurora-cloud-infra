@@ -3,7 +3,7 @@
     xvfb-run -a python design/aurora-camera-layout/render_camera_layout.py [--stills-only]
 
 Writes PNG stills, an MP4 and a GIF next to this file. Needs pyvista, imageio,
-imageio-ffmpeg and pillow (gifsicle optional, shrinks the GIF); on a headless
+imageio-ffmpeg, pillow and cadquery (gifsicle optional, shrinks the GIF); on a headless
 machine run it under xvfb-run. The ceiling cameras hang from the yoke mounts in
 ../stud-camera-mount (byu-vcl PR 318's head, STUD_MOUNT = "yoke"), or from the
 stud pods in ../aurora-stud-mount (STUD_MOUNT = "pod"), posed with the pod's tilt stops.
@@ -159,7 +159,8 @@ def wide_on_hq_head(cam, title, detail):
     """The Camera Module 3 Wide on the same head as `cam` (byu-vcl's nose), on the Pi 5's second port."""
     m = ym.mount_matrices("hq", cam.pan, cam.tilt, stud_root(cam.stud))["head"]
     h = yoke_mount.HQ
-    o = (m @ np.array([h["wide_x"], h["nose_y"] - 9.3 - h["axis_y"], h["wide_z"], 1.0]))[:3]
+    lens_y = h["nose_y"] + 5.0 + 2.5 - yoke_mount.CM3["lens_h"] - h["axis_y"]   # the Wide's lens front
+    o = (m @ np.array([h["wide_x"], lens_y, h["wide_z"], 1.0]))[:3]
     aim = np.asarray(cam.direction)
     return CameraPlacement("pnp_wide", title, detail, "hq", tuple(o), tuple(o + aim * (o[2] - eq.PNP_C[2])
                                                                           / max(-aim[2], 1e-3)), CM3_WIDE,

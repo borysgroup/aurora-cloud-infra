@@ -29,8 +29,12 @@ Values marked MEASURE are assumptions from photos, not measurements.
 
 from pathlib import Path
 
-import cadquery as cq
 import numpy as np
+
+try:
+    import cadquery as cq
+except ImportError:  # the dimensions and pose helpers below work without CadQuery
+    cq = None
 
 HERE = Path(__file__).resolve().parent
 

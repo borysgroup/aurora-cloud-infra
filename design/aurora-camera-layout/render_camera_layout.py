@@ -3,8 +3,9 @@
     xvfb-run -a python design/aurora-camera-layout/render_camera_layout.py [--stills-only]
 
 Writes PNG stills, an MP4 and a GIF next to this file. Needs pyvista, imageio,
-imageio-ffmpeg and pillow, plus ffmpeg on PATH (gifsicle optional, shrinks the GIF);
-on a headless machine run it under xvfb-run.
+imageio-ffmpeg and pillow (gifsicle optional, shrinks the GIF); on a headless
+machine run it under xvfb-run. The stud pods are drawn from the STLs in
+../aurora-stud-mount, posed with the same pan and tilt stops the printed pod has.
 """
 
 import argparse
@@ -23,9 +24,12 @@ from PIL import Image, ImageDraw, ImageFont
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
+sys.path.insert(0, str(HERE.parent / "aurora-stud-mount"))
 
 import aurora_equipment as eq  # noqa: E402
 import camera_models as cm  # noqa: E402
+import render_mount as rm  # noqa: E402
+import stud_pan_tilt_mount as sm  # noqa: E402
 from scene_primitives import frustum, frustum_edges, look_frame  # noqa: E402
 
 pv.OFF_SCREEN = True
@@ -55,6 +59,9 @@ class CameraPlacement:
     up_hint: tuple = (0, 0, 1)
     aspect: float = 16 / 9
     overshoot: float = 1.6  # how far past the target the frustum runs before clipping
+    stud: str = ""          # ceiling stud carrying a stud pod, if any
+    pan: float = 0.0
+    tilt: float = 0.0
     actors: list = field(default_factory=list)
 
     @property
@@ -72,31 +79,63 @@ class CameraPlacement:
 
 
 TIP = eq.exfoliator_tip()
-WALL_Y = eq.GB_D - 25.0  # camera face, just off the back wall
+
+
+def stud_pod_pose(stud, target, iters=4):
+    """Pan (free) and tilt (nearest index stop) that aim a stud pod's lens at `target`.
+
+    Returns pan, tilt, lens position and viewing direction in scene coordinates."""
+    sx, sy = eq.CEILING_STUDS[stud]["xy"]
+    origin = np.array([sx, sy, eq.GB_H])
+    lens_c, lens_d = sm.lens_axis()
+    target = np.asarray(target, float)
+    pos = origin.copy()
+    pan = tilt = 0.0
+    for _ in range(iters):
+        d = target - pos
+        pan = float(np.degrees(np.arctan2(d[1], d[0])))
+        want = float(np.degrees(np.arctan2(np.hypot(d[0], d[1]), -d[2])))
+        tilt = float(min(sm.TILTS, key=lambda a: abs(a - want)))
+        if tilt == 0:  # looking straight down: pan only turns the image; put image-up towards the far side
+            pan = 90.0
+        pts = rm.place_cradle(pv.PolyData(np.array([lens_c, lens_c + lens_d])), tilt, pan, origin).points
+        pos = pts[0]
+    return pan, tilt, pts[0], (pts[1] - pts[0]) / np.linalg.norm(pts[1] - pts[0])
+
+
+def stud_camera(key, title, detail, stud, target):
+    """Pi Zero 2 W + Camera Module 3 on a stud pod, aimed at the nearest tilt stop."""
+    pan, tilt, pos, d = stud_pod_pose(stud, target)
+    floor_hit = pos + d * (pos[2] / max(-d[2], 1e-3))
+    a = np.radians(pan)
+    up = np.array([np.cos(np.radians(tilt)) * np.cos(a), np.cos(np.radians(tilt)) * np.sin(a), np.sin(np.radians(tilt))])
+    return CameraPlacement(key, title, f"{detail}, stud {stud}, tilt stop {tilt:.0f} deg",
+                           "zero", tuple(pos), tuple(floor_hit), CM3, up_hint=tuple(up), overshoot=1.0,
+                           stud=stud, pan=pan, tilt=tilt)
+
+
+# overhead camera: straight above the tray, hung flat from the ceiling, above the SCARA's swept volume
+PNP_CAM_Z = eq.GB_H - 135.0
 
 # Numbered in the order a sample passes them, from the antechamber to the tray.
 CAMERAS = [
-    CameraPlacement(
-        "unpack", "Bulk-crystal unpacking area",
-        "Priority 1. Pi Zero 2 W + Camera Module 3, back wall, looking down",
-        "zero", (eq.UNPACK_C[0], WALL_Y, 640.0), (eq.UNPACK_C[0], eq.UNPACK_C[1] - 60, 0.0), CM3),
-    CameraPlacement(
-        "mother_tape", "Mother-tape preparation area",
-        "Priority 1. Pi Zero 2 W + Camera Module 3, back wall, looking down",
-        "zero", (eq.MOTHER_TAPE_C[0], WALL_Y, 640.0), (eq.MOTHER_TAPE_C[0], eq.MOTHER_TAPE_C[1] - 40, 0.0), CM3),
+    stud_camera("unpack", "Bulk-crystal unpacking area", "Priority 1. Pi Zero 2 W + CM3 on a stud pod",
+                "S1", (eq.UNPACK_C[0], eq.UNPACK_C[1], 0.0)),
+    stud_camera("mother_tape", "Mother-tape preparation area", "Priority 1. Pi Zero 2 W + CM3 on a stud pod",
+                "S2", (eq.MOTHER_TAPE_C[0], eq.MOTHER_TAPE_C[1], 0.0)),
     CameraPlacement(
         "tip", "Exfoliator tip + mother tape (close-up)",
-        "Priority 1. Pi Zero 2 W + Camera Module 3 (autofocus), post on gantry deck",
+        "Priority 1. Pi Zero 2 W + CM3 (autofocus), post on the gantry deck",
         "zero", (TIP[0] - 150.0, TIP[1] - 120.0, TIP[2] + 25.0), tuple(TIP), CM3, overshoot=1.3),
     CameraPlacement(
         "pnp", "Overhead: pick-and-place",
-        "Decided earlier. Pi 5 + HQ Camera, 8-50 mm zoom, ceiling, straight down",
-        "hq", (eq.PNP_C[0], eq.PNP_C[1], eq.GB_H - 70.0), (eq.PNP_C[0], eq.PNP_C[1] + 1.0, 0.0), HQ_12MM,
+        f"Pi 5 + HQ Camera, straight above the tray, {PNP_CAM_Z - eq.SCARA_TOP:.0f} mm clear of the SCARA",
+        "hq", (eq.PNP_C[0], eq.PNP_C[1], PNP_CAM_Z), (eq.PNP_C[0], eq.PNP_C[1] + 1.0, 0.0), HQ_12MM,
         up_hint=(0, 1, 0), aspect=4 / 3, overshoot=1.0),
     CameraPlacement(
-        "dome", "Existing Amcrest dome (overview)",
-        "Already installed on the ceiling, back left",
-        "existing", (520.0, eq.GB_D - 150.0, eq.GB_H - 60.0), (1000.0, 380.0, 0.0), AMCREST, overshoot=1.0),
+        "dome", "Existing Amcrest turret (overview)",
+        "Already on the ceiling, front left, behind the top flange",
+        "existing", tuple(eq.AMCREST_C - (0, 0, 60.0)), (1100.0, 520.0, 0.0), AMCREST, overshoot=1.0),
 ]
 
 # Sample route: antechamber door -> unpacking -> mother tape -> tip -> tray
@@ -105,7 +144,7 @@ SAMPLE_STOPS = [
     eq.UNPACK_C + np.array([-40.0, -20.0, 40.0]),
     eq.MOTHER_TAPE_C + np.array([20.0, 0.0, 30.0]),
     TIP + np.array([0.0, 0.0, -12.0]),
-    eq.PNP_C + np.array([0.0, 0.0, 34.0]),
+    eq.PNP_C + np.array([0.0, 0.0, eq.TRAY_Z + 34.0]),
 ]
 
 
@@ -144,6 +183,10 @@ def build_static_scene(plotter, cutaway=True):
     # arm parked toward the back so the overhead camera sees the tray
     scara_parts, _ = eq.scara(target=(eq.PNP_C[0] + 60, eq.PNP_C[1] + 360))
     add_parts(plotter, scara_parts)
+    add_parts(plotter, eq.linear_stage())
+    if cutaway:
+        plotter.add_mesh(eq.scara_envelope(), color="#7c3aed", opacity=0.07, lighting=False)
+    add_parts(plotter, eq.ceiling_studs(used=[c.stud for c in camera_plan() if c.stud]))
     add_parts(plotter, eq.unpack_area())
     add_parts(plotter, eq.mother_tape_area())
     add_parts(plotter, eq.pnp_tray())
@@ -156,21 +199,17 @@ def camera_supports():
     out = []
     for c in camera_plan():
         o = np.asarray(c.origin, float)
-        if c.key == "tip":
+        if c.stud:
+            sx, sy = eq.CEILING_STUDS[c.stud]["xy"]
+            out += [(m, col) for m, col in rm.static_parts((sx, sy, eq.GB_H), c.pan, ceiling=False)]
+        elif c.key == "tip":
             out.append((pv.Cylinder(center=(o[0], o[1], (eq.EXF_DECK_Z + o[2]) / 2 - 10), direction=(0, 0, 1),
                                     radius=6.35, height=o[2] - eq.EXF_DECK_Z - 20), eq.STAINLESS))
-        elif c.key in ("unpack", "mother_tape"):
-            # laser-cut plate on one of the box's welded studs, held with a standard nut
-            out.append((pv.Box(bounds=(o[0] - 25, o[0] + 25, o[1] + 8, eq.GB_D - 4, o[2] + 20, o[2] + 32)),
-                        eq.BLACK))
-            out.append((pv.Box(bounds=(o[0] - 30, o[0] + 30, eq.GB_D - 4, eq.GB_D, o[2] + 5, o[2] + 75)),
-                        eq.BLACK))
-            out.append((pv.Cylinder(center=(o[0], eq.GB_D - 12, o[2] + 52), direction=(0, 1, 0), radius=3.0,
-                                    height=24), eq.STAINLESS_DARK))
-            out.append((pv.Cylinder(center=(o[0], eq.GB_D - 8, o[2] + 52), direction=(0, 1, 0), radius=6.0,
-                                    height=5, resolution=6), eq.STAINLESS_DARK))
         elif c.key == "pnp":
+            # plate flat on the ceiling, drop to the camera, Pi 5 beside it
             out.append((pv.Box(bounds=(o[0] - 70, o[0] + 120, o[1] - 50, o[1] + 50, eq.GB_H - 12, eq.GB_H)),
+                        eq.BLACK))
+            out.append((pv.Box(bounds=(o[0] - 26, o[0] - 20, o[1] - 20, o[1] + 20, o[2] + 30, eq.GB_H - 12)),
                         eq.BLACK))
             for m, col in cm.pi5_box():
                 m = m.rotate_x(180, inplace=False).translate((o[0] + 75, o[1], eq.GB_H - 22), inplace=False)
@@ -179,6 +218,9 @@ def camera_supports():
 
 
 def camera_hardware(cam):
+    if cam.stud:
+        sx, sy = eq.CEILING_STUDS[cam.stud]["xy"]
+        return rm.moving_parts(cam.tilt, cam.pan, (sx, sy, eq.GB_H))
     if cam.kind == "hq":
         parts = cm.hq_camera()
     elif cam.kind == "zero":
@@ -412,11 +454,11 @@ def run(size, fps, out_dir, stills_only=False):
     tp.SetBackgroundOpacity(0.85)
     tp.SetJustificationToCentered()
     p.renderer.AddActor(marker_tag)
-    note = ("Layout schematic: glovebox and equipment estimated from the issue #23 photos; camera "
-            "hardware and fields of view to scale. The magenta marker follows a sample from the antechamber.")
+    note = ("Estimated from the issue #23 photos (studs +/- 100 mm); camera hardware, pods and fields of "
+            "view to scale. Purple: SCARA swept volume.")
     title = "Aurora glovebox: planned camera locations"
-    subtitle = ("From the 26 Oct 2026 walkthrough. Goal: record a sample's full provenance, from "
-                "unpacking to the tray, synchronised with sensor data.")
+    subtitle = ("26 Oct walkthrough, revised 6 Nov: both long sides are glass, so the Pi Zero cameras hang "
+                "from welded ceiling studs on pan/tilt pods; the overhead camera clears the SCARA.")
 
     n_flow = len(SAMPLE_STOPS) - 1
     seg = build_timeline(len(cams), fps)
@@ -498,7 +540,10 @@ def run(size, fps, out_dir, stills_only=False):
     if stills_only:
         shutil.rmtree(frames_dir)
         return
-    ff = shutil.which("ffmpeg") or "ffmpeg"
+    ff = shutil.which("ffmpeg")
+    if ff is None:
+        import imageio_ffmpeg
+        ff = imageio_ffmpeg.get_ffmpeg_exe()
     mp4 = out_dir / "aurora_camera_layout.mp4"
     subprocess.run([ff, "-y", "-v", "error", "-framerate", str(fps), "-i", str(frames_dir / "f%05d.png"),
                     "-c:v", "libx264", "-pix_fmt", "yuv420p", "-crf", "21", "-movflags", "+faststart",

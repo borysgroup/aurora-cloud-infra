@@ -2,8 +2,10 @@
 
 Dimensions are estimated from photos (issue #23), not measured, and are only
 meant to make camera placement legible. Units are millimetres. Coordinates:
-x runs left to right as seen from the glove-port side, y runs from that side
-towards the back wall, z is up from the glovebox floor.
+x runs left to right as seen from the side the walkthrough photos were taken
+from (the sloped side, window panel off, studs exposed), y runs from that side
+towards the far side, z is up from the glovebox floor. Both long sides are
+glass: the lab shows through the far side behind the Epson.
 """
 
 import numpy as np
@@ -41,8 +43,16 @@ def glovebox_shell():
     """Returns {name: (mesh, style)} for the walls, so each can be styled separately."""
     parts = {}
     parts["floor"] = (box_from((0, 0, -WALL_T), (GB_W, GB_D, 0)), dict(color=STAINLESS, specular=0.6))
-    parts["back_wall"] = (box_from((0, GB_D, 0), (GB_W, GB_D + WALL_T, GB_H)),
-                          dict(color=STAINLESS, specular=0.5))
+    # far long side: glass with glove ports (lab visible through it behind the Epson)
+    parts["back_window"] = (box_from((0, GB_D, 0), (GB_W, GB_D + 6, GB_H)),
+                            dict(color="#bfe3ff", opacity=0.10, specular=1.0))
+    back = [box_from((-40, GB_D, -40), (GB_W + 40, GB_D + 40, 0)),
+            box_from((-40, GB_D, GB_H), (GB_W + 40, GB_D + 40, GB_H + 40))]
+    for x0 in (-40, GB_W):
+        back.append(box_from((x0, GB_D, 0), (x0 + 40, GB_D + 40, GB_H)))
+    for gx in GLOVE_X:
+        back.append(ring((gx, GB_D + 3, GLOVE_Z), (0, 1, 0), GLOVE_R, GLOVE_R + 22.0, 30.0))
+    parts["back_frame"] = (pv.merge(back), dict(color=STAINLESS_DARK, specular=0.6))
     parts["left_wall"] = (box_from((-WALL_T, 0, 0), (0, GB_D, GB_H)), dict(color=STAINLESS, specular=0.5))
     parts["right_wall"] = (box_from((GB_W, 0, 0), (GB_W + WALL_T, GB_D, GB_H)),
                            dict(color=STAINLESS, specular=0.5))
@@ -166,7 +176,9 @@ def scara(target=None, quill_z=300.0):
     bx, by, _ = SCARA_BASE
     target = PNP_C if target is None else np.asarray(target, float)
     out.append((box((bx, by, 15), (300, 300, 30)), BLACK))  # breadboard plate
-    out.append((box((bx, by + 30, 230), (170, 230, 400)), WHITE))  # base column
+    out.append((box((bx, by + 30, 30 + RISER_H / 2), (190, 250, RISER_H)), "#a9afb5"))  # grey riser block
+    z0 = 30 + RISER_H
+    out.append((box((bx, by + 30, z0 + (430 - z0) / 2), (170, 230, 430 - z0)), WHITE))  # base column
     out.append((box((bx, by + 30, 455), (150, 200, 50)), "#dadada"))
     l1, l2 = 325.0, 275.0
     dx, dy = target[0] - bx, target[1] - by
@@ -187,9 +199,38 @@ def scara(target=None, quill_z=300.0):
     out.append((cyl((j1[0], j1[1], 470), (0, 0, 1), 60, 56), WHITE))
     out.append((cyl((j3[0], j3[1], quill_z + 120), (0, 0, 1), 10, 340), "#b5b9bd"))  # quill
     out.append((box((j3[0], j3[1], quill_z - 60), (46, 46, 40)), "#3a3d41"))  # end effector
-    duct = [(bx, by + 60, 460), (bx + 20, by + 120, 760), (j2[0] + 10, j2[1] + 40, 760), (j3[0], j3[1], 565)]
-    out.append((tube_path(duct, 16), BLACK))
+    # cable duct: from the top of the base straight up to a ceiling feedthrough (photos 1-2, 6 Nov)
+    duct = [(bx - 40, by + 60, 480), (bx - 60, by + 70, 640), (bx - 140, by + 90, 820), (bx - 200, by + 100, GB_H)]
+    out.append((tube_path(duct, 18), BLACK))
     return out, j3
+
+
+SCARA_L1, SCARA_L2 = 325.0, 275.0
+RISER_H = 100.0
+SCARA_Z = (150.0, 300.0)     # quill_z range: Z stroke 150 mm
+SCARA_TOP = SCARA_Z[1] + 290.0  # top of the quill at the top of its stroke
+
+
+def scara_envelope():
+    """Space the arm, quill and tool can sweep (full J1 turn, whole Z stroke): an annulus
+    from the tool's lowest point to the top of the quill. Anything above SCARA_TOP and
+    outside the duct is out of the robot's path."""
+    bx, by, _ = SCARA_BASE
+    r_out = SCARA_L1 + SCARA_L2 + 60.0
+    z0 = SCARA_Z[0] - 80.0
+    h = SCARA_TOP - z0
+    shell = pv.Cylinder(center=(bx, by, z0 + h / 2), direction=(0, 0, 1), radius=r_out, height=h, resolution=96)
+    clip = (0, GB_W, 0, GB_D, 0, GB_H)
+    return shell.clip_box(clip, invert=False).extract_surface(algorithm="dataset_surface")
+
+
+def linear_stage():
+    """Ball-screw stage the substrate tray rides on, running left-right in front of the robot."""
+    cx, cy, _ = PNP_C
+    out = [(box((cx + 40, cy, 10), (520, 80, 20)), "#8f969d"),
+           (cyl((cx + 40, cy - 75, 16), (1, 0, 0), 8, 500), "#b8bcc0"),   # ball screw, beside the tray
+           (box((cx + 320, cy - 75, 30), (57, 57, 57)), BLACK)]          # stepper
+    return out
 
 
 # --- Ceiling-mounted items already present ---------------------------------------
@@ -203,12 +244,39 @@ def ceiling_items():
     return out
 
 
+AMCREST_C = np.array([470.0, WINDOW_SETBACK + 70.0, GB_H])
+
+
 def amcrest_dome():
-    """The PoE dome camera already on the ceiling at the back left."""
-    c = np.array([520.0, GB_D - 150.0, GB_H])
+    """The PoE turret already on the ceiling, front left, just behind the top flange (photo 2)."""
+    c = AMCREST_C
     base = cyl(c - (0, 0, 15), (0, 0, 1), 60, 30)
     dome = pv.Sphere(radius=48, center=c - (0, 0, 40), theta_resolution=40, phi_resolution=40)
     return pv.merge([base, dome]), c - (0, 0, 60)
+
+
+# --- Welded ceiling studs (6 Nov photo, circled) --------------------------------------
+# Positions are read off one upward photo and are rough (+/- 100 mm); measure before
+# relying on them. "used" ones carry a stud pod in the camera plan.
+
+CEILING_STUDS = {
+    "S1": dict(xy=(230.0, 470.0), state="free", note="between two ceiling ports, left"),
+    "S2": dict(xy=(560.0, 300.0), state="free", note="single stud, towards the photo side"),
+    "S3": dict(xy=(800.0, 470.0), state="free", note="between two ceiling ports, centre"),
+    "S4": dict(xy=(1060.0, 330.0), state="taken", note="black bracket already on it"),
+}
+STUD_COLORS = {"free": "#16b364", "taken": "#7d8590", "used": "#ff7a1a"}
+
+
+def ceiling_studs(used=()):
+    """Stud plus a coloured washer-sized marker, so the stud reads at room scale."""
+    out = []
+    for name, st in CEILING_STUDS.items():
+        x, y = st["xy"]
+        state = "used" if name in used else st["state"]
+        out.append((cyl((x, y, GB_H - 14), (0, 0, 1), 3.0, 28, res=16), "#8a9097"))
+        out.append((ring((x, y, GB_H - 1.5), (0, 0, 1), 6, 24, 3, res=32), STUD_COLORS[state]))
+    return out
 
 
 # --- Designated work areas named in the 26 Oct walkthrough --------------------------
@@ -247,12 +315,15 @@ def exfoliator_tip():
     return np.array([cx - 120 + 135, cy + 10 - 75, EXF_DECK_Z + 55])
 
 
+TRAY_Z = 24.0  # tray sits on the linear stage's carriage
+
+
 def pnp_tray():
-    """Gel-Pak style substrate tray in the SCARA's pick-and-place zone."""
+    """Substrate tray (8 x 8 grid in the 6 Nov photo) on the stage, in the SCARA's pick-and-place zone."""
     cx, cy, _ = PNP_C
     out = [floor_zone(PNP_C, (240, 200), "#d9f5e6")]
-    out.append((box((cx, cy, 10), (150, 110, 14)), "#30343a"))
-    for i in range(4):
-        for j in range(3):
-            out.append((box((cx - 52 + i * 35, cy - 35 + j * 35, 18), (16, 16, 2)), "#8fb3d9"))
+    out.append((box((cx, cy, TRAY_Z + 7), (150, 120, 14)), "#c3c8cd"))
+    for i in range(8):
+        for j in range(8):
+            out.append((box((cx - 56 + i * 16, cy - 49 + j * 14, TRAY_Z + 15), (11, 10, 2)), "#6f7f99"))
     return out

@@ -112,7 +112,7 @@ SAMPLE_STOPS = [
 ]
 
 # Where the Epson parks so the overhead camera has a clear view of the tray
-SCARA_PARK = (eq.SCARA_BASE[0] + 90.0, eq.SCARA_BASE[1] - 175.0)
+SCARA_PARK = (eq.SCARA_BASE[0] + 50.0, eq.SCARA_BASE[1] - 165.0)
 
 
 def camera_plan():

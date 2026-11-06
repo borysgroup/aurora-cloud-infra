@@ -119,6 +119,8 @@ PNP_CAM_Z = eq.GB_H - 60.0
 PNP_LENS_FRONT = PNP_CAM_Z - 18.0 - 68.3  # HQ Camera mount + 8-50 mm zoom (camera_models.hq_camera)
 
 # Numbered in the order a sample passes them, from the antechamber to the tray.
+# Both long sides of the box are windows, so the Pi Zero cameras for the two
+# work areas hang from welded ceiling studs on stud pods (../aurora-stud-mount).
 CAMERAS = [
     stud_camera("unpack", "Bulk-crystal unpacking area", "Priority 1. Pi Zero 2 W + CM3 on a stud pod",
                 "S1", (eq.UNPACK_C[0], eq.UNPACK_C[1], 0.0)),
@@ -131,12 +133,12 @@ CAMERAS = [
     CameraPlacement(
         "pnp", "Overhead: pick-and-place",
         f"Pi 5 + HQ Camera, straight above the tray, lens {PNP_LENS_FRONT - eq.SCARA_TOP:.0f} mm above the SCARA",
-        "hq", (eq.PNP_C[0], eq.PNP_C[1], PNP_CAM_Z), (eq.PNP_C[0], eq.PNP_C[1] + 1.0, 0.0), HQ_12MM,
+        "hq", (eq.PNP_C[0], eq.PNP_C[1], PNP_CAM_Z), (eq.PNP_C[0], eq.PNP_C[1] + 1.0, eq.PNP_C[2]), HQ_12MM,
         up_hint=(0, 1, 0), aspect=4 / 3, overshoot=1.0),
     CameraPlacement(
-        "dome", "Existing Amcrest turret (overview)",
+        "dome", "Existing Amcrest dome (overview)",
         "Already on the ceiling, front left, behind the top flange",
-        "existing", tuple(eq.AMCREST_C - (0, 0, 60.0)), (1100.0, 520.0, 0.0), AMCREST, overshoot=1.0),
+        "existing", tuple(eq.DOME_C - np.array([0.0, 0.0, 60.0])), (1050.0, 520.0, 0.0), AMCREST, overshoot=1.0),
 ]
 
 # Sample route: antechamber door -> unpacking -> mother tape -> tip -> tray
@@ -145,8 +147,11 @@ SAMPLE_STOPS = [
     eq.UNPACK_C + np.array([-40.0, -20.0, 40.0]),
     eq.MOTHER_TAPE_C + np.array([20.0, 0.0, 30.0]),
     TIP + np.array([0.0, 0.0, -12.0]),
-    eq.PNP_C + np.array([0.0, 0.0, eq.TRAY_Z + 34.0]),
+    eq.PNP_C + np.array([0.0, 0.0, 34.0]),
 ]
+
+# Where the Epson parks so the overhead camera has a clear view of the tray
+SCARA_PARK = (eq.SCARA_BASE[0] + 50.0, eq.SCARA_BASE[1] - 165.0)
 
 
 def camera_plan():
@@ -180,18 +185,19 @@ def build_static_scene(plotter, cutaway=True):
     big, mini = eq.antechambers()
     plotter.add_mesh(big, color=eq.STAINLESS, specular=0.6)
     plotter.add_mesh(mini, color=eq.STAINLESS, specular=0.6)
+    add_parts(plotter, eq.wall_signs())
     add_parts(plotter, eq.exfoliator())
-    # arm parked toward the back so the overhead camera sees the tray
-    scara_parts, _ = eq.scara(target=(eq.PNP_C[0] + 60, eq.PNP_C[1] + 360))
+    add_parts(plotter, eq.optics_bench())
+    add_parts(plotter, eq.raised_shelf())
+    scara_parts, _ = eq.scara(target=SCARA_PARK)
     add_parts(plotter, scara_parts)
-    add_parts(plotter, eq.linear_stage())
     if cutaway:
         plotter.add_mesh(eq.scara_envelope(), color="#7c3aed", opacity=0.07, lighting=False)
     add_parts(plotter, eq.ceiling_studs(used=[c.stud for c in camera_plan() if c.stud]))
     add_parts(plotter, eq.unpack_area())
     add_parts(plotter, eq.mother_tape_area())
     add_parts(plotter, eq.pnp_tray())
-    add_parts(plotter, eq.ceiling_items())
+    add_parts(plotter, eq.ceiling_items(), opacity=0.35 if cutaway else 1.0)
     add_parts(plotter, camera_supports())
 
 
@@ -455,8 +461,8 @@ def run(size, fps, out_dir, stills_only=False):
     tp.SetBackgroundOpacity(0.85)
     tp.SetJustificationToCentered()
     p.renderer.AddActor(marker_tag)
-    note = ("Estimated from the issue #23 photos (studs +/- 100 mm); camera hardware, pods and fields of "
-            "view to scale. Purple: SCARA swept volume.")
+    note = ("Box, equipment and studs estimated from the issue #23 photos and AURORA video frames; cameras, "
+            "pods and fields of view to scale. Purple: SCARA swept volume.")
     title = "Aurora glovebox: planned camera locations"
     subtitle = ("26 Oct walkthrough, revised 6 Nov: both long sides are glass, so the Pi Zero cameras hang "
                 "from welded ceiling studs on pan/tilt pods; the overhead camera clears the SCARA.")

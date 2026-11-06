@@ -72,18 +72,21 @@ class CameraPlacement:
 
 
 TIP = eq.exfoliator_tip()
-WALL_Y = eq.GB_D - 25.0  # camera face, just off the back wall
+CEIL_Z = eq.GB_H - 40.0  # lens height for the cameras hung from the ceiling
 
 # Numbered in the order a sample passes them, from the antechamber to the tray.
+# Both long sides of the box are windows, so the Pi Zero cameras for the two
+# work areas hang from the stainless ceiling near the back window and look
+# forward and down, across the areas towards the front.
 CAMERAS = [
     CameraPlacement(
         "unpack", "Bulk-crystal unpacking area",
-        "Priority 1. Pi Zero 2 W + Camera Module 3, back wall, looking down",
-        "zero", (eq.UNPACK_C[0], WALL_Y, 640.0), (eq.UNPACK_C[0], eq.UNPACK_C[1] - 60, 0.0), CM3),
+        "Priority 1. Pi Zero 2 W + Camera Module 3, ceiling bracket, looking down",
+        "zero", (eq.UNPACK_C[0] + 40.0, 610.0, CEIL_Z), (eq.UNPACK_C[0], eq.UNPACK_C[1] - 90, 0.0), CM3),
     CameraPlacement(
         "mother_tape", "Mother-tape preparation area",
-        "Priority 1. Pi Zero 2 W + Camera Module 3, back wall, looking down",
-        "zero", (eq.MOTHER_TAPE_C[0], WALL_Y, 640.0), (eq.MOTHER_TAPE_C[0], eq.MOTHER_TAPE_C[1] - 40, 0.0), CM3),
+        "Priority 1. Pi Zero 2 W + Camera Module 3, ceiling bracket, looking down",
+        "zero", (eq.MOTHER_TAPE_C[0], 560.0, CEIL_Z), (eq.MOTHER_TAPE_C[0], eq.MOTHER_TAPE_C[1] - 40, 0.0), CM3),
     CameraPlacement(
         "tip", "Exfoliator tip + mother tape (close-up)",
         "Priority 1. Pi Zero 2 W + Camera Module 3 (autofocus), post on gantry deck",
@@ -91,12 +94,12 @@ CAMERAS = [
     CameraPlacement(
         "pnp", "Overhead: pick-and-place",
         "Decided earlier. Pi 5 + HQ Camera, 8-50 mm zoom, ceiling, straight down",
-        "hq", (eq.PNP_C[0], eq.PNP_C[1], eq.GB_H - 70.0), (eq.PNP_C[0], eq.PNP_C[1] + 1.0, 0.0), HQ_12MM,
-        up_hint=(0, 1, 0), aspect=4 / 3, overshoot=1.0),
+        "hq", (eq.PNP_C[0], eq.PNP_C[1], eq.GB_H - 70.0), (eq.PNP_C[0], eq.PNP_C[1] + 1.0, eq.PNP_C[2]),
+        HQ_12MM, up_hint=(0, 1, 0), aspect=4 / 3, overshoot=1.0),
     CameraPlacement(
         "dome", "Existing Amcrest dome (overview)",
-        "Already installed on the ceiling, back left",
-        "existing", (520.0, eq.GB_D - 150.0, eq.GB_H - 60.0), (1000.0, 380.0, 0.0), AMCREST, overshoot=1.0),
+        "Already installed on the ceiling, front left",
+        "existing", tuple(eq.DOME_C - np.array([0.0, 0.0, 60.0])), (1050.0, 520.0, 0.0), AMCREST, overshoot=1.0),
 ]
 
 # Sample route: antechamber door -> unpacking -> mother tape -> tip -> tray
@@ -107,6 +110,9 @@ SAMPLE_STOPS = [
     TIP + np.array([0.0, 0.0, -12.0]),
     eq.PNP_C + np.array([0.0, 0.0, 34.0]),
 ]
+
+# Where the Epson parks so the overhead camera has a clear view of the tray
+SCARA_PARK = (eq.SCARA_BASE[0] + 90.0, eq.SCARA_BASE[1] - 175.0)
 
 
 def camera_plan():
@@ -140,14 +146,16 @@ def build_static_scene(plotter, cutaway=True):
     big, mini = eq.antechambers()
     plotter.add_mesh(big, color=eq.STAINLESS, specular=0.6)
     plotter.add_mesh(mini, color=eq.STAINLESS, specular=0.6)
+    add_parts(plotter, eq.wall_signs())
     add_parts(plotter, eq.exfoliator())
-    # arm parked toward the back so the overhead camera sees the tray
-    scara_parts, _ = eq.scara(target=(eq.PNP_C[0] + 60, eq.PNP_C[1] + 360))
+    add_parts(plotter, eq.optics_bench())
+    add_parts(plotter, eq.raised_shelf())
+    scara_parts, _ = eq.scara(target=SCARA_PARK)
     add_parts(plotter, scara_parts)
     add_parts(plotter, eq.unpack_area())
     add_parts(plotter, eq.mother_tape_area())
     add_parts(plotter, eq.pnp_tray())
-    add_parts(plotter, eq.ceiling_items())
+    add_parts(plotter, eq.ceiling_items(), opacity=0.35 if cutaway else 1.0)
     add_parts(plotter, camera_supports())
 
 
@@ -160,15 +168,13 @@ def camera_supports():
             out.append((pv.Cylinder(center=(o[0], o[1], (eq.EXF_DECK_Z + o[2]) / 2 - 10), direction=(0, 0, 1),
                                     radius=6.35, height=o[2] - eq.EXF_DECK_Z - 20), eq.STAINLESS))
         elif c.key in ("unpack", "mother_tape"):
-            # laser-cut plate on one of the box's welded studs, held with a standard nut
-            out.append((pv.Box(bounds=(o[0] - 25, o[0] + 25, o[1] + 8, eq.GB_D - 4, o[2] + 20, o[2] + 32)),
+            # laser-cut plate hanging from the ceiling on a stud, held with a standard nut
+            out.append((pv.Box(bounds=(o[0] - 25, o[0] + 25, o[1] + 6, o[1] + 12, o[2] - 10, eq.GB_H - 6)),
                         eq.BLACK))
-            out.append((pv.Box(bounds=(o[0] - 30, o[0] + 30, eq.GB_D - 4, eq.GB_D, o[2] + 5, o[2] + 75)),
+            out.append((pv.Box(bounds=(o[0] - 30, o[0] + 30, o[1] - 10, o[1] + 30, eq.GB_H - 6, eq.GB_H)),
                         eq.BLACK))
-            out.append((pv.Cylinder(center=(o[0], eq.GB_D - 12, o[2] + 52), direction=(0, 1, 0), radius=3.0,
-                                    height=24), eq.STAINLESS_DARK))
-            out.append((pv.Cylinder(center=(o[0], eq.GB_D - 8, o[2] + 52), direction=(0, 1, 0), radius=6.0,
-                                    height=5, resolution=6), eq.STAINLESS_DARK))
+            out.append((pv.Cylinder(center=(o[0], o[1] + 10, eq.GB_H - 14), direction=(0, 0, 1), radius=6.0,
+                                    height=6, resolution=6), eq.STAINLESS_DARK))
         elif c.key == "pnp":
             out.append((pv.Box(bounds=(o[0] - 70, o[0] + 120, o[1] - 50, o[1] + 50, eq.GB_H - 12, eq.GB_H)),
                         eq.BLACK))
@@ -412,8 +418,8 @@ def run(size, fps, out_dir, stills_only=False):
     tp.SetBackgroundOpacity(0.85)
     tp.SetJustificationToCentered()
     p.renderer.AddActor(marker_tag)
-    note = ("Layout schematic: glovebox and equipment estimated from the issue #23 photos; camera "
-            "hardware and fields of view to scale. The magenta marker follows a sample from the antechamber.")
+    note = ("Schematic: box and equipment estimated from the issue #23 photos and AURORA video frames; "
+            "cameras and fields of view to scale. Magenta: a sample's route.")
     title = "Aurora glovebox: planned camera locations"
     subtitle = ("From the 26 Oct 2026 walkthrough. Goal: record a sample's full provenance, from "
                 "unpacking to the tray, synchronised with sensor data.")

@@ -28,7 +28,7 @@ GB_W, GB_D, GB_H = 1900.0, 820.0, 900.0  # interior
 WALL_T = 12.0
 WINDOW_SETBACK = 160.0  # both windows lean in by this much at the top
 STAND_H = 880.0
-GLOVE_R = 105.0
+GLOVE_R = 102.0  # 8-inch glove ports
 GLOVE_X = (330.0, 750.0, 1150.0, 1570.0)
 GLOVE_Z = 330.0
 
@@ -72,7 +72,8 @@ def _window(side):
         y_at, n = back_window_y, np.array([0.0, GB_H, s])
     n /= np.linalg.norm(n)
     glass = _quad((0, y_at(0), 0), (GB_W, y_at(0), 0), (GB_W, y_at(GB_H), GB_H), (0, y_at(GB_H), GB_H))
-    frame = [ring((gx, y_at(GLOVE_Z), GLOVE_Z), n, GLOVE_R, GLOVE_R + 22.0, 30.0) for gx in GLOVE_X]
+    ports = pv.merge([ring((gx, y_at(GLOVE_Z), GLOVE_Z), n, GLOVE_R, GLOVE_R + 25.0, 34.0) for gx in GLOVE_X])
+    frame = []
     out = 40.0 * np.sign(n[1])  # frame flange sits just outside the glass
     frame.append(box_from((-40, min(0, out), -40), (GB_W + 40, max(0, out), 0)) if side == "front" else
                  box_from((-40, GB_D + min(0, out), -40), (GB_W + 40, GB_D + max(0, out), 0)))
@@ -88,7 +89,7 @@ def _window(side):
     for x0 in (-20.0, GB_W + 20.0):
         for z in np.arange(80.0, GB_H - 40.0, 115.0):
             bolts.append(cyl((x0, y_at(z) + out * 0.6, z), n, 6, 16, res=8))
-    return glass, n, pv.merge(frame), pv.merge(bolts)
+    return glass, ports, pv.merge(frame), pv.merge(bolts)
 
 
 def glovebox_shell():
@@ -99,10 +100,12 @@ def glovebox_shell():
     parts["right_wall"] = (_end_wall(GB_W, GB_W + WALL_T), dict(color=STAINLESS, specular=0.5))
     parts["ceiling"] = (box_from((0, WINDOW_SETBACK, GB_H), (GB_W, GB_D - WINDOW_SETBACK, GB_H + WALL_T)),
                         dict(color=STAINLESS, specular=0.4))
-    front_glass, _, front_frame, front_bolts = _window("front")
-    back_glass, _, back_frame, back_bolts = _window("back")
+    front_glass, front_ports, front_frame, front_bolts = _window("front")
+    back_glass, back_ports, back_frame, back_bolts = _window("back")
     parts["window"] = (front_glass, dict(color="#bfe3ff", opacity=0.10, specular=1.0))
     parts["back_window"] = (back_glass, dict(color="#bfe3ff", opacity=0.14, specular=1.0))
+    parts["glove_ports"] = (front_ports, dict(color=WHITE, specular=0.3))
+    parts["back_glove_ports"] = (back_ports, dict(color=WHITE, specular=0.3))
     parts["window_frame"] = (pv.merge([front_frame, front_bolts]), dict(color=STAINLESS_DARK, specular=0.6))
     parts["back_window_frame"] = (pv.merge([back_frame, back_bolts]), dict(color=STAINLESS_DARK, specular=0.6))
     return parts
@@ -134,14 +137,16 @@ def stand():
 
 def antechambers():
     """Large antechamber on the left wall, mini antechamber below it."""
+    # LC Technology Solutions sizes: 15 in x 24 in large antechamber, 6 in mini
     big_c = (-WALL_T, GB_D * 0.52, 470.0)
-    big = [ring(big_c, (1, 0, 0), 0, 225, 18),                      # inner door
-           ring((big_c[0] + 12, big_c[1], big_c[2]), (1, 0, 0), 225, 250, 14),
-           cyl((-WALL_T - 330, big_c[1], big_c[2]), (1, 0, 0), 250, 640)]  # tube, outside
+    big = [ring((10, big_c[1], big_c[2]), (1, 0, 0), 0, 212, 14),                    # inner door
+           ring((2, big_c[1], big_c[2]), (1, 0, 0), 190, 222, 12),                   # flange
+           box((22, big_c[1], big_c[2]), (12, 40, 420)),                             # swing arm
+           cyl((-WALL_T - 305, big_c[1], big_c[2]), (1, 0, 0), 205, 610)]            # tube, outside
     mini_c = (-WALL_T, GB_D * 0.20, 190.0)
-    mini = [cyl((-WALL_T - 150, mini_c[1], mini_c[2]), (1, 0, 0), 85, 300),   # tube, outside
-            cyl((55, mini_c[1], mini_c[2]), (1, 0, 0), 85, 110),               # tube, inside
-            ring((112, mini_c[1], mini_c[2]), (1, 0, 0), 0, 92, 12),           # inner door
+    mini = [cyl((-WALL_T - 150, mini_c[1], mini_c[2]), (1, 0, 0), 80, 300),   # tube, outside
+            cyl((55, mini_c[1], mini_c[2]), (1, 0, 0), 80, 110),               # tube, inside
+            ring((112, mini_c[1], mini_c[2]), (1, 0, 0), 0, 88, 12),           # inner door
             box((122, mini_c[1], mini_c[2]), (10, 150, 18))]                   # latch bar
     return pv.merge(big), pv.merge(mini)
 
@@ -230,18 +235,27 @@ def optics_bench():
     return out
 
 
-# --- Epson robot on its raised breadboard (back right) ------------------------------
+# --- Epson T-series SCARA and its raised work plate (back right) ---------------------
+#
+# The Borys Lab photo of the same robot model arriving at Montana State (Aug 2024)
+# shows an all-in-one Epson T-series SCARA (controller in the base) on a riser,
+# with its black cable duct arcing from the base to the top of arm 2. That matches
+# photo 2 here: the light-grey EPSON body is arm 2 and the black conduit is the
+# duct. Dimensions follow the T3-B401S (225 + 175 mm arms, 150 mm Z stroke,
+# 491 mm tall, about 600 mm with the duct); a T6-B is the other candidate.
 
-SHELF_C = np.array([1600.0, 575.0])   # centre (x, y) of the raised black breadboard
-SHELF_TOP_Z = 420.0
-SHELF_SIZE = (500.0, 330.0)
-SCARA_BASE = np.array([1730.0, 625.0, SHELF_TOP_Z])
-EPSON_BODY_R, EPSON_BODY_H = 105.0, 260.0
-PNP_C = np.array([1480.0, 500.0, SHELF_TOP_Z])  # substrate tray on the shelf, under the overhead camera
+SHELF_C = np.array([1445.0, 575.0])   # centre (x, y) of the raised black breadboard
+SHELF_TOP_Z = 380.0
+SHELF_SIZE = (310.0, 330.0)
+SCARA_RISER = 130.0
+SCARA_BASE = np.array([1700.0, 560.0, SCARA_RISER])  # J1 axis, on its riser
+EPSON_L1, EPSON_L2 = 225.0, 175.0
+EPSON_H = 491.0
+PNP_C = np.array([1420.0, 520.0, SHELF_TOP_Z])  # substrate tray on the plate, under the overhead camera
 
 
 def raised_shelf():
-    """The black breadboard the Epson stands on, at about mid-height, on four posts."""
+    """Raised black breadboard the Epson works over, on four posts (photo 2, right)."""
     cx, cy = SHELF_C
     sx, sy = SHELF_SIZE
     out = [(box((cx, cy, SHELF_TOP_Z - 6.5), (sx, sy, 13)), BLACK)]
@@ -253,83 +267,65 @@ def raised_shelf():
 
 
 def scara(target=None, quill_z=None):
-    """Epson robot on the raised shelf, arm posed over `target` (x, y); returns (parts, tool point).
-
-    The photos show a light-grey cylindrical Epson body on the shelf with a black
-    corrugated conduit running up to the ceiling; the arm is drawn as a generic
-    SCARA (225 + 175 mm links) because the model isn't identifiable from the photos.
-    """
+    """Epson T-series SCARA, arm posed over `target` (x, y); returns (parts, tool point)."""
     out = []
     bx, by, bz = SCARA_BASE
     target = PNP_C if target is None else np.asarray(target, float)
-    quill_z = bz + 80.0 if quill_z is None else quill_z
-    out.append((cyl((bx, by, bz + 15), (0, 0, 1), EPSON_BODY_R - 4, 30), "#55595e"))
-    out.append((cyl((bx, by, bz + 30 + (EPSON_BODY_H - 30) / 2), (0, 0, 1), EPSON_BODY_R, EPSON_BODY_H - 30),
-                "#d5d9dd"))
-    arm_z = bz + EPSON_BODY_H + 28
-    l1, l2 = 225.0, 175.0
+    quill_z = SHELF_TOP_Z + 40.0 if quill_z is None else quill_z
+    grey, white = "#d5d9dd", "#f4f5f6"
+    out.append((box_from((bx - 60, by - 100, 0), (bx + 190, by + 100, bz)), ALUMINIUM))       # riser block
+    out.append((box_from((bx + 10, by - 90, bz), (bx + 190, by + 90, bz + 420)), grey))       # base + controller
+    out.append((cyl((bx, by, bz + 150), (0, 0, 1), 70, 300), grey))                           # J1 housing
+    out.append((cyl((bx + 150, by, bz + 428), (0, 0, 1), 14, 16), "#ff9d2e"))                  # status lamp
     dx, dy = target[0] - bx, target[1] - by
-    r = np.clip(np.hypot(dx, dy), abs(l1 - l2) + 1, l1 + l2 - 1)
-    elbow = np.arccos((r**2 - l1**2 - l2**2) / (2 * l1 * l2))
-    t1 = np.arctan2(dy, dx) - np.arctan2(l2 * np.sin(elbow), l1 + l2 * np.cos(elbow))
+    r = np.clip(np.hypot(dx, dy), abs(EPSON_L1 - EPSON_L2) + 1, EPSON_L1 + EPSON_L2 - 1)
+    elbow = np.arccos((r**2 - EPSON_L1**2 - EPSON_L2**2) / (2 * EPSON_L1 * EPSON_L2))
+    t1 = np.arctan2(dy, dx) - np.arctan2(EPSON_L2 * np.sin(elbow), EPSON_L1 + EPSON_L2 * np.cos(elbow))
     t2 = t1 + elbow
-    j1 = np.array([bx, by, arm_z])
-    j2 = j1 + l1 * np.array([np.cos(t1), np.sin(t1), 0.0])
-    j3 = j2 + l2 * np.array([np.cos(t2), np.sin(t2), 0.0])
-    for a, b, w, z in ((j1, j2, 110, arm_z), (j2, j3, 90, arm_z + 50)):
+    j1 = np.array([bx, by, 0.0])
+    j2 = j1 + EPSON_L1 * np.array([np.cos(t1), np.sin(t1), 0.0])
+    j3 = j2 + EPSON_L2 * np.array([np.cos(t2), np.sin(t2), 0.0])
+    links = ((j1, j2, 120, bz + 300, bz + 360), (j2, j3, 125, bz + 360, bz + EPSON_H - 20))
+    for a, b, w, z0, z1 in links:
         mid, vec = (a + b) / 2, b - a
-        seg = box((0, 0, 0), (np.linalg.norm(vec) + w, w, 50))
+        seg = box((0, 0, 0), (np.linalg.norm(vec), w, z1 - z0))
         seg.rotate_z(np.degrees(np.arctan2(vec[1], vec[0])), inplace=True)
-        seg.translate((mid[0], mid[1], z), inplace=True)
-        out.append((seg, WHITE))
-        out.append((cyl((b[0], b[1], z), (0, 0, 1), w / 2, 51), WHITE))
-    out.append((cyl((j1[0], j1[1], arm_z), (0, 0, 1), 58, 51), WHITE))
-    q_top = arm_z + 110
-    out.append((cyl((j3[0], j3[1], (q_top + quill_z + 40) / 2), (0, 0, 1), 9, q_top - quill_z - 40), "#b5b9bd"))
-    out.append((box((j3[0], j3[1], quill_z + 20), (40, 40, 40)), "#3a3d41"))  # end effector
-    # black corrugated conduit from the top of the robot up to the ceiling
-    out.append((tube_path([(bx, by, arm_z + 30), (bx - 10, by - 5, arm_z + 120), (bx - 40, by - 20, GB_H)], 17),
-                BLACK))
+        seg.translate((mid[0], mid[1], (z0 + z1) / 2), inplace=True)
+        out.append((seg, white))
+        for p in (a, b):
+            out.append((cyl((p[0], p[1], (z0 + z1) / 2), (0, 0, 1), w / 2, z1 - z0), white))
+    out.append((cyl((j3[0], j3[1], bz + 330), (0, 0, 1), 42, 60), "#2f5fb3"))                 # J3/J4 ring
+    q_top = bz + EPSON_H
+    out.append((cyl((j3[0], j3[1], (q_top + quill_z + 30) / 2), (0, 0, 1), 8, q_top - quill_z - 30), "#b5b9bd"))
+    out.append((box((j3[0], j3[1], quill_z + 15), (40, 40, 30)), "#3a3d41"))                 # vacuum tool
+    # black corrugated duct from the top of the base, arcing over to the top of arm 2
+    a2 = j2 + 0.35 * (j3 - j2)
+    duct = [(bx + 100, by, bz + 420), (bx + 90, by, bz + 560), (bx + 20, by, bz + 610),
+            ((bx + a2[0]) / 2, (by + a2[1]) / 2, bz + 600), (a2[0], a2[1], bz + EPSON_H + 40), (a2[0], a2[1], q_top - 5)]
+    out.append((tube_path(duct, 18), BLACK))
     return out, np.array([j3[0], j3[1], quill_z])
 
 
-# --- Welded studs on the ceiling ------------------------------------------------------
-# The four studs circled in the upward photo posted on issue #23 on 6 Nov 2026. Their
-# positions are read off that one photo by eye (left end wall to the left, front window
-# at the top), so they are rough. S2 and S3 each sit between two round ports; S4 already
-# carries a black bracket. The stud mounts in ../stud-camera-mount hang from them.
-CEILING_STUDS = {
-    "S1": dict(xy=(850.0, 260.0), ports=False, taken=False),
-    "S2": dict(xy=(420.0, 470.0), ports=True, taken=False),
-    "S3": dict(xy=(1220.0, 470.0), ports=True, taken=False),
-    "S4": dict(xy=(1560.0, 360.0), ports=False, taken=True),
-}
-STUD_LEN = 25.0
-
-
-def ceiling_studs():
-    """The studs, the round ports either side of S2 and S3, and the bracket already on S4."""
-    out = []
-    for s in CEILING_STUDS.values():
-        x, y = s["xy"]
-        out.append((cyl((x, y, GB_H - STUD_LEN / 2), (0, 0, 1), 3.0, STUD_LEN, res=12), STAINLESS_DARK))
-        if s["ports"]:
-            for dy in (-95.0, 95.0):
-                out.append((ring((x, y + dy, GB_H - 1.5), (0, 0, 1), 16, 24, 3), STAINLESS_DARK))
-                out.append((cyl((x, y + dy, GB_H - 0.5), (0, 0, 1), 16, 1, res=24), "#3a3f45"))
-        if s["taken"]:
-            out.append((box((x, y, GB_H - 20), (70, 28, 34)), BLACK))
-            for dx in (-42.0, 42.0):
-                out.append((cyl((x + dx, y, GB_H - 24), (1, 0, 0), 7, 14, res=16), BLACK))
-    return out
+# Space the robot can sweep: arm, quill and tool over a full J1 turn and the whole Z
+# stroke, up to the top of the duct where it lands on arm 2; the duct's arch next
+# to the base reaches higher. Anything above SCARA_TOP over the work area, and
+# clear of the arch, is out of the robot's path.
+SCARA_REACH = EPSON_L1 + EPSON_L2 + 30.0          # plus the vacuum tool
+SCARA_TOP = SCARA_BASE[2] + EPSON_H + 40.0 + 18.0  # duct centre line over arm 2 + its radius
+SCARA_ARCH = (230.0, SCARA_BASE[2] + 610.0 + 18.0)  # radius about J1 and top of the duct's arch
 
 
 def scara_envelope():
-    """The Epson's swept volume as drawn: (reach from the base axis, lowest z, highest z) of the arm and quill."""
-    bz = SCARA_BASE[2]
-    arm_z = bz + EPSON_BODY_H + 28
-    reach = 225.0 + 175.0 + 90.0 / 2
-    return reach, arm_z - 25.0, arm_z + 110.0
+    bx, by, bz = SCARA_BASE
+    z0 = SHELF_TOP_Z - 20.0
+    work = pv.Cylinder(center=(bx, by, (z0 + SCARA_TOP) / 2), direction=(0, 0, 1), radius=SCARA_REACH,
+                       height=SCARA_TOP - z0, resolution=96)
+    r, top = SCARA_ARCH
+    arch = pv.Cylinder(center=(bx, by, (SCARA_TOP + top) / 2), direction=(0, 0, 1), radius=r,
+                       height=top - SCARA_TOP, resolution=64)
+    clip = (0, GB_W, 0, GB_D, 0, GB_H)
+    return pv.merge([m.clip_box(clip, invert=False).extract_surface(algorithm="dataset_surface")
+                     for m in (work, arch)])
 
 
 # --- Ceiling-mounted items already present ---------------------------------------
@@ -355,6 +351,32 @@ def amcrest_dome():
     base = cyl(c - (0, 0, 15), (0, 0, 1), 60, 30)
     dome = pv.Sphere(radius=48, center=c - (0, 0, 40), theta_resolution=40, phi_resolution=40)
     return pv.merge([base, dome]), c - (0, 0, 60)
+
+
+# --- Welded ceiling studs (circled in the 6 Nov upward photo) ---------------------------
+# Read off one upward photo, so only good to about +/- 100 mm; measure before relying
+# on them. A stud is "used" when the camera plan hangs a stud pod on it.
+
+CEILING_STUDS = {
+    "S1": dict(xy=(230.0, 470.0), state="free", note="between two ceiling ports, left"),
+    "S2": dict(xy=(560.0, 300.0), state="free", note="single stud, towards the front"),
+    "S3": dict(xy=(800.0, 470.0), state="free", note="between two ceiling ports, centre"),
+    "S4": dict(xy=(1060.0, 300.0), state="taken", note="black bracket already on it"),
+    # not one of the circled studs: what the overhead camera needs straight above the tray
+    "S5": dict(xy=(PNP_C[0], PNP_C[1]), state="needed", note="needed: a stud straight above the tray"),
+}
+STUD_COLORS = {"free": "#16b364", "taken": "#7d8590", "used": "#ff7a1a", "needed": "#d6262b"}
+
+
+def ceiling_studs(used=()):
+    """Each stud plus a coloured washer-sized marker, so it reads at room scale."""
+    out = []
+    for name, st in CEILING_STUDS.items():
+        x, y = st["xy"]
+        state = st["state"] if st["state"] == "needed" else ("used" if name in used else st["state"])
+        out.append((cyl((x, y, GB_H - 14), (0, 0, 1), 3.0, 28, res=16), "#8a9097"))
+        out.append((ring((x, y, GB_H - 1.5), (0, 0, 1), 6, 24, 3, res=32), STUD_COLORS[state]))
+    return out
 
 
 # --- Designated work areas named in the 26 Oct walkthrough --------------------------
@@ -394,11 +416,12 @@ def exfoliator_tip():
 
 
 def pnp_tray():
-    """Gel-Pak style substrate tray in the Epson's pick-and-place zone, on the raised shelf."""
+    """Substrate tray in the Epson's pick-and-place zone, on the raised shelf: an 8 x 8 grid
+    of chips in a metal holder (6 Nov close-up of the tray)."""
     cx, cy, cz = PNP_C
     out = [floor_zone(PNP_C, (220, 180), "#d9f5e6")]
-    out.append((box((cx, cy, cz + 10), (150, 110, 14)), "#30343a"))
-    for i in range(4):
-        for j in range(3):
-            out.append((box((cx - 52 + i * 35, cy - 35 + j * 35, cz + 18), (16, 16, 2)), "#8fb3d9"))
+    out.append((box((cx, cy, cz + 10), (150, 120, 14)), "#c3c8cd"))
+    for i in range(8):
+        for j in range(8):
+            out.append((box((cx - 56 + i * 16, cy - 49 + j * 14, cz + 18), (11, 10, 2)), "#6f7f99"))
     return out

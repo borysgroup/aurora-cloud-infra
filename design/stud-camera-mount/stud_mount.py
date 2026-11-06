@@ -421,7 +421,7 @@ def tilt_knobs(kind):
                            -depth + (t["knob_d"] / 2 + 1.0) * math.sin(a)))
         out = k if out is None else out.union(k)
         xs = a1 + t["knob_h"] - 2.0 if sx > 0 else -a1 - t["knob_h"] + 2.0
-        sc = xcyl(4.0, xs, -sx * (half - 6.0), 0.0, -depth)
+        sc = xcyl(4.0, xs, sx * (half - 6.0), 0.0, -depth)
         screws = sc if screws is None else screws.union(sc)
     return out, screws
 

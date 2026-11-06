@@ -293,6 +293,45 @@ def scara(target=None, quill_z=None):
     return out, np.array([j3[0], j3[1], quill_z])
 
 
+# --- Welded studs on the ceiling ------------------------------------------------------
+# The four studs circled in the upward photo posted on issue #23 on 6 Nov 2026. Their
+# positions are read off that one photo by eye (left end wall to the left, front window
+# at the top), so they are rough. S2 and S3 each sit between two round ports; S4 already
+# carries a black bracket. The stud mounts in ../stud-camera-mount hang from them.
+CEILING_STUDS = {
+    "S1": dict(xy=(850.0, 260.0), ports=False, taken=False),
+    "S2": dict(xy=(420.0, 470.0), ports=True, taken=False),
+    "S3": dict(xy=(1220.0, 470.0), ports=True, taken=False),
+    "S4": dict(xy=(1560.0, 360.0), ports=False, taken=True),
+}
+STUD_LEN = 25.0
+
+
+def ceiling_studs():
+    """The studs, the round ports either side of S2 and S3, and the bracket already on S4."""
+    out = []
+    for s in CEILING_STUDS.values():
+        x, y = s["xy"]
+        out.append((cyl((x, y, GB_H - STUD_LEN / 2), (0, 0, 1), 3.0, STUD_LEN, res=12), STAINLESS_DARK))
+        if s["ports"]:
+            for dy in (-95.0, 95.0):
+                out.append((ring((x, y + dy, GB_H - 1.5), (0, 0, 1), 16, 24, 3), STAINLESS_DARK))
+                out.append((cyl((x, y + dy, GB_H - 0.5), (0, 0, 1), 16, 1, res=24), "#3a3f45"))
+        if s["taken"]:
+            out.append((box((x, y, GB_H - 20), (70, 28, 34)), BLACK))
+            for dx in (-42.0, 42.0):
+                out.append((cyl((x + dx, y, GB_H - 24), (1, 0, 0), 7, 14, res=16), BLACK))
+    return out
+
+
+def scara_envelope():
+    """The Epson's swept volume as drawn: (reach from the base axis, lowest z, highest z) of the arm and quill."""
+    bz = SCARA_BASE[2]
+    arm_z = bz + EPSON_BODY_H + 28
+    reach = 225.0 + 175.0 + 90.0 / 2
+    return reach, arm_z - 25.0, arm_z + 110.0
+
+
 # --- Ceiling-mounted items already present ---------------------------------------
 
 DOME_C = np.array([280.0, 245.0, GB_H])  # Amcrest dome, just behind the top front flange

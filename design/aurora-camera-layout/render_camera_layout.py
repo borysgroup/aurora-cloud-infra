@@ -28,6 +28,10 @@ import aurora_equipment as eq  # noqa: E402
 import camera_models as cm  # noqa: E402
 from scene_primitives import frustum, frustum_edges, look_frame  # noqa: E402
 
+sys.path.insert(0, str(HERE.parent / "stud-camera-mount"))
+import render_stud_mount as rsm  # noqa: E402
+import stud_mount as sm  # noqa: E402
+
 pv.OFF_SCREEN = True
 
 ZERO_COLOR = "#ff7a1a"  # Pi Zero 2 W + Camera Module 3 livestreams
@@ -55,6 +59,10 @@ class CameraPlacement:
     up_hint: tuple = (0, 0, 1)
     aspect: float = 16 / 9
     overshoot: float = 1.6  # how far past the target the frustum runs before clipping
+    stud: str = ""          # ceiling stud the camera's mount hangs from (eq.CEILING_STUDS)
+    pan: float = 0.0        # the mount's pan and tilt, degrees (stud_mount frames)
+    tilt: float = 0.0
+    hardware: bool = True   # False when another camera's head already carries this one
     actors: list = field(default_factory=list)
 
     @property
@@ -72,30 +80,74 @@ class CameraPlacement:
 
 
 TIP = eq.exfoliator_tip()
-CEIL_Z = eq.GB_H - 40.0  # lens height for the cameras hung from the ceiling
+
+
+def stud_root(stud):
+    x, y = eq.CEILING_STUDS[stud]["xy"]
+    return np.array([x, y, eq.GB_H])
+
+
+def stud_aim(kind, stud, target, iters=10):
+    """Pan and tilt that put a stud mount's optical axis through `target`.
+
+    Returns (lens centre, pan, tilt, image-up vector), scene frame. The lens sits
+    off the pan and tilt axes, so this iterates from a first guess.
+    """
+    root = stud_root(stud)
+    lens = np.r_[sm.lens_point(kind), 1.0]
+    pan, tilt = 0.0, 45.0
+    for _ in range(iters):
+        o = (rsm.mount_matrices(kind, pan, tilt, root)["head"] @ lens)[:3]
+        d = np.asarray(target, float) - o
+        d /= np.linalg.norm(d)
+        tilt = float(np.degrees(np.arcsin(-d[2])))
+        pan = float(np.degrees(np.arctan2(d[0], -d[1])))
+    m = rsm.mount_matrices(kind, pan, tilt, root)["head"]
+    return (m @ lens)[:3], pan, tilt, m[:3, :3] @ np.array([0.0, 0.0, 1.0])
+
+
+def on_stud(key, title, detail, kind, stud, target, fov, **kw):
+    o, pan, tilt, up = stud_aim(kind, stud, target)
+    return CameraPlacement(key, title, detail, kind, tuple(o), tuple(target), fov, up_hint=tuple(up), stud=stud,
+                           pan=pan, tilt=tilt, **kw)
+
+
+def wide_on_hq_head(cam, title, detail, aim):
+    """The Camera Module 3 Wide on the same head as `cam` (byu-vcl's nose), on the Pi 5's second port."""
+    m = rsm.mount_matrices("hq", cam.pan, cam.tilt, stud_root(cam.stud))["head"]
+    h = sm.HQ
+    o = (m @ np.array([h["wide_x"], h["nose_y"] - 9.3 - h["axis_y"], h["wide_z"], 1.0]))[:3]
+    return CameraPlacement("pnp_wide", title, detail, "hq", tuple(o), tuple(o + aim * 600.0), CM3_WIDE,
+                           up_hint=cam.up_hint, aspect=3 / 2, overshoot=1.2, stud=cam.stud, pan=cam.pan,
+                           tilt=cam.tilt, hardware=False)
+
 
 # Numbered in the order a sample passes them, from the antechamber to the tray.
-# Both long sides of the box are windows, so the Pi Zero cameras for the two
-# work areas hang from the stainless ceiling near the back window and look
-# forward and down, across the areas towards the front.
+# Both long sides of the box are windows, so the cameras for the two work areas
+# and the overhead camera hang from welded ceiling studs on the pan/tilt stud
+# mount (../stud-camera-mount, after byu-vcl PR 318's camera head).
+_PNP = on_stud(
+    "pnp", "Overhead: pick-and-place tray",
+    "Pi 5 + HQ Camera, 8-50 mm zoom, stud S3, outside the Epson's reach",
+    "hq", "S3", tuple(eq.PNP_C), HQ_12MM, aspect=4 / 3, overshoot=1.0)
 CAMERAS = [
-    CameraPlacement(
+    on_stud(
         "unpack", "Bulk-crystal unpacking area",
-        "Priority 1. Pi Zero 2 W + Camera Module 3, ceiling bracket, looking down",
-        "zero", (eq.UNPACK_C[0] + 40.0, 610.0, CEIL_Z), (eq.UNPACK_C[0], eq.UNPACK_C[1] - 90, 0.0), CM3),
-    CameraPlacement(
+        "Priority 1. Pi Zero 2 W + Camera Module 3, stud S2",
+        "zero", "S2", (eq.UNPACK_C[0], eq.UNPACK_C[1] - 60, 0.0), CM3),
+    on_stud(
         "mother_tape", "Mother-tape preparation area",
-        "Priority 1. Pi Zero 2 W + Camera Module 3, ceiling bracket, looking down",
-        "zero", (eq.MOTHER_TAPE_C[0], 560.0, CEIL_Z), (eq.MOTHER_TAPE_C[0], eq.MOTHER_TAPE_C[1] - 40, 0.0), CM3),
+        "Priority 1. Pi Zero 2 W + Camera Module 3, stud S1",
+        "zero", "S1", (eq.MOTHER_TAPE_C[0], eq.MOTHER_TAPE_C[1] - 20, 0.0), CM3),
     CameraPlacement(
         "tip", "Exfoliator tip + mother tape (close-up)",
         "Priority 1. Pi Zero 2 W + Camera Module 3 (autofocus), post on gantry deck",
         "zero", (TIP[0] - 150.0, TIP[1] - 120.0, TIP[2] + 25.0), tuple(TIP), CM3, overshoot=1.3),
-    CameraPlacement(
-        "pnp", "Overhead: pick-and-place",
-        "Decided earlier. Pi 5 + HQ Camera, 8-50 mm zoom, ceiling, straight down",
-        "hq", (eq.PNP_C[0], eq.PNP_C[1], eq.GB_H - 70.0), (eq.PNP_C[0], eq.PNP_C[1] + 1.0, eq.PNP_C[2]),
-        HQ_12MM, up_hint=(0, 1, 0), aspect=4 / 3, overshoot=1.0),
+    _PNP,
+    wide_on_hq_head(
+        _PNP, "Overhead wide: the Epson's work area",
+        "Optional. CM3 Wide on the same head, the Pi 5's second port (#16)",
+        np.asarray(_PNP.direction)),
     CameraPlacement(
         "dome", "Existing Amcrest dome (overview)",
         "Already installed on the ceiling, front left",
@@ -157,34 +209,37 @@ def build_static_scene(plotter, cutaway=True):
     add_parts(plotter, eq.pnp_tray())
     add_parts(plotter, eq.ceiling_items(), opacity=0.35 if cutaway else 1.0)
     add_parts(plotter, camera_supports())
+    if cutaway:  # the Epson's reach at the top of its arm: the stud mounts stay outside it
+        reach, _, z_top = eq.scara_envelope()
+        ring = pv.Circle(radius=reach, resolution=120).translate((eq.SCARA_BASE[0], eq.SCARA_BASE[1], z_top),
+                                                                  inplace=False)
+        ring = ring.clip_box((0, eq.GB_W, 0, eq.GB_D, 0, eq.GB_H), invert=False).extract_feature_edges(
+            boundary_edges=True, feature_edges=False, manifold_edges=False, non_manifold_edges=False)
+        plotter.add_mesh(ring.tube(radius=3.0), color="#d6262b", opacity=0.55)
 
 
 def camera_supports():
-    """Posts and brackets the planned cameras hang from (shown even before they appear)."""
-    out = []
+    """Studs, stud mounts (yoke and knobs) and the tip camera's post, shown before the cameras appear."""
+    out = list(eq.ceiling_studs())
     for c in camera_plan():
         o = np.asarray(c.origin, float)
         if c.key == "tip":
             out.append((pv.Cylinder(center=(o[0], o[1], (eq.EXF_DECK_Z + o[2]) / 2 - 10), direction=(0, 0, 1),
                                     radius=6.35, height=o[2] - eq.EXF_DECK_Z - 20), eq.STAINLESS))
-        elif c.key in ("unpack", "mother_tape"):
-            # laser-cut plate hanging from the ceiling on a stud, held with a standard nut
-            out.append((pv.Box(bounds=(o[0] - 25, o[0] + 25, o[1] + 6, o[1] + 12, o[2] - 10, eq.GB_H - 6)),
-                        eq.BLACK))
-            out.append((pv.Box(bounds=(o[0] - 30, o[0] + 30, o[1] - 10, o[1] + 30, eq.GB_H - 6, eq.GB_H)),
-                        eq.BLACK))
-            out.append((pv.Cylinder(center=(o[0], o[1] + 10, eq.GB_H - 14), direction=(0, 0, 1), radius=6.0,
-                                    height=6, resolution=6), eq.STAINLESS_DARK))
-        elif c.key == "pnp":
-            out.append((pv.Box(bounds=(o[0] - 70, o[0] + 120, o[1] - 50, o[1] + 50, eq.GB_H - 12, eq.GB_H)),
-                        eq.BLACK))
-            for m, col in cm.pi5_box():
-                m = m.rotate_x(180, inplace=False).translate((o[0] + 75, o[1], eq.GB_H - 22), inplace=False)
-                out.append((m, col))
+        elif c.stud and c.hardware:
+            mats = rsm.mount_matrices(c.kind, c.pan, c.tilt, stud_root(c.stud))
+            for mesh, mat in rsm.mount_meshes(c.kind)["pan"]:
+                out.append((mesh.transform(mats["pan"], inplace=False), rsm.COLOURS[mat]))
     return out
 
 
 def camera_hardware(cam):
+    if cam.stud:
+        if not cam.hardware:
+            return []
+        mats = rsm.mount_matrices(cam.kind, cam.pan, cam.tilt, stud_root(cam.stud))
+        return [(mesh.transform(mats["head"], inplace=False), rsm.COLOURS[mat])
+                for mesh, mat in rsm.mount_meshes(cam.kind)["head"]]
     if cam.kind == "hq":
         parts = cm.hq_camera()
     elif cam.kind == "zero":
@@ -522,6 +577,57 @@ def run(size, fps, out_dir, stills_only=False):
     shutil.rmtree(frames_dir)
 
 
+def ceiling_still(out_dir, size=(1600, 900)):
+    """The ceiling seen from below (parallel projection, front window at the top, as in the photo of the studs):
+    the studs, the mounts on them, the Epson and its reach at the top of its arm."""
+    p = new_plotter(size)
+    p.add_light(pv.Light(position=(950, 410, -1500), focal_point=(950, 410, 900), intensity=0.75))
+    ceiling = pv.Box(bounds=(0, eq.GB_W, eq.WINDOW_SETBACK, eq.GB_D - eq.WINDOW_SETBACK, eq.GB_H, eq.GB_H + 12))
+    p.add_mesh(ceiling, color=eq.STAINLESS, specular=0.4)
+    add_parts(p, eq.ceiling_items())
+    add_parts(p, eq.ceiling_studs())
+    scara_parts, _ = eq.scara(target=SCARA_PARK)
+    add_parts(p, scara_parts, opacity=0.35)
+    for c in camera_plan():
+        if c.stud and c.hardware:
+            mats = rsm.mount_matrices(c.kind, c.pan, c.tilt, stud_root(c.stud))
+            for piece in ("pan", "head"):
+                for mesh, mat in rsm.mount_meshes(c.kind)[piece]:
+                    col = "#5b6470" if mat == "petg" else rsm.COLOURS[mat]   # lighter, to read from below
+                    p.add_mesh(mesh.transform(mats[piece], inplace=False), color=col, specular=0.4)
+    dome, _ = eq.amcrest_dome()
+    p.add_mesh(dome, color=eq.WHITE)
+    for name, s in eq.CEILING_STUDS.items():
+        x, y = s["xy"]
+        users = [c for c in camera_plan() if c.stud == name and c.hardware]
+        text = name + (": " + ", ".join(f"camera {camera_plan().index(c) + 1}" for c in users) if users else
+                       (": black bracket already on it" if s["taken"] else ": free"))
+        p.add_point_labels([(x, y - 75.0, eq.GB_H - 200.0)], [text], font_size=19, bold=True, text_color="white",
+                           shape_color="#334155", shape="rounded_rect", shape_opacity=0.92, show_points=False,
+                           always_visible=True, margin=5)
+    reach, _, z_top = eq.scara_envelope()
+    ring = pv.Circle(radius=reach, resolution=160).translate((eq.SCARA_BASE[0], eq.SCARA_BASE[1], z_top),
+                                                              inplace=False)
+    ring = ring.clip_box((0, eq.GB_W, 0, eq.GB_D, 0, eq.GB_H), invert=False).extract_feature_edges(
+        boundary_edges=True, feature_edges=False, manifold_edges=False, non_manifold_edges=False)
+    p.add_mesh(ring.tube(radius=4.0), color="#d6262b")
+    p.add_point_labels([(eq.SCARA_BASE[0] - 330.0, eq.SCARA_BASE[1] - 330.0, z_top - 50.0)],
+                       ["Epson's reach at the top of its arm (drawn size)"], font_size=16, text_color="#b91c1c",
+                       shape_color="white", shape_opacity=0.9, show_points=False, always_visible=True, margin=4)
+    p.add_point_labels([(eq.DOME_C[0], eq.DOME_C[1] + 70.0, eq.GB_H - 200.0)], ["Amcrest"], font_size=16,
+                       text_color="white", shape_color="#7d8590", shape="rounded_rect", show_points=False,
+                       always_visible=True, margin=4)
+    p.add_text("Ceiling from below, front window at the top (as in the 6 Nov photo). Stud positions read off that "
+               "photo by eye.", position=(20, 18), font_size=12, color="#334155")
+    p.enable_parallel_projection()
+    p.camera_position = [(eq.GB_W / 2, eq.GB_D / 2, -2500.0), (eq.GB_W / 2, eq.GB_D / 2, eq.GB_H),
+                         (0.0, -1.0, 0.0)]
+    p.camera.parallel_scale = 545.0
+    p.camera.clipping_range = (10, 8000)
+    p.screenshot(str(out_dir / "still_ceiling_studs.png"))
+    p.close()
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--stills-only", action="store_true")
@@ -529,6 +635,7 @@ def main():
     ap.add_argument("--width", type=int, default=1600)
     ap.add_argument("--height", type=int, default=900)
     args = ap.parse_args()
+    ceiling_still(HERE)
     run((args.width, args.height), args.fps, HERE, stills_only=args.stills_only)
 
 

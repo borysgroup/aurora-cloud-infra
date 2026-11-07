@@ -5,7 +5,8 @@ nozzles) in Bambu PLA Basic with Bambu Studio's command-line slicer.
 
 `--bambu` is an extracted Bambu Studio AppImage (`BambuStudio_*.AppImage --appimage-extract`); tested with
 v02.09.01.70. Writes print/stl/*.stl (one per part, print orientation), print/<plate>.gcode.3mf (sliced projects
-that Bambu Studio opens and the H2D prints) and print/slice_summary.json (time and filament per plate).
+that Bambu Studio opens and the H2D prints, with thumbnails from thumbnails.py) and print/slice_summary.json (time
+and filament per plate).
 
 The process is Bambu's "0.20mm Standard @BBL H2D" with 100 % infill, four walls and no support (the parts are
 oriented so none is needed) on the Textured PEI plate. Solid parts are stiff around the crush-rib pockets, and they
@@ -29,6 +30,7 @@ sys.path.insert(0, str(HERE.parent))
 sys.path.insert(0, str(HERE))
 import bambu_profiles as bp  # noqa: E402
 import stud_mount as sm  # noqa: E402
+import thumbnails  # noqa: E402
 
 MACHINE = "Bambu Lab H2D 0.4 nozzle"
 PROCESS = "0.20mm Standard @BBL H2D"
@@ -134,6 +136,7 @@ def main():
         shutil.copy(cfg[1], HERE / "process_stud_mount.json")
         for name in args.plates:
             res = slice_plate(app, name, PLATES[name], stls, cfg, HERE)
+            thumbnails.add_thumbnails(HERE / f"{name}.gcode.3mf", HERE / "stl")
             s = summary(name, PLATES[name], res)
             print(f"{name}: {s['time_h']} h, {s['filament_g']} g")
             out.append(s)

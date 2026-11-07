@@ -168,20 +168,26 @@ def wide_on_hq_head(cam, title, detail):
                            tilt=cam.tilt, yoke=True, hardware=False)
 
 
-# overhead camera: straight above the tray, hung flat from the ceiling, above the SCARA's swept volume
+# A new stud over the mother-tape area: S3, the only free stud near it, is inside the reach of the
+# Epson's shaft, which rises to SHAFT_TOP, about 40 mm under the ceiling.
+eq.add_needed_stud("S5", eq.MOTHER_TAPE_C[:2], "needed: a new stud over the mother-tape area")
+
+# overhead camera of the pod variant: flat on the ceiling, straight above the tray
 PNP_CAM_Z = eq.GB_H - 60.0
 PNP_LENS_FRONT = PNP_CAM_Z - 18.0 - 68.3  # HQ Camera mount + 8-50 mm zoom (camera_models.hq_camera)
 
 if STUD_MOUNT == "yoke":
+    # The tray is at the edge of the Epson's reach, where its shaft passes about 40 mm under the ceiling,
+    # so the HQ camera hangs from S2, outside the reach, and looks at the tray at an angle.
     _PNP = yoke_camera(
-        "pnp", "Overhead: pick-and-place",
-        "Pi 5 + HQ Camera, 8-50 mm zoom, straight above the tray", "hq", "S5", tuple(eq.PNP_C), HQ_12MM,
-        aspect=4 / 3, overshoot=1.0)
+        "pnp", "Pick-and-place: tray on the substrate plate",
+        "Pi 5 + HQ Camera, 8-50 mm zoom, yoke mount", "hq", "S2", tuple(eq.PNP_C + np.array([0.0, 0.0, 15.0])),
+        HQ_12MM, aspect=4 / 3, overshoot=1.0)
     _STUD_CAMS = [
         yoke_camera("unpack", "Bulk-crystal unpacking area", "Priority 1. Pi Zero 2 W + CM3 on a yoke mount",
                     "zero", "S1", (eq.UNPACK_C[0], eq.UNPACK_C[1], 0.0), CM3),
         yoke_camera("mother_tape", "Mother-tape preparation area", "Priority 1. Pi Zero 2 W + CM3 on a yoke mount",
-                    "zero", "S2", (eq.MOTHER_TAPE_C[0], eq.MOTHER_TAPE_C[1], 0.0), CM3)]
+                    "zero", "S5", (eq.MOTHER_TAPE_C[0], eq.MOTHER_TAPE_C[1], 0.0), CM3)]
     _OVERHEAD = [_PNP, wide_on_hq_head(_PNP, "Overhead wide: the Epson's work area",
                                        "Optional. CM3 Wide on the same head, the Pi 5's second port (#16)")]
 else:
@@ -189,7 +195,7 @@ else:
         stud_camera("unpack", "Bulk-crystal unpacking area", "Priority 1. Pi Zero 2 W + CM3 on a stud pod",
                     "S1", (eq.UNPACK_C[0], eq.UNPACK_C[1], 0.0)),
         stud_camera("mother_tape", "Mother-tape preparation area", "Priority 1. Pi Zero 2 W + CM3 on a stud pod",
-                    "S2", (eq.MOTHER_TAPE_C[0], eq.MOTHER_TAPE_C[1], 0.0))]
+                    "S5", (eq.MOTHER_TAPE_C[0], eq.MOTHER_TAPE_C[1], 0.0))]
     _OVERHEAD = [CameraPlacement(
         "pnp", "Overhead: pick-and-place",
         f"Pi 5 + HQ Camera, straight above the tray, lens {PNP_LENS_FRONT - eq.SCARA_TOP:.0f} mm above the SCARA",
@@ -197,31 +203,32 @@ else:
         up_hint=(0, 1, 0), aspect=4 / 3, overshoot=1.0)]
 
 # Numbered in the order a sample passes them, from the antechamber to the tray.
-# Both long sides of the box are windows, so the cameras for the two work areas
-# hang from welded ceiling studs.
+# Both long sides of the box are windows, so the cameras hang from welded ceiling
+# studs, apart from the close-up on the roller.
 CAMERAS = _STUD_CAMS + [
     CameraPlacement(
         "tip", "Exfoliator tip + mother tape (close-up)",
-        "Priority 1. Pi Zero 2 W + CM3 (autofocus), post on the gantry deck",
-        "zero", (TIP[0] - 150.0, TIP[1] - 120.0, TIP[2] + 25.0), tuple(TIP), CM3, overshoot=1.3),
+        "Priority 1. Pi Zero 2 W + CM3 (autofocus), on a post beside the roller",
+        "zero", (TIP[0] + 130.0, TIP[1] - 110.0, TIP[2] + 25.0), tuple(TIP), CM3, overshoot=1.3),
 ] + _OVERHEAD + [
     CameraPlacement(
         "dome", "Existing Amcrest dome (overview)",
         "Already on the ceiling, front left, behind the top flange",
-        "existing", tuple(eq.DOME_C - np.array([0.0, 0.0, 60.0])), (1050.0, 520.0, 0.0), AMCREST, overshoot=1.0),
+        "existing", tuple(eq.DOME_C - np.array([0.0, 0.0, 60.0])), (0.6 * eq.GB_W, 0.55 * eq.GB_D, 0.0), AMCREST,
+        overshoot=1.0),
 ]
 
 # Sample route: antechamber door -> unpacking -> mother tape -> tip -> tray
 SAMPLE_STOPS = [
-    np.array([40.0, eq.GB_D * 0.52, 300.0]),
+    np.array([40.0, eq.ANTE_DOOR_C[1], eq.ANTE_DOOR_C[2]]),
     eq.UNPACK_C + np.array([-40.0, -20.0, 40.0]),
     eq.MOTHER_TAPE_C + np.array([20.0, 0.0, 30.0]),
     TIP + np.array([0.0, 0.0, -12.0]),
     eq.PNP_C + np.array([0.0, 0.0, 34.0]),
 ]
 
-# Where the Epson parks so the overhead camera has a clear view of the tray
-SCARA_PARK = (eq.SCARA_BASE[0] + 50.0, eq.SCARA_BASE[1] - 165.0)
+# The Epson's parked pose in the walkthrough (arm folded back over its base)
+SCARA_PARK = tuple(eq.SCARA_PARK_J3)
 
 
 def camera_plan():
@@ -287,6 +294,8 @@ def camera_supports():
         elif c.key == "tip":
             out.append((pv.Cylinder(center=(o[0], o[1], (eq.EXF_DECK_Z + o[2]) / 2 - 10), direction=(0, 0, 1),
                                     radius=6.35, height=o[2] - eq.EXF_DECK_Z - 20), eq.STAINLESS))
+            out.append((pv.Box(bounds=(o[0] - 25, o[0] + 25, o[1] - 25, o[1] + 25, eq.EXF_DECK_Z - 8, eq.EXF_DECK_Z)),
+                        eq.BLACK))
         elif c.key == "pnp":
             # plate flat on the ceiling, drop to the camera, Pi 5 beside it
             out.append((pv.Box(bounds=(o[0] - 70, o[0] + 120, o[1] - 50, o[1] + 50, eq.GB_H - 12, eq.GB_H)),
@@ -382,7 +391,8 @@ def new_plotter(size):
 
 # --- camera path -------------------------------------------------------------------
 
-CENTER = np.array([eq.GB_W / 2, eq.GB_D / 2, 260.0])
+CENTER = np.array([eq.GB_W / 2, eq.GB_D / 2, 230.0])
+VIEW_DIST = 3800.0
 
 
 def orbit_pose(az_deg, el_deg, dist, center=CENTER):
@@ -541,11 +551,11 @@ def run(size, fps, out_dir, stills_only=False):
     tp.SetBackgroundOpacity(0.85)
     tp.SetJustificationToCentered()
     p.renderer.AddActor(marker_tag)
-    note = ("Box, equipment and studs estimated from the issue #23 photos and AURORA video frames; cameras, "
-            "mounts and fields of view to scale. Purple: SCARA swept volume.")
+    note = ("Box, equipment and studs measured on the walkthrough's 3D reconstruction (+/-5 %). Robot, cameras "
+            "and mounts to scale. Purple: the Epson's swept volume.")
     title = "Aurora glovebox: planned camera locations"
-    subtitle = ("26 Oct walkthrough, revised 6 Nov: both long sides are glass, so the cameras hang from "
-                "welded ceiling studs on pan/tilt mounts; the overhead camera clears the SCARA.")
+    subtitle = ("Measured interior 1.20 x 1.12 x 0.79 m. The cameras hang from welded ceiling studs on pan/tilt "
+                "mounts; the tray camera stays outside the Epson's reach, whose shaft rises to 40 mm under the ceiling.")
 
     n_flow = len(SAMPLE_STOPS) - 1
     seg = build_timeline(len(cams), fps)
@@ -563,7 +573,7 @@ def run(size, fps, out_dir, stills_only=False):
             want_still = j == n - 1 and name != "intro"
             if stills_only and not want_still:
                 continue
-            el, dist = 27.0, 4300.0
+            el, dist = 27.0, VIEW_DIST
             if name == "intro":
                 az = lerp(-42.0, -30.0, ease(t))
             elif name.startswith("cam"):
@@ -573,7 +583,7 @@ def run(size, fps, out_dir, stills_only=False):
             else:  # top
                 az = lerp(az_prev, 0.0, ease(t / 0.7))
                 el = lerp(27.0, 80.0, ease(t / 0.7))
-                dist = lerp(4300.0, 4100.0, ease(t / 0.7))
+                dist = lerp(VIEW_DIST, VIEW_DIST * 0.95, ease(t / 0.7))
             if j == n - 1:
                 az_prev = az
             p.camera_position = orbit_pose(az, el, dist)
@@ -652,8 +662,9 @@ def ceiling_still(out_dir, size=(1600, 900)):
     """The ceiling seen from below (parallel projection, front window at the top, as in the 6 Nov photo of the
     studs): the studs, the mounts on them, the Epson and the reach of its swept volume."""
     p = new_plotter(size)
-    p.add_light(pv.Light(position=(950, 410, -1500), focal_point=(950, 410, 900), intensity=0.75))
-    ceiling = pv.Box(bounds=(0, eq.GB_W, eq.WINDOW_SETBACK, eq.GB_D - eq.WINDOW_SETBACK, eq.GB_H, eq.GB_H + 12))
+    cx, cy = eq.GB_W / 2, eq.GB_D / 2
+    p.add_light(pv.Light(position=(cx, cy, -1500), focal_point=(cx, cy, eq.GB_H), intensity=0.75))
+    ceiling = pv.Box(bounds=(0, eq.GB_W, eq.front_window_y(eq.GB_H), eq.back_window_y(eq.GB_H), eq.GB_H, eq.GB_H + 12))
     p.add_mesh(ceiling, color=eq.STAINLESS, specular=0.4)
     add_parts(p, eq.ceiling_items())
     add_parts(p, eq.ceiling_studs(used=[c.stud for c in camera_plan() if c.stud]))
@@ -673,25 +684,28 @@ def ceiling_still(out_dir, size=(1600, 900)):
         text = f"{name}: {cams}" if users else f"{name}: {s['note']}"
         if s["state"] == "needed" and users:
             text += " (no stud here yet)"
+        if s["state"] == "reach":
+            text = f"{name}: in the shaft's reach"
         p.add_point_labels([(x, y - 80.0, eq.GB_H - 200.0)], [text], font_size=18, bold=True, text_color="white",
-                           shape_color="#b91c1c" if s["state"] == "needed" else "#334155", shape="rounded_rect",
+                           shape_color={"needed": "#b91c1c", "reach": "#6d28d9"}.get(s["state"], "#334155"),
+                           shape="rounded_rect",
                            shape_opacity=0.92, show_points=False, always_visible=True, margin=5)
-    for r_, z_ in ((eq.SCARA_REACH, eq.SCARA_TOP), (eq.SCARA_ARCH[0], eq.SCARA_ARCH[1])):
+    for r_, z_ in ((eq.SCARA_REACH, eq.SCARA_TOP), (eq.SHAFT_REACH, eq.SHAFT_TOP), (eq.SCARA_ARCH[0], eq.SCARA_ARCH[1])):
         ring = pv.Circle(radius=r_, resolution=160).translate((eq.SCARA_BASE[0], eq.SCARA_BASE[1], z_),
                                                                inplace=False)
         ring = ring.clip_box((0, eq.GB_W, 0, eq.GB_D, 0, eq.GB_H), invert=False).extract_feature_edges(
             boundary_edges=True, feature_edges=False, manifold_edges=False, non_manifold_edges=False)
         p.add_mesh(ring.tube(radius=4.0), color="#7c3aed")
-    p.add_point_labels([(eq.SCARA_BASE[0] - 330.0, eq.SCARA_BASE[1] + 330.0, eq.SCARA_TOP - 50.0)],
-                       [f"SCARA reach (top {eq.SCARA_TOP:.0f} mm) and duct arch"], font_size=15,
+    p.add_point_labels([(eq.SCARA_BASE[0] - 120.0, eq.SCARA_BASE[1] - 420.0, eq.SCARA_TOP - 50.0)],
+                       [f"Epson reach: arm 2 (top {eq.SCARA_TOP:.0f}), shaft (top {eq.SHAFT_TOP:.0f}), duct arch"],
+                       font_size=15,
                        text_color="#6d28d9", shape_color="white", shape_opacity=0.9, show_points=False,
                        always_visible=True, margin=4)
-    p.add_text("Ceiling from below, front window at the top (as in the 6 Nov photo). Stud positions read off "
-               "that photo by eye; S5 is not a circled stud.", position=(20, 18), font_size=12, color="#334155")
+    p.add_text("Ceiling from below, open side at the top. S1-S4 located on the 3D reconstruction (+/-50 mm); "
+               "S5 is not a circled stud.", position=(20, 18), font_size=12, color="#334155")
     p.enable_parallel_projection()
-    p.camera_position = [(eq.GB_W / 2, eq.GB_D / 2, -2500.0), (eq.GB_W / 2, eq.GB_D / 2, eq.GB_H),
-                         (0.0, -1.0, 0.0)]
-    p.camera.parallel_scale = 545.0
+    p.camera_position = [(cx, cy, -2500.0), (cx, cy, eq.GB_H), (0.0, -1.0, 0.0)]
+    p.camera.parallel_scale = 640.0
     p.camera.clipping_range = (10, 8000)
     p.screenshot(str(out_dir / "still_ceiling_studs.png"))
     p.close()
@@ -706,13 +720,51 @@ def camera_supports_for(c):
     return list(rm.static_parts((sx, sy, eq.GB_H), c.pan, ceiling=False))
 
 
+def clearance_report():
+    """Per camera: aim, distance, footprint at the target, and the gap between its mount and the Epson's swept
+    volume (every vertex of the mount and head checked against the robot's top at that x, y)."""
+    rows = []
+    for i, c in enumerate(camera_plan()):
+        d = np.asarray(c.direction)
+        tilt = float(np.degrees(np.arcsin(-d[2])))
+        w, h = (2 * c.reach * np.tan(np.radians(f / 2)) for f in c.fov)
+        parts = camera_hardware(c) + (camera_supports_for(c) if c.stud and c.hardware else [])
+        gap = None
+        for m, _ in parts:
+            for q in np.asarray(m.points)[::3]:
+                for z0, z1 in eq.swept_bands_at(q[:2]):
+                    g = q[2] - z1 if q[2] >= z1 else (z0 - q[2] if q[2] <= z0 else -min(q[2] - z0, z1 - q[2]))
+                    gap = g if gap is None else min(gap, g)
+        low = min(float(np.asarray(m.points)[:, 2].min()) for m, _ in parts) if parts else float("nan")
+        rows.append((i + 1, c.key, c.stud or "-", tilt, c.reach, w, h, low, gap))
+    print(f"ceiling {eq.GB_H:.0f}; Epson J1 at ({eq.SCARA_BASE[0]:.0f}, {eq.SCARA_BASE[1]:.0f}), base {eq.SCARA_BASE[2]:.0f} "
+          f"above the deck; arm 2 top {eq.SCARA_TOP:.0f} (r <= {eq.SCARA_REACH:.0f}); shaft top {eq.SHAFT_TOP:.0f} "
+          f"(r <= {eq.SHAFT_REACH:.0f}); duct arch {eq.SCARA_ARCH[1]:.0f} (r <= {eq.SCARA_ARCH[0]:.0f})")
+    print(f"tray (plate) at ({eq.PNP_C[0]:.0f}, {eq.PNP_C[1]:.0f}, {eq.PNP_C[2]:.0f}), "
+          f"{np.hypot(*(eq.PNP_C[:2] - eq.SCARA_BASE[:2])):.0f} from J1; straight above it the robot reaches "
+          f"{eq.robot_top_at(eq.PNP_C[:2]):.0f}, leaving {eq.GB_H - eq.robot_top_at(eq.PNP_C[:2]):.0f} mm under the ceiling")
+    for name, st in eq.CEILING_STUDS.items():
+        x, y = st["xy"]
+        print(f"  {name}: ({x:.0f}, {y:.0f}) {st['state']:6s} {np.hypot(x - eq.SCARA_BASE[0], y - eq.SCARA_BASE[1]):5.0f} "
+              f"from J1, robot top there {eq.robot_top_at((x, y)):.0f}")
+    print(" #  key          stud  tilt  dist   view at target   lowest  gap to robot")
+    for n, key, stud, tilt, dist, w, h, low, gap in rows:
+        g = "-" if gap is None else f"{gap:.0f}"
+        print(f"{n:2d}  {key:12s} {stud:4s} {tilt:5.0f} {dist:5.0f}   {w:4.0f} x {h:4.0f} mm   {low:5.0f}   {g}")
+    return rows
+
+
 def main():
     ap = argparse.ArgumentParser()
+    ap.add_argument("--report", action="store_true", help="print the clearance report and stop")
     ap.add_argument("--stills-only", action="store_true")
     ap.add_argument("--fps", type=int, default=24)
     ap.add_argument("--width", type=int, default=1600)
     ap.add_argument("--height", type=int, default=900)
     args = ap.parse_args()
+    clearance_report()
+    if args.report:
+        return
     ceiling_still(HERE)
     run((args.width, args.height), args.fps, HERE, stills_only=args.stills_only)
 

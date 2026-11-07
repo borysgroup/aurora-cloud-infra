@@ -17,13 +17,13 @@
     {
      "filament_id": "GFA00",
      "id": 1,
-     "main_used_g": 16.336023330688477,
-     "total_used_g": 16.336023330688477
+     "main_used_g": 16.331941604614258,
+     "total_used_g": 16.331941604614258
     }
    ],
    "id": 1,
    "layer_filament_change": 0,
-   "main_predication": 1754.864990234375,
+   "main_predication": 1748.32470703125,
    "obj_cached_cnt": 0,
    "objects": [
     {
@@ -37,7 +37,7 @@
      },
      "id": 38,
      "name": "stud_thumb_nut.stl",
-     "triangle_count": 5192
+     "triangle_count": 4616
     },
     {
      "bbox": {
@@ -50,38 +50,38 @@
      },
      "id": 49,
      "name": "tilt_knob.stl",
-     "triangle_count": 5044
+     "triangle_count": 4468
     }
    ],
    "times": {
-    "conflict_check_time": 27,
-    "detect_overhangs_time": 27,
-    "export_gcode_time": 854,
+    "conflict_check_time": 29,
+    "detect_overhangs_time": 30,
+    "export_gcode_time": 1001,
     "flush_plan_time": 0,
-    "generate_support_material_time": 159,
-    "infill_generate_time": 78,
-    "infill_time": 288,
+    "generate_support_material_time": 195,
+    "infill_generate_time": 112,
+    "infill_time": 384,
     "ironing_time": 0,
-    "make_perimeters_time": 481,
+    "make_perimeters_time": 587,
     "multifilament_segment_2d_time": 0,
-    "other_slice_time": 1,
-    "prepare_infill_time": 210,
-    "region_split_time": 0,
-    "skirt_brim_time": 8,
-    "slice_layers_time": 110,
-    "sliced_time": 1872,
-    "sliced_time_with_cache": 862,
+    "other_slice_time": 2,
+    "prepare_infill_time": 272,
+    "region_split_time": 1,
+    "skirt_brim_time": 11,
+    "slice_layers_time": 135,
+    "sliced_time": 2271,
+    "sliced_time_with_cache": 1012,
     "support_detect_time": 0,
     "support_interface_time": 0,
     "support_normal_generate_time": 0,
     "support_toolpath_time": 0,
     "support_tree_generate_time": 0,
-    "toolpath_time": 14,
-    "wall_time": 371,
-    "wipe_tower_time": 11
+    "toolpath_time": 18,
+    "wall_time": 451,
+    "wipe_tower_time": 14
    },
-   "total_predication": 1774.072021484375,
-   "triangle_count": 10236,
+   "total_predication": 1767.5322265625,
+   "triangle_count": 9084,
    "warning_message": ""
   }
  },
@@ -94,7 +94,7 @@
    "stud_thumb_nut": 2,
    "tilt_knob": 4
   },
-  "time_h": 4.52,
+  "time_h": 4.51,
   "filament_g": 171.1,
   "warnings": "",
   "layer_height": 0.20000000298023224,
@@ -106,13 +106,13 @@
     {
      "filament_id": "GFA00",
      "id": 1,
-     "main_used_g": 171.1410369873047,
-     "total_used_g": 171.1410369873047
+     "main_used_g": 171.1283721923828,
+     "total_used_g": 171.1283721923828
     }
    ],
    "id": 1,
    "layer_filament_change": 0,
-   "main_predication": 16263.1748046875,
+   "main_predication": 16218.416015625,
    "obj_cached_cnt": 0,
    "objects": [
     {
@@ -204,7 +204,7 @@
      },
      "id": 288,
      "name": "stud_thumb_nut.stl",
-     "triangle_count": 5192
+     "triangle_count": 4616
     },
     {
      "bbox": {
@@ -217,7 +217,7 @@
      },
      "id": 299,
      "name": "stud_thumb_nut.stl",
-     "triangle_count": 5192
+     "triangle_count": 4616
     },
     {
      "bbox": {
@@ -230,7 +230,7 @@
      },
      "id": 310,
      "name": "tilt_knob.stl",
-     "triangle_count": 5044
+     "triangle_count": 4468
     },
     {
      "bbox": {
@@ -243,7 +243,7 @@
      },
      "id": 321,
      "name": "tilt_knob.stl",
-     "triangle_count": 5044
+     "triangle_count": 4468
     },
     {
      "bbox": {
@@ -256,7 +256,7 @@
      },
      "id": 332,
      "name": "tilt_knob.stl",
-     "triangle_count": 5044
+     "triangle_count": 4468
     },
     {
      "bbox": {
@@ -269,38 +269,38 @@
      },
      "id": 343,
      "name": "tilt_knob.stl",
-     "triangle_count": 5044
+     "triangle_count": 4468
     }
    ],
    "times": {
-    "conflict_check_time": 217,
-    "detect_overhangs_time": 102,
-    "export_gcode_time": 5131,
+    "conflict_check_time": 303,
+    "detect_overhangs_time": 146,
+    "export_gcode_time": 6087,
     "flush_plan_time": 0,
-    "generate_support_material_time": 666,
-    "infill_generate_time": 506,
-    "infill_time": 1477,
+    "generate_support_material_time": 779,
+    "infill_generate_time": 636,
+    "infill_time": 1778,
     "ironing_time": 0,
-    "make_perimeters_time": 2567,
+    "make_perimeters_time": 3060,
     "multifilament_segment_2d_time": 0,
     "other_slice_time": 3,
-    "prepare_infill_time": 971,
-    "region_split_time": 0,
-    "skirt_brim_time": 36,
-    "slice_layers_time": 584,
-    "sliced_time": 10365,
-    "sliced_time_with_cache": 5167,
+    "prepare_infill_time": 1142,
+    "region_split_time": 1,
+    "skirt_brim_time": 52,
+    "slice_layers_time": 693,
+    "sliced_time": 12446,
+    "sliced_time_with_cache": 6139,
     "support_detect_time": 0,
     "support_interface_time": 0,
     "support_normal_generate_time": 0,
     "support_toolpath_time": 0,
     "support_tree_generate_time": 0,
-    "toolpath_time": 111,
-    "wall_time": 1983,
-    "wipe_tower_time": 54
+    "toolpath_time": 158,
+    "wall_time": 2366,
+    "wipe_tower_time": 79
    },
-   "total_predication": 16282.322265625,
-   "triangle_count": 66880,
+   "total_predication": 16237.5634765625,
+   "triangle_count": 63424,
    "warning_message": ""
   }
  },
@@ -326,13 +326,13 @@
     {
      "filament_id": "GFA00",
      "id": 1,
-     "main_used_g": 171.14442443847656,
-     "total_used_g": 171.14442443847656
+     "main_used_g": 171.13705444335938,
+     "total_used_g": 171.13705444335938
     }
    ],
    "id": 1,
    "layer_filament_change": 0,
-   "main_predication": 15419.0029296875,
+   "main_predication": 15413.4404296875,
    "obj_cached_cnt": 0,
    "objects": [
     {
@@ -398,7 +398,7 @@
      },
      "id": 173,
      "name": "stud_thumb_nut.stl",
-     "triangle_count": 5192
+     "triangle_count": 4616
     },
     {
      "bbox": {
@@ -411,7 +411,7 @@
      },
      "id": 184,
      "name": "tilt_knob.stl",
-     "triangle_count": 5044
+     "triangle_count": 4468
     },
     {
      "bbox": {
@@ -424,38 +424,38 @@
      },
      "id": 195,
      "name": "tilt_knob.stl",
-     "triangle_count": 5044
+     "triangle_count": 4468
     }
    ],
    "times": {
-    "conflict_check_time": 183,
-    "detect_overhangs_time": 58,
-    "export_gcode_time": 3328,
+    "conflict_check_time": 221,
+    "detect_overhangs_time": 67,
+    "export_gcode_time": 3865,
     "flush_plan_time": 0,
-    "generate_support_material_time": 376,
-    "infill_generate_time": 393,
-    "infill_time": 955,
+    "generate_support_material_time": 434,
+    "infill_generate_time": 506,
+    "infill_time": 1193,
     "ironing_time": 0,
-    "make_perimeters_time": 1492,
+    "make_perimeters_time": 1701,
     "multifilament_segment_2d_time": 0,
-    "other_slice_time": 2,
-    "prepare_infill_time": 562,
+    "other_slice_time": 3,
+    "prepare_infill_time": 686,
     "region_split_time": 1,
-    "skirt_brim_time": 20,
-    "slice_layers_time": 355,
-    "sliced_time": 6545,
-    "sliced_time_with_cache": 3348,
+    "skirt_brim_time": 21,
+    "slice_layers_time": 403,
+    "sliced_time": 7670,
+    "sliced_time_with_cache": 3886,
     "support_detect_time": 0,
     "support_interface_time": 0,
     "support_normal_generate_time": 0,
     "support_toolpath_time": 0,
     "support_tree_generate_time": 0,
-    "toolpath_time": 94,
-    "wall_time": 1136,
-    "wipe_tower_time": 36
+    "toolpath_time": 122,
+    "wall_time": 1297,
+    "wipe_tower_time": 42
    },
-   "total_predication": 15438.185546875,
-   "triangle_count": 42944,
+   "total_predication": 15432.623046875,
+   "triangle_count": 41216,
    "warning_message": ""
   }
  }

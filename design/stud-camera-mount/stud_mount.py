@@ -34,11 +34,12 @@ BOLT_M4 = dict(s_max=7.00, s_min=6.78, k_max=2.925, k_min=2.675, e_min=7.66, l=1
 WASHER_M6 = dict(d_in=6.4, d_out=12.0, t=1.6)                                           # ISO 7089 M6, nut to pad
 WASHER_M4 = dict(d_in=4.3, d_out=9.0, t=0.8)                                            # ISO 7089 M4, in the knob
 INSERT_M4 = dict(l=8.1, od=6.3, hole_d=5.6, hole_l=8.6)    # M4 x 8.1 heat-set insert (Ruthex / CNC Kitchen type)
-# Crush-rib hex pockets. The hex clears the largest nut or bolt head; one rib per flat stands rib_h proud of it and
-# crushes as the part is pressed in, so every part between the standard's limits is gripped without splitting the
-# knob (press_fit.py). `lead` is a 45-degree lead-in at the mouth; the ribs stop below it.
-NUT_POCKET = dict(af=10.20, depth=4.7, rib_h=0.30, rib_r=0.50, lead=0.6)    # M6 nut, mouth toward the yoke's pad
-HEAD_POCKET = dict(af=7.20, depth=2.9, rib_h=0.30, rib_r=0.50, lead=0.5, washer_d=9.4, washer_t=0.9)  # M4 head
+# Crush-rib hex pockets. The hex clears the largest nut or bolt head; a rib on every other flat (`ribs` = 3) stands
+# rib_h proud of it and crushes as the part is pressed in, so every part between the standard's limits is gripped and
+# centred without overstressing the knob's ring (analysis/press_fit.py: six ribs would take the M4 knob's ring past
+# half its strength at the tight end). `lead` is a 45-degree lead-in at the mouth; the ribs stop below it.
+NUT_POCKET = dict(af=10.20, depth=4.7, rib_h=0.30, rib_r=0.50, lead=0.6, ribs=3)    # M6 nut, mouth toward the pad
+HEAD_POCKET = dict(af=7.20, depth=2.9, rib_h=0.30, rib_r=0.50, lead=0.5, ribs=3, washer_d=9.4, washer_t=0.9)  # M4
 KNOB = dict(d=34.0, h=13.0, flutes=10)                   # thumb nut on the stud
 TILT = dict(clear=4.4, knob_d=24.0, knob_h=8.0)          # tilt knobs, M4 x 16 hex bolts into heat-set inserts
 PAD = dict(t=8.0, d=46.0, bar_w=24.0)                    # the yoke's top, against the ceiling
@@ -93,8 +94,8 @@ def hex_prism(af, z0, z1):
 
 def rib_hex_pocket(p, z_top):
     """Cutter for a crush-rib hex pocket whose mouth is at z_top and floor at z_top - p['depth'] (axis z). Subtracting
-    it leaves one rib per flat (a cylinder of radius rib_r standing rib_h proud of the flat, from the floor to the
-    lead-in) and a 45-degree lead-in of p['lead'] at the mouth."""
+    it leaves p['ribs'] ribs on evenly spaced flats (each a cylinder of radius rib_r standing rib_h proud of the flat,
+    from the floor to the lead-in) and a 45-degree lead-in of p['lead'] at the mouth."""
     af, depth, h, r, lead = p["af"], p["depth"], p["rib_h"], p["rib_r"], p["lead"]
     z0 = z_top - depth
     cut = hex_prism(af, z0, z_top + 0.01)
@@ -103,8 +104,9 @@ def rib_hex_pocket(p, z_top):
              .workplane(offset=lead + 0.01).polygon(6, (af + 2 * lead + 0.02) * k).loft())
     cut = cut.union(mouth)
     d = af / 2 - h + r                                       # rib axis, just outside the flat
-    for i in range(6):
-        a = math.radians(30 + 60 * i)                        # flat normals (corners are at 0, 60, ...)
+    n = p.get("ribs", 6)
+    for i in range(n):
+        a = math.radians(30 + 360.0 / n * i)                 # flat normals (corners are at 0, 60, ...)
         rib = cyl(2 * r, depth - lead - 0.01 + 0.01, x=d * math.cos(a), y=d * math.sin(a), z=z0 - 0.01)
         cut = cut.cut(rib)
     return cut

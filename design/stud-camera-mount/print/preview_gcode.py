@@ -4,7 +4,8 @@
   preview_ribs.png    one layer through each crush-rib pocket, extrusions drawn at their 0.42 mm width over the
                       designed outline, to check that the 0.3 mm ribs survive slicing
 
-and prints the printed pocket sizes: across the rib crests and across the flats, from the innermost wall's path.
+and prints the printed pocket sizes (the circle through the rib crests, and across the plain flats) from the
+innermost wall's path.
 
     python print/preview_gcode.py          # from design/stud-camera-mount, after slice_h2d.py
 """
@@ -84,15 +85,17 @@ def section(stl: Path, z: float):
     return [] if s is None else [np.asarray(d)[:, :2] for d in s.discrete]
 
 
-def pocket_sizes(ms, centre, af, rib_h):
-    """Across the rib crests and across the flats, mm, of the hole edge left by the innermost wall's path around a
-    hex pocket centred at `centre` (half a line width inside the path)."""
+def pocket_sizes(ms, centre, p):
+    """Diameter of the circle through the rib crests and across the plain flats, mm, of the hole edge left by the
+    innermost wall's path around a hex pocket centred at `centre` (half a line width inside the path). The CLI
+    arranges parts without turning them, so the ribs are at their designed angles."""
+    af, rib_h, n = p["af"], p["rib_h"], p.get("ribs", 6)
     cx, cy = centre
     pts = []
     for _, f, x0, y0, x1, y1 in ms:
         if f not in ("Outer wall", "Inner wall"):
             continue
-        for t in np.linspace(0.0, 1.0, 6):
+        for t in np.linspace(0.0, 1.0, max(2, int(math.hypot(x1 - x0, y1 - y0) / 0.05) + 1)):   # every 0.05 mm
             px, py = x0 + t * (x1 - x0) - cx, y0 + t * (y1 - y0) - cy
             r = math.hypot(px, py)
             if r < af / 2 / math.cos(math.pi / 6) + 0.6:
@@ -106,12 +109,14 @@ def pocket_sizes(ms, centre, af, rib_h):
         sel = pts[d < half]
         return sel[:, 1].min() - LINE_W / 2 if len(sel) else float("nan")
 
-    best = 30.0                       # rib directions as designed: arranging moves the parts but doesn't turn them
-    crest = 2 * np.mean([edge(best + 60 * k) for k in range(6)])
-    flat = 2 * np.mean([edge(best + 60 * k + s * 15.0) * math.cos(math.radians(15.0))
-                        for k in range(6) for s in (-1, 1)])
-    return dict(crest_af=round(float(crest), 3), flat_af=round(float(flat), 3),
-                design_crest_af=round(af - 2 * rib_h, 3), design_flat_af=af)
+    ribs = [30.0 + 360.0 / n * k for k in range(n)]
+    plain = [a for a in (30.0 + 60.0 * k for k in range(6)) if min(abs((a - b + 180) % 360 - 180) for b in ribs) > 1]
+    flats = plain if plain else [a + s * 15.0 for a in ribs for s in (-1, 1)]
+    k = 1.0 if plain else math.cos(math.radians(15.0))
+    crest = 2 * np.mean([edge(a) for a in ribs])
+    flat = 2 * np.mean([edge(a) * k for a in flats])
+    return dict(ribs=n, crest_d=round(float(crest), 3), flat_af=round(float(flat), 3),
+                design_crest_d=round(af - 2 * rib_h, 3), design_flat_af=af)
 
 
 def draw_paths(ax, ms, lw_pt):
@@ -154,13 +159,13 @@ def ribs_figure(path3mf: Path, out: Path):
             q = poly - mesh_c
             q = q + np.array(c)
             ax.plot(q[:, 0], q[:, 1], color=INK, lw=1.0, ls=(0, (4, 2)), zorder=3)
-        sizes[name] = s = pocket_sizes(lay, c, p["af"], p["rib_h"])
+        sizes[name] = s = pocket_sizes(lay, c, p)
         ax.set_title(title, color=INK, fontsize=11, loc="left")
         if s:
-            ax.text(0.02, 0.02, (f"layer z = {zl:.1f} mm\n"
-                                 f"across rib crests: {s['crest_af']:.2f} mm printed, {s['design_crest_af']:.2f} "
-                                 f"designed\nacross flats: {s['flat_af']:.2f} mm printed, {s['design_flat_af']:.2f} "
-                                 f"designed"), transform=ax.transAxes, fontsize=8.5, color=INK2, va="bottom",
+            ax.text(0.02, 0.02, (f"layer z = {zl:.1f} mm, {s['ribs']} ribs\n"
+                                 f"circle through the rib crests: {s['crest_d']:.2f} mm printed, "
+                                 f"{s['design_crest_d']:.2f} designed\nacross the plain flats: {s['flat_af']:.2f} mm "
+                                 f"printed, {s['design_flat_af']:.2f} designed"), transform=ax.transAxes, fontsize=8.5, color=INK2, va="bottom",
                     bbox=dict(facecolor=SURFACE, edgecolor="none", alpha=0.9))
         ax.set_xticks([])
         ax.set_yticks([])

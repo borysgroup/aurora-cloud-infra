@@ -19,11 +19,14 @@ import stud_mount as sm  # noqa: E402
 TOL = 0.5                       # mm^3; smaller overlaps are tessellation-level and ignored
 TILTS = (-10.0, 0.0, 30.0, 60.0, 90.0)
 # (a, b) name fragments whose overlap is intended: thread-forming screws in pilot holes, heat-set inserts in their
-# holes (they melt in), bolts in inserts, ribbons in their connectors, the zoom's thread in the HQ mount.
+# holes (they melt in), bolts in inserts, bolt heads and the M6 nut in their crush ribs, ribbons in their
+# connectors, the zoom's thread in the HQ mount, and the simplified vendor models (a camera's glass inside its lens
+# barrel; the Pi 5's camera connectors under its Active Cooler).
 EXPECTED = [("screws", "case"), ("screws", "back cover"), ("screws", "frame"), ("screws", "carrier"),
-            ("screws", "nose"), ("screws", "board"), ("inserts", "case"), ("inserts", "frame"),
+            ("screws", "nose"), ("inserts", "case"), ("inserts", "frame"),
             ("ribbon", "connector"), ("zoom lens", "HQ mount"), ("tilt bolts", "inserts"),
-            ("tilt bolts", "tilt knobs"), ("ceiling stud", "stud thumb nut"), ("lens screws", "zoom lens")]
+            ("tilt bolts", "tilt knobs"), ("ceiling stud", "stud thumb nut"), ("lens screws", "zoom lens"),
+            ("lens", "glass"), ("Pi 5 camera connectors", "Active Cooler")]
 
 
 def expected(a, b):

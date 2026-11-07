@@ -22,7 +22,8 @@ import pyvista as pv
 import stud_mount as sm
 
 HERE = Path(__file__).resolve().parent
-COLOURS = dict(petg="#26282b", knob="#d96b1a", steel="#c0c4cb", pcb="#1f7a3c", lens="#141516", glass="#4d73a6",
+COLOURS = dict(petg="#26282b", knob="#d96b1a", steel="#c0c4cb", brass="#c99e40", pcb="#1f7a3c", lens="#141516",
+               glass="#4d73a6",
                white="#eeeeee", port="#b3b8bf", black="#1a1a1a", cooler="#8c949e", ribbon="#d9a640")
 SPECULAR = dict(steel=0.7, glass=0.9, lens=0.4)
 

@@ -384,6 +384,12 @@ def head_hq_parts(wide=True):
         nose = nose.union(box(wx0, ny, h["wide_z"] - 20, wx1, 0, h["wide_z"] - 16))
         nose = nose.union(box(wx1 - 4, ny + 5, h["wide_z"] - 16, wx1, 0, h["wide_z"] + 8))
         nose = nose.union(box(wx0, -6.0, -24.0, wx1, 0.0, h["wide_z"] - 16))          # flange against the plate
+        wide_y = ny + 5 + 2.5                                   # the Wide's PCB front face
+        wide_holes = [(h["wide_x"] + sx * 10.5, h["wide_z"] + dz) for sx in (-1, 1)
+                      for dz in (CM3["lens_from_top"] - 2.0, CM3["lens_from_top"] - 14.5)]
+        for x, z in wide_holes:                                 # bosses the Wide screws onto (M2 x 4)
+            nose = nose.union(ycyl(ZERO["cm3_boss_d"], ny + 5 - 0.01, wide_y, x, z))
+            nose = nose.cut(ycyl(M2["pilot"], wide_y - 3.5, wide_y + 0.01, x, z))
         for x, z in h["nose_screws"]:
             nose = nose.cut(ycyl(M25["pilot"], -6.0 - 0.01, 0.01, x, z))
         for name, (s, m) in cm3_parts(wide=True).items():
@@ -408,6 +414,9 @@ def head_hq_parts(wide=True):
     for x, z in col_c:                                          # countersunk M2.5 x 10, carrier to columns
         screws = screws.union(ycyl(2.5, cy + 4 - 10.0, cy + 2.5, x, z))
     if wide:
+        for x, z in wide_holes:                                 # M2 x 4 from behind the Wide
+            yb_ = wide_y + CM3["pcb_t"]
+            screws = screws.union(ycyl(2.0, yb_ - 4.0, yb_, x, z).union(ycyl(3.8, yb_, yb_ + 1.3, x, z)))
         for x, z in h["nose_screws"]:                           # M2.5 x 10 from inside the frame into the nose
             screws = screws.union(ycyl(2.5, pt - 10.0, pt, x, z).union(ycyl(M25["head_d"], pt, pt + M25["head_k"],
                                                                                  x, z)))

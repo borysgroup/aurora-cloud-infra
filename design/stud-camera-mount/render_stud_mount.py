@@ -1,4 +1,4 @@
-"""Exports the stud mount (STL per printed part, STEP per assembly) and renders it hanging from a ceiling stud.
+"""Exports the stud mount (STL per printed part in print/stl, STEP per assembly) and renders it hanging from a ceiling stud.
 
     xvfb-run -a python render_stud_mount.py            # exports, stills, pan/tilt animation (MP4 + GIF)
     xvfb-run -a python render_stud_mount.py --stills   # exports and stills only
@@ -201,11 +201,13 @@ def animation(out, fps=24):
 
 
 def exports(out):
-    stl = out / "stl"
-    stl.mkdir(exist_ok=True)
+    """STL per printed part in its print orientation (print/stl, as print/slice_h2d.py slices them), STEP per
+    assembly."""
+    stl = out / "print" / "stl"
+    stl.mkdir(parents=True, exist_ok=True)
     for group in sm.PRINTED.values():
         for name, make in group.items():
-            cq.exporters.export(make(), str(stl / f"{name}.stl"), tolerance=0.05, angularTolerance=0.2)
+            cq.exporters.export(make(), str(stl / f"{name}.stl"), tolerance=0.01, angularTolerance=0.1)
     for kind, tilt in (("zero", 45.0), ("hq", 90.0)):
         sm.assembly(kind, 0.0, tilt).save(str(out / f"stud_mount_{kind}.step"))
 

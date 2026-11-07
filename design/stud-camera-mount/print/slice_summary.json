@@ -1,0 +1,462 @@
+[
+ {
+  "plate": "test_fit_pockets",
+  "parts": {
+   "stud_thumb_nut": 1,
+   "tilt_knob": 1
+  },
+  "time_h": 0.49,
+  "filament_g": 16.3,
+  "warnings": "",
+  "layer_height": 0.20000000298023224,
+  "sparse_infill_density": 100.0,
+  "wall_loops": 4,
+  "raw": {
+   "filament_change_times": 0,
+   "filaments": [
+    {
+     "filament_id": "GFA00",
+     "id": 1,
+     "main_used_g": 16.336044311523438,
+     "total_used_g": 16.336044311523438
+    }
+   ],
+   "id": 1,
+   "layer_filament_change": 0,
+   "main_predication": 1753.72412109375,
+   "obj_cached_cnt": 0,
+   "objects": [
+    {
+     "bbox": {
+      "depth": 33.991371154785156,
+      "height": 13.0,
+      "width": 33.58461380004883,
+      "x": 171.00575256347656,
+      "y": 143.0043182373047,
+      "z": 0.0
+     },
+     "id": 38,
+     "name": "stud_thumb_nut.stl",
+     "triangle_count": 5192
+    },
+    {
+     "bbox": {
+      "depth": 23.596147537231445,
+      "height": 8.0,
+      "width": 23.596149444580078,
+      "x": 145.40963745117188,
+      "y": 148.20191955566406,
+      "z": 0.0
+     },
+     "id": 49,
+     "name": "tilt_knob.stl",
+     "triangle_count": 5044
+    }
+   ],
+   "times": {
+    "conflict_check_time": 20,
+    "detect_overhangs_time": 19,
+    "export_gcode_time": 698,
+    "flush_plan_time": 0,
+    "generate_support_material_time": 114,
+    "infill_generate_time": 58,
+    "infill_time": 214,
+    "ironing_time": 0,
+    "make_perimeters_time": 378,
+    "multifilament_segment_2d_time": 0,
+    "other_slice_time": 1,
+    "prepare_infill_time": 156,
+    "region_split_time": 0,
+    "skirt_brim_time": 9,
+    "slice_layers_time": 89,
+    "sliced_time": 1472,
+    "sliced_time_with_cache": 707,
+    "support_detect_time": 0,
+    "support_interface_time": 0,
+    "support_normal_generate_time": 0,
+    "support_toolpath_time": 0,
+    "support_tree_generate_time": 0,
+    "toolpath_time": 11,
+    "wall_time": 289,
+    "wipe_tower_time": 8
+   },
+   "total_predication": 1772.93115234375,
+   "triangle_count": 10236,
+   "warning_message": ""
+  }
+ },
+ {
+  "plate": "zero_mounts_x2",
+  "parts": {
+   "yoke_zero": 2,
+   "head_zero_case": 2,
+   "head_zero_back_cover": 2,
+   "stud_thumb_nut": 2,
+   "tilt_knob": 4
+  },
+  "time_h": 4.48,
+  "filament_g": 170.2,
+  "warnings": "",
+  "layer_height": 0.20000000298023224,
+  "sparse_infill_density": 100.0,
+  "wall_loops": 4,
+  "raw": {
+   "filament_change_times": 0,
+   "filaments": [
+    {
+     "filament_id": "GFA00",
+     "id": 1,
+     "main_used_g": 170.16519165039062,
+     "total_used_g": 170.16519165039062
+    }
+   ],
+   "id": 1,
+   "layer_filament_change": 0,
+   "main_predication": 16121.1337890625,
+   "obj_cached_cnt": 0,
+   "objects": [
+    {
+     "bbox": {
+      "depth": 45.985713958740234,
+      "height": 57.996891021728516,
+      "width": 104.0,
+      "x": 158.7922821044922,
+      "y": 209.79800415039062,
+      "z": 0.0
+     },
+     "id": 222,
+     "name": "yoke_zero.stl",
+     "triangle_count": 3280
+    },
+    {
+     "bbox": {
+      "depth": 45.985721588134766,
+      "height": 57.996891021728516,
+      "width": 104.0,
+      "x": 158.7922821044922,
+      "y": 161.81231689453125,
+      "z": 0.0
+     },
+     "id": 233,
+     "name": "yoke_zero.stl",
+     "triangle_count": 3280
+    },
+    {
+     "bbox": {
+      "depth": 34.000003814697266,
+      "height": 16.997520446777344,
+      "width": 93.0,
+      "x": 169.7922821044922,
+      "y": 125.81234741210938,
+      "z": 0.0
+     },
+     "id": 244,
+     "name": "head_zero_case.stl",
+     "triangle_count": 10184
+    },
+    {
+     "bbox": {
+      "depth": 33.999996185302734,
+      "height": 16.997520446777344,
+      "width": 93.0,
+      "x": 169.7922821044922,
+      "y": 89.81239318847656,
+      "z": 0.0
+     },
+     "id": 255,
+     "name": "head_zero_case.stl",
+     "triangle_count": 10184
+    },
+    {
+     "bbox": {
+      "depth": 79.0,
+      "height": 7.0,
+      "width": 34.000003814697266,
+      "x": 122.79229736328125,
+      "y": 176.78372192382812,
+      "z": 0.0
+     },
+     "id": 266,
+     "name": "head_zero_back_cover.stl",
+     "triangle_count": 4672
+    },
+    {
+     "bbox": {
+      "depth": 79.0,
+      "height": 7.0,
+      "width": 34.000003814697266,
+      "x": 122.79229736328125,
+      "y": 95.78376007080078,
+      "z": 0.0
+     },
+     "id": 277,
+     "name": "head_zero_back_cover.stl",
+     "triangle_count": 4672
+    },
+    {
+     "bbox": {
+      "depth": 47.783447265625,
+      "height": 13.0,
+      "width": 47.783443450927734,
+      "x": 80.38186645507812,
+      "y": 152.45013427734375,
+      "z": 0.0
+     },
+     "id": 288,
+     "name": "stud_thumb_nut.stl",
+     "triangle_count": 5192
+    },
+    {
+     "bbox": {
+      "depth": 33.991371154785156,
+      "height": 13.0,
+      "width": 33.58461380004883,
+      "x": 87.20770263671875,
+      "y": 195.3425750732422,
+      "z": 0.0
+     },
+     "id": 299,
+     "name": "stud_thumb_nut.stl",
+     "triangle_count": 5192
+    },
+    {
+     "bbox": {
+      "depth": 23.59615135192871,
+      "height": 8.0,
+      "width": 23.596155166625977,
+      "x": 97.19618225097656,
+      "y": 133.91427612304688,
+      "z": 0.0
+     },
+     "id": 310,
+     "name": "tilt_knob.stl",
+     "triangle_count": 5044
+    },
+    {
+     "bbox": {
+      "depth": 23.59615707397461,
+      "height": 8.0,
+      "width": 23.596160888671875,
+      "x": 151.34530639648438,
+      "y": 72.79244995117188,
+      "z": 0.0
+     },
+     "id": 321,
+     "name": "tilt_knob.stl",
+     "triangle_count": 5044
+    },
+    {
+     "bbox": {
+      "depth": 23.59615707397461,
+      "height": 8.0,
+      "width": 23.596158981323242,
+      "x": 189.1357879638672,
+      "y": 64.21627044677734,
+      "z": 0.0
+     },
+     "id": 332,
+     "name": "tilt_knob.stl",
+     "triangle_count": 5044
+    },
+    {
+     "bbox": {
+      "depth": 23.59615707397461,
+      "height": 8.0,
+      "width": 23.596155166625977,
+      "x": 97.19618225097656,
+      "y": 231.1288604736328,
+      "z": 0.0
+     },
+     "id": 343,
+     "name": "tilt_knob.stl",
+     "triangle_count": 5044
+    }
+   ],
+   "times": {
+    "conflict_check_time": 230,
+    "detect_overhangs_time": 78,
+    "export_gcode_time": 5007,
+    "flush_plan_time": 0,
+    "generate_support_material_time": 504,
+    "infill_generate_time": 375,
+    "infill_time": 1104,
+    "ironing_time": 0,
+    "make_perimeters_time": 1965,
+    "multifilament_segment_2d_time": 0,
+    "other_slice_time": 3,
+    "prepare_infill_time": 729,
+    "region_split_time": 1,
+    "skirt_brim_time": 36,
+    "slice_layers_time": 455,
+    "sliced_time": 9075,
+    "sliced_time_with_cache": 5043,
+    "support_detect_time": 0,
+    "support_interface_time": 0,
+    "support_normal_generate_time": 0,
+    "support_toolpath_time": 0,
+    "support_tree_generate_time": 0,
+    "toolpath_time": 105,
+    "wall_time": 1509,
+    "wipe_tower_time": 42
+   },
+   "total_predication": 16140.2802734375,
+   "triangle_count": 66832,
+   "warning_message": ""
+  }
+ },
+ {
+  "plate": "hq_mount",
+  "parts": {
+   "yoke_hq": 1,
+   "head_hq_frame": 1,
+   "head_hq_pi_carrier": 1,
+   "head_hq_wide_nose": 1,
+   "stud_thumb_nut": 1,
+   "tilt_knob": 2
+  },
+  "time_h": 4.25,
+  "filament_g": 170.5,
+  "warnings": "",
+  "layer_height": 0.20000000298023224,
+  "sparse_infill_density": 100.0,
+  "wall_loops": 4,
+  "raw": {
+   "filament_change_times": 0,
+   "filaments": [
+    {
+     "filament_id": "GFA00",
+     "id": 1,
+     "main_used_g": 170.5470428466797,
+     "total_used_g": 170.5470428466797
+    }
+   ],
+   "id": 1,
+   "layer_filament_change": 0,
+   "main_predication": 15288.5205078125,
+   "obj_cached_cnt": 0,
+   "objects": [
+    {
+     "bbox": {
+      "depth": 45.98571014404297,
+      "height": 85.99689483642578,
+      "width": 118.00000762939453,
+      "x": 137.0299835205078,
+      "y": 195.0071258544922,
+      "z": 0.0
+     },
+     "id": 129,
+     "name": "yoke_hq.stl",
+     "triangle_count": 3264
+    },
+    {
+     "bbox": {
+      "depth": 59.99999237060547,
+      "height": 9.0,
+      "width": 96.0,
+      "x": 159.0299835205078,
+      "y": 133.0071563720703,
+      "z": 0.0
+     },
+     "id": 151,
+     "name": "head_hq_pi_carrier.stl",
+     "triangle_count": 9612
+    },
+    {
+     "bbox": {
+      "depth": 52.0,
+      "height": 24.0,
+      "width": 107.0,
+      "x": 148.0299835205078,
+      "y": 79.00717163085938,
+      "z": 0.0
+     },
+     "id": 140,
+     "name": "head_hq_frame.stl",
+     "triangle_count": 9648
+    },
+    {
+     "bbox": {
+      "depth": 82.17496490478516,
+      "height": 32.0,
+      "width": 48.33019256591797,
+      "x": 92.6796646118164,
+      "y": 158.7873077392578,
+      "z": 0.0
+     },
+     "id": 162,
+     "name": "head_hq_wide_nose.stl",
+     "triangle_count": 1084
+    },
+    {
+     "bbox": {
+      "depth": 47.78343963623047,
+      "height": 13.0,
+      "width": 47.7834358215332,
+      "x": 113.02345275878906,
+      "y": 115.98600006103516,
+      "z": 0.0
+     },
+     "id": 173,
+     "name": "stud_thumb_nut.stl",
+     "triangle_count": 5192
+    },
+    {
+     "bbox": {
+      "depth": 23.596153259277344,
+      "height": 8.0,
+      "width": 23.596153259277344,
+      "x": 122.43382263183594,
+      "y": 97.33147430419922,
+      "z": 0.0
+     },
+     "id": 184,
+     "name": "tilt_knob.stl",
+     "triangle_count": 5044
+    },
+    {
+     "bbox": {
+      "depth": 23.59615707397461,
+      "height": 8.0,
+      "width": 23.596155166625977,
+      "x": 94.97000122070312,
+      "y": 135.285888671875,
+      "z": 0.0
+     },
+     "id": 195,
+     "name": "tilt_knob.stl",
+     "triangle_count": 5044
+    }
+   ],
+   "times": {
+    "conflict_check_time": 170,
+    "detect_overhangs_time": 44,
+    "export_gcode_time": 2640,
+    "flush_plan_time": 0,
+    "generate_support_material_time": 280,
+    "infill_generate_time": 317,
+    "infill_time": 744,
+    "ironing_time": 0,
+    "make_perimeters_time": 1138,
+    "multifilament_segment_2d_time": 0,
+    "other_slice_time": 2,
+    "prepare_infill_time": 427,
+    "region_split_time": 1,
+    "skirt_brim_time": 20,
+    "slice_layers_time": 268,
+    "sliced_time": 5138,
+    "sliced_time_with_cache": 2660,
+    "support_detect_time": 0,
+    "support_interface_time": 0,
+    "support_normal_generate_time": 0,
+    "support_toolpath_time": 0,
+    "support_tree_generate_time": 0,
+    "toolpath_time": 71,
+    "wall_time": 869,
+    "wipe_tower_time": 29
+   },
+   "total_predication": 15307.703125,
+   "triangle_count": 38888,
+   "warning_message": ""
+  }
+ }
+]

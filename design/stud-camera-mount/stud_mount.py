@@ -27,11 +27,23 @@ import math
 import cadquery as cq
 
 # ---------------------------------------------------------------------------------------------- parameters
-STUD = dict(d=6.0, clear=6.6, length=25.0, nut_af=10.0, nut_t=5.0, weld_d=14.0, weld_h=1.5)   # assumed M6 x 25
-KNOB = dict(d=34.0, h=13.0, flutes=10)                   # thumb nut on the stud (an M6 hex nut pressed in)
-TILT = dict(clear=4.4, insert_d=5.6, insert_l=7.0, knob_d=24.0, knob_h=9.0, head_d=7.4, head_h=4.2)  # M4 + insert
+STUD = dict(d=6.0, clear=6.6, length=25.0, weld_d=14.0, weld_h=1.5)   # assumed M6 x 25
+# Hardware, from the standards' limits (min/max), so press_fit.py can stack the tolerances.
+NUT_M6 = dict(s_max=10.00, s_min=9.78, m_max=5.20, m_min=4.90, e_min=11.05)            # ISO 4032 M6 hex nut
+BOLT_M4 = dict(s_max=7.00, s_min=6.78, k_max=2.925, k_min=2.675, e_min=7.66, l=16.0)    # ISO 4017 M4 x 16 hex bolt
+WASHER_M6 = dict(d_in=6.4, d_out=12.0, t=1.6)                                           # ISO 7089 M6, nut to pad
+WASHER_M4 = dict(d_in=4.3, d_out=9.0, t=0.8)                                            # ISO 7089 M4, in the knob
+INSERT_M4 = dict(l=8.1, od=6.3, hole_d=5.6, hole_l=8.6)    # M4 x 8.1 heat-set insert (Ruthex / CNC Kitchen type)
+# Crush-rib hex pockets. The hex clears the largest nut or bolt head; one rib per flat stands rib_h proud of it and
+# crushes as the part is pressed in, so every part between the standard's limits is gripped without splitting the
+# knob (press_fit.py). `lead` is a 45-degree lead-in at the mouth; the ribs stop below it.
+NUT_POCKET = dict(af=10.20, depth=4.7, rib_h=0.30, rib_r=0.50, lead=0.6)    # M6 nut, mouth toward the yoke's pad
+HEAD_POCKET = dict(af=7.20, depth=2.9, rib_h=0.30, rib_r=0.50, lead=0.5, washer_d=9.4, washer_t=0.9)  # M4 head
+KNOB = dict(d=34.0, h=13.0, flutes=10)                   # thumb nut on the stud
+TILT = dict(clear=4.4, knob_d=24.0, knob_h=8.0)          # tilt knobs, M4 x 16 hex bolts into heat-set inserts
 PAD = dict(t=8.0, d=46.0, bar_w=24.0)                    # the yoke's top, against the ceiling
 ARM_T = 5.0
+ARM_GAP = 0.5                                            # arm to boss face before the tilt knob is tightened
 SWING_CLEAR = 3.0                                        # head to stud tip / thumb nut, at any tilt
 
 # --------------------------------------------------------------------------------------------- helpers
@@ -71,6 +83,30 @@ def _to_head(shape, at):
 
 def _poly_z(pts, z0, z1):
     return cq.Workplane("XY").workplane(offset=z0).polyline(pts).close().extrude(z1 - z0)
+
+
+def hex_prism(af, z0, z1):
+    """Hexagonal prism, flats `af` apart, corners on the x axis, from z0 to z1."""
+    return cq.Workplane("XY").polygon(6, af / math.cos(math.pi / 6)).extrude(z1 - z0).translate((0, 0, z0))
+
+
+def rib_hex_pocket(p, z_top):
+    """Cutter for a crush-rib hex pocket whose mouth is at z_top and floor at z_top - p['depth'] (axis z). Subtracting
+    it leaves one rib per flat (a cylinder of radius rib_r standing rib_h proud of the flat, from the floor to the
+    lead-in) and a 45-degree lead-in of p['lead'] at the mouth."""
+    af, depth, h, r, lead = p["af"], p["depth"], p["rib_h"], p["rib_r"], p["lead"]
+    z0 = z_top - depth
+    cut = hex_prism(af, z0, z_top + 0.01)
+    k = 1.0 / math.cos(math.pi / 6)
+    mouth = (cq.Workplane("XY").workplane(offset=z_top - lead).polygon(6, af * k)
+             .workplane(offset=lead + 0.01).polygon(6, (af + 2 * lead + 0.02) * k).loft())
+    cut = cut.union(mouth)
+    d = af / 2 - h + r                                       # rib axis, just outside the flat
+    for i in range(6):
+        a = math.radians(30 + 60 * i)                        # flat normals (corners are at 0, 60, ...)
+        rib = cyl(2 * r, depth - lead - 0.01 + 0.01, x=d * math.cos(a), y=d * math.sin(a), z=z0 - 0.01)
+        cut = cut.cut(rib)
+    return cut
 
 
 def _strip(pts, x, w=13.0, t=0.6):
@@ -192,53 +228,100 @@ def pi_zero_parts():
 
 
 # ----------------------------------------------------------------------------------------------- heads
-ZERO = dict(half=34.0, cheek_t=2.5, zmax=17.0, plate_t=2.5, back=(15.5, 18.0), lens_x=-14.0, lens_z=1.5,
-            cm3_gap=1.5, pi_y=10.0, axis_y=9.0, boss_d=16.0, boss_t=1.0)
+# Zero head: a front plate and two cheeks (a U open at the top and bottom) and a back cover. The camera sits on four
+# printed bosses behind the window, the Pi on four printed posts behind the camera, and the cover's spacer tubes clamp
+# the Pi onto its posts with four M2.5 x 12 screws. The tilt bosses are blocks down to the print bed, with blind holes
+# for the M4 inserts so neither the inserts nor the bolts reach the Pi. The interior leaves 4.5 mm beyond each end of
+# the Pi: room for the camera ribbon's U-turn into the Pi's connector, and for the microSD card.
+ZERO = dict(half=37.0, cheek_t=2.5, zmax=17.0, plate_t=2.5, back=(15.5, 18.0), lens_x=-13.0, lens_z=1.5,
+            cm3_gap=1.5, pi_y=10.0, axis_y=9.0, boss_d=16.0, boss_t=7.0, post_d=5.0, tube_d=5.0, cm3_boss_d=4.0)
+# HQ head: byu-vcl's head, with the camera plate, cheeks and four corner columns printed as one frame; the Pi 5
+# carrier screws onto the columns, the Wide's nose onto the plate (both M2.5, thread-forming into PLA).
 HQ = dict(plate=(-48.0, 48.0, -26.0, 26.0), plate_t=5.0, hq_x=-15.0, hq_standoff=4.0, wide_x=24.0, wide_z=2.0,
-          pi_carrier_y=24.0, pi_standoff=5.0, axis_y=10.0, boss_d=18.0, boss_t=2.0)
+          pi_carrier_y=24.0, pi_standoff=5.0, axis_y=10.0, boss_d=18.0, boss_t=5.5, cheek_t=4.0,
+          col=(37.0, 44.0, 11.0, 19.0), nose_screws=((20.0, -19.0), (33.0, -19.0)), post_d=6.0, hq_post_d=5.2)
 HQ["nose_y"] = -(round(HQ_CS_SEAT - HQ["plate_t"] - HQ["hq_standoff"] + LENS_ZOOM["profile"][-1][1]))  # lens front
+M25 = dict(clear=2.7, pilot=2.2, head_d=4.5, head_k=1.8)  # M2.5 screws thread-forming into printed pilot holes
+M2 = dict(clear=2.2, pilot=1.7)
+
+
+def _tilt_bosses(x_face_in, boss_t, boss_d, axis_y, y_bed):
+    """Tilt bosses on both sides, head frame before the axis shift: a disc around the tilt axis carried down to the
+    print bed as a block, outboard of x = +/-x_face_in, with a blind hole for the M4 insert in each."""
+    out, holes = None, None
+    r = boss_d / 2
+    for sx in (-1, 1):
+        x0, x1 = sorted((sx * x_face_in, sx * (x_face_in + boss_t)))
+        b = xcyl(boss_d, x0, x1, axis_y, 0.0).union(box(x0, y_bed, -r, x1, axis_y, r))
+        out = b if out is None else out.union(b)
+        xf = sx * (x_face_in + boss_t)
+        h = xcyl(INSERT_M4["hole_d"], xf + sx * 0.01, xf - sx * INSERT_M4["hole_l"], axis_y, 0.0)
+        holes = h if holes is None else holes.union(h)
+    return out, holes
 
 
 def head_zero_parts():
-    """Pi Zero 2 W + Camera Module 3 head, head frame. A printed case (front plate, cheeks with the tilt bosses) and a
-    back cover; the camera on four M2 screws behind the front plate, the Pi on M2.5 standoffs behind the camera."""
+    """Pi Zero 2 W + Camera Module 3 head, head frame (tilt axis at the origin)."""
     h = ZERO
-    a, zm, pt = h["half"], h["zmax"], h["plate_t"]
-    ct = h["cheek_t"]
+    a, zm, pt, ct = h["half"], h["zmax"], h["plate_t"], h["cheek_t"]
     case = box(-a - ct, 0, -zm, a + ct, pt, zm).edges("|Y").fillet(3.0)
     cheeks = box(-a - ct, pt, -zm, -a, h["back"][0], zm).union(box(a, pt, -zm, a + ct, h["back"][0], zm))
     case = case.union(cheeks)
-    for sx in (-1, 1):                                               # tilt bosses with M4 heat-set inserts
-        x0 = a + ct if sx > 0 else -a - ct - h["boss_t"]
-        case = case.union(xcyl(h["boss_d"], x0, x0 + h["boss_t"], h["axis_y"], 0.0))
-        xi = a + ct + h["boss_t"] if sx > 0 else -a - ct - h["boss_t"]
-        case = case.cut(xcyl(TILT["insert_d"], xi, xi - sx * TILT["insert_l"], h["axis_y"], 0.0))
+    bosses, insert_holes = _tilt_bosses(a + ct, h["boss_t"], h["boss_d"], h["axis_y"], 0.0)
+    case = case.union(bosses)
     lx, lz = h["lens_x"], h["lens_z"]
-    case = case.cut(box(lx - 5.0, -1, lz - 5.0, lx + 5.0, pt + 1, lz + 5.0))          # window for the lens housing
-    for sx in (-1, 1):
-        for dz in (CM3["lens_from_top"] - 2.0, CM3["lens_from_top"] - 14.5):
-            case = case.cut(ycyl(2.2, -1, pt + 1, lx + sx * 10.5, lz + dz))             # M2 screws for the camera
-    case = case.cut(box(a - 1, h["pi_y"] - 1, -6.0, a + ct + 1, h["back"][0] + 1, 6.0))   # microSD slot
-    back = box(-a - ct, h["back"][0], -zm, a + ct, h["back"][1], zm).edges("|Y").fillet(3.0)
+    cam_y = pt + h["cm3_gap"]                                   # the camera's PCB front face
+    cm3_holes = [(lx + sx * 10.5, lz + dz) for sx in (-1, 1) for dz in (CM3["lens_from_top"] - 2.0,
+                                                                        CM3["lens_from_top"] - 14.5)]
+    for x, z in cm3_holes:                                      # bosses the camera screws onto (M2 x 4)
+        case = case.union(ycyl(h["cm3_boss_d"], pt - 0.01, cam_y, x, z))
+    pi_holes = [(PIZ["w"] / 2 - u, v - PIZ["h"] / 2) for u, v in PIZ["holes"]]
+    for x, z in pi_holes:                                       # posts the Pi sits on
+        case = case.union(ycyl(h["post_d"], pt - 0.01, h["pi_y"], x, z))
+    case = case.cut(insert_holes)
+    case = case.cut(box(lx - 5.0, -1, lz - 5.0, lx + 5.0, pt + 1, lz + 5.0))           # window for the lens housing
+    for x, z in cm3_holes:
+        case = case.cut(ycyl(M2["pilot"], 1.0, cam_y + 0.01, x, z))
+    for x, z in pi_holes:
+        case = case.cut(ycyl(M25["pilot"], h["pi_y"] - 6.0, h["pi_y"] + 0.01, x, z))
+    y0, y1 = h["back"]
+    back = box(-a - ct, y0, -zm, a + ct, y1, zm).edges("|Y").fillet(3.0)
     for i in range(5):                                                                # vents
-        back = back.cut(box(-20 + i * 10, h["back"][0] - 1, -8, -16 + i * 10, h["back"][1] + 1, 8))
+        back = back.cut(box(-20 + i * 10, y0 - 1, -8, -16 + i * 10, y1 + 1, 8))
+    pi_back = h["pi_y"] + PIZ["t"]
+    for x, z in pi_holes:                                       # spacer tubes onto the Pi, screw holes through
+        back = back.union(ycyl(h["tube_d"], pi_back, y0 + 0.01, x, z))
+        back = back.cut(ycyl(M25["clear"], pi_back - 0.01, y1 + 0.01, x, z))
     p = {"case": (case, "petg"), "back cover": (back, "petg")}
-    cam_at = (lx, pt + h["cm3_gap"], lz)                     # the camera's PCB front face
     for name, (s, m) in cm3_parts(wide=False).items():
-        p[name] = (_to_head(s, cam_at), m)
+        p[name] = (_to_head(s, (lx, cam_y, lz)), m)
     pi_at = (PIZ["w"] / 2, h["pi_y"], -PIZ["h"] / 2)         # board centred in x and z, parts toward the back
     for name, (s, m) in pi_zero_parts().items():
         p[name] = (_to_head(s, pi_at), m)
-    stand = None
-    for u, v in PIZ["holes"]:
-        x, z = PIZ["w"] / 2 - u, v - PIZ["h"] / 2
-        s = ycyl(4.5, pt, h["pi_y"], x, z)
-        stand = s if stand is None else stand.union(s)
-    p["standoffs"] = (stand, "steel")
-    # the short 22-to-15-pin ribbon: down from the camera's connector, round to the Pi's camera connector
-    cy = pt + h["cm3_gap"] + CM3["pcb_t"] + 1.5
-    p["ribbon"] = (_strip([(cy, lz - 9.0), (cy, -zm + 2.5), (h["pi_y"] - 1.2, -zm + 2.5), (h["pi_y"] - 1.2, -6.0)],
-                          x=-27.0, w=11.0), "ribbon")
+    screws = None
+    for x, z in pi_holes:                                       # M2.5 x 12 pan heads on the cover
+        s = ycyl(2.5, y1 - 12.0, y1, x, z).union(ycyl(M25["head_d"], y1, y1 + M25["head_k"], x, z))
+        screws = s if screws is None else screws.union(s)
+    for x, z in cm3_holes:                                      # M2 x 4 from behind the camera
+        s = ycyl(2.0, cam_y + CM3["pcb_t"] - 4.0, cam_y + CM3["pcb_t"], x, z).union(
+            ycyl(3.8, cam_y + CM3["pcb_t"], cam_y + CM3["pcb_t"] + 1.3, x, z))
+        screws = screws.union(s)
+    ins = None
+    for sx in (-1, 1):                                          # the heat-set inserts, flush with the boss faces
+        xf = sx * (a + ct + h["boss_t"])
+        s = xcyl(INSERT_M4["od"] - 0.4, xf, xf - sx * INSERT_M4["l"], h["axis_y"], 0.0)
+        ins = s if ins is None else ins.union(s)
+    p["screws"] = (screws, "steel")
+    p["inserts"] = (ins, "brass")
+    # the camera's ribbon (16 mm at the camera, 11.5 mm at the Pi; drawn 11.5 wide past the fold): out of the camera's
+    # connector, folded up behind the camera, along the front of the Pi to beyond its end, U-turned into its connector
+    cy = cam_y + CM3["pcb_t"] + 1.4
+    bot = lz - (CM3["h"] - CM3["lens_from_top"])
+    rib = _strip([(cy, bot), (cy, -11.5), (9.0, -11.5), (9.0, 0.0)], x=lx, w=16.0, t=0.3)
+    rib = rib.union(box(-35.5, 8.85, -5.75, lx - 8.0, 9.15, 5.75))
+    rib = rib.union(box(-35.8, 8.85, -5.75, -35.5, 11.75, 5.75))
+    rib = rib.union(box(-35.5, 11.45, -5.75, -30.5, 11.75, 5.75))
+    p["ribbon"] = (rib, "ribbon")
     p["USB power lead"] = (ycyl(4.0, h["pi_y"] + 2.0, h["pi_y"] + 2.1, -21.5, -zm).union(
         cyl(4.0, 40.0, x=-21.5, y=h["pi_y"] + 3.5, z=-zm - 40.0)), "black")
     ay = h["axis_y"]
@@ -246,23 +329,53 @@ def head_zero_parts():
 
 
 def head_hq_parts(wide=True):
-    """byu-vcl's head with the zoom lens in place of the 16 mm one: a PETG camera plate with the HQ Camera behind it,
-    the Wide on a nose level with the lens's front, the Pi 5 on a carrier behind, cheeks with the tilt bosses."""
+    """byu-vcl's head with the zoom lens in place of the 16 mm one, head frame (tilt axis at the origin): a frame
+    (camera plate, cheeks, tilt bosses, four corner columns) with the HQ Camera on printed posts behind the plate, the
+    Pi 5 on posts on a carrier screwed to the columns, and the Wide on a nose level with the lens's front."""
     h = HQ
     x0, x1, z0, z1 = h["plate"]
-    pt = h["plate_t"]
+    pt, ct = h["plate_t"], h["cheek_t"]
+    cy = h["pi_carrier_y"]
     p = {}
     hq_at = (h["hq_x"], pt + h["hq_standoff"], 0.0)
-    plate = box(x0, 0, z0, x1, pt, z1).edges("|Y").fillet(4.0)
-    plate = plate.cut(cq.Workplane("XZ").circle(37.0 / 2).extrude(-pt - 2).translate((h["hq_x"], -1, 0)))
+    frame = box(x0, 0, z0, x1, pt, z1).edges("|Y").fillet(4.0)
+    frame = frame.union(box(x0, pt - 0.01, z0, x0 + ct, cy, z1)).union(box(x1 - ct, pt - 0.01, z0, x1, cy, z1))
+    cx0, cx1, cz0, cz1 = h["col"]
+    cols = [(sx, sz) for sx in (-1, 1) for sz in (-1, 1)]
+    for sx, sz in cols:
+        xa, xb = sorted((sx * cx0, sx * (cx1 + 0.01)))
+        za, zb = sorted((sz * cz0, sz * cz1))
+        frame = frame.union(box(xa, pt - 0.01, za, xb, cy, zb))
+    bosses, insert_holes = _tilt_bosses(x1, h["boss_t"], h["boss_d"], h["axis_y"], 0.0)
+    frame = frame.union(bosses)
+    hq_holes = [(h["hq_x"] + sx * HQ_PITCH / 2, sz * HQ_PITCH / 2) for sx in (-1, 1) for sz in (-1, 1)]
+    for x, z in hq_holes:
+        frame = frame.union(ycyl(h["hq_post_d"], pt - 0.01, hq_at[1], x, z))
+    frame = frame.cut(insert_holes)
+    frame = frame.cut(cq.Workplane("XZ").circle(37.0 / 2).extrude(-pt - 2).translate((h["hq_x"], -1, 0)))
     foot = _to_head(_poly_z(_hq_tripod_outline(), -HQ_HOUSING_FRONT - 1, 2.0), hq_at)
     lock = _to_head(box(-6.1, 15.0, -HQ_HOUSING_FRONT - 1, 6.1, 22.6, 2.0), hq_at)
-    plate = plate.cut(foot).cut(lock)
-    p["camera plate"] = (plate, "petg")
+    frame = frame.cut(foot).cut(lock)
+    for x, z in hq_holes:
+        frame = frame.cut(ycyl(M25["pilot"], hq_at[1] - 6.0, hq_at[1] + 0.01, x, z))
+    col_c = [(sx * 0.5 * (cx0 + cx1), sz * 0.5 * (cz0 + cz1)) for sx, sz in cols]
+    for x, z in col_c:
+        frame = frame.cut(ycyl(M25["pilot"], cy - 8.0, cy + 0.01, x, z))
+    carrier = box(x0, cy, z0 - 4, x1, cy + 4, z1 + 4).edges("|Y").fillet(4.0)
+    pi_y = cy + 4 + h["pi_standoff"]
+    pi_holes = [(PI5["w"] / 2 - u, v - PI5["h"] / 2) for u, v in PI5["holes"]]
+    for x, z in pi_holes:
+        carrier = carrier.union(ycyl(h["post_d"], cy + 4 - 0.01, pi_y, x, z))
+        carrier = carrier.cut(ycyl(M25["pilot"], pi_y - 6.0, pi_y + 0.01, x, z))
+    for x, z in col_c:                                          # countersunk M2.5 x 10 into the columns
+        carrier = carrier.cut(ycyl(M25["clear"], cy - 0.01, cy + 4.01, x, z))
+        carrier = carrier.cut(cq.Workplane("XZ").workplane(offset=-(cy + 4.01)).circle(2.6)
+                              .workplane(offset=1.5).circle(1.35).loft().translate((x, 0, z)))
     if wide:
-        plate = plate.cut(box(h["wide_x"] - 12.0, -1, h["wide_z"] - 16.0, h["wide_x"] + 4.0, pt + 1,
+        frame = frame.cut(box(h["wide_x"] - 12.0, -1, h["wide_z"] - 16.0, h["wide_x"] + 4.0, pt + 1,
                               h["wide_z"] - 13.0))
-        p["camera plate"] = (plate, "petg")
+        for x, z in h["nose_screws"]:
+            frame = frame.cut(ycyl(M25["clear"], -0.01, pt + 0.01, x, z))
         wx0, wx1 = h["wide_x"] - 14.0, h["wide_x"] + 18.0
         ny = h["nose_y"]
         nose = box(wx0, ny, h["wide_z"] - 16, wx1, ny + 5, h["wide_z"] + 16)
@@ -270,36 +383,41 @@ def head_hq_parts(wide=True):
                             h["wide_z"] + 5.7))
         nose = nose.union(box(wx0, ny, h["wide_z"] - 20, wx1, 0, h["wide_z"] - 16))
         nose = nose.union(box(wx1 - 4, ny + 5, h["wide_z"] - 16, wx1, 0, h["wide_z"] + 8))
-        p["Wide nose"] = (nose, "petg")
-        wide_at = (h["wide_x"], ny + 5 + 2.5, h["wide_z"])
+        nose = nose.union(box(wx0, -6.0, -24.0, wx1, 0.0, h["wide_z"] - 16))          # flange against the plate
+        for x, z in h["nose_screws"]:
+            nose = nose.cut(ycyl(M25["pilot"], -6.0 - 0.01, 0.01, x, z))
         for name, (s, m) in cm3_parts(wide=True).items():
-            p[name] = (_to_head(s, wide_at), m)
+            p[name] = (_to_head(s, (h["wide_x"], ny + 5 + 2.5, h["wide_z"])), m)
+        p["Wide nose"] = (nose, "petg")
         zs = h["wide_z"] - 14.5
-    carrier = box(x0, h["pi_carrier_y"], z0 - 4, x1, h["pi_carrier_y"] + 4, z1 + 4).edges("|Y").fillet(4.0)
-    cheeks = box(x0, pt, z0, x0 + 4, h["pi_carrier_y"], z1).union(box(x1 - 4, pt, z0, x1, h["pi_carrier_y"], z1))
-    for sx in (-1, 1):
-        xb = x1 if sx > 0 else x0 - h["boss_t"]
-        cheeks = cheeks.union(xcyl(h["boss_d"], xb, xb + h["boss_t"], h["axis_y"], 0.0))
-        xi = x1 + h["boss_t"] if sx > 0 else x0 - h["boss_t"]
-        cheeks = cheeks.cut(xcyl(TILT["insert_d"], xi, xi - sx * TILT["insert_l"], h["axis_y"], 0.0))
+        wide_at = (h["wide_x"], ny + 5 + 2.5, h["wide_z"])
+    p["frame"] = (frame, "petg")
     p["Pi carrier"] = (carrier, "petg")
-    p["cheeks"] = (cheeks, "petg")
     for name, (s, m) in hq_camera_parts().items():
         p[name] = (_to_head(s, hq_at), m)
-    pi_y = h["pi_carrier_y"] + 4 + h["pi_standoff"]
-    pi_at = (PI5["w"] / 2, pi_y, -PI5["h"] / 2)
     for name, (s, m) in pi5_parts().items():
-        p[name] = (_rot(s, [((1, 0, 0), -90), ((0, 1, 0), 180)]).translate(pi_at), m)
-    stand = None
-    for u, v in PI5["holes"]:
-        x, z = PI5["w"] / 2 - u, v - PI5["h"] / 2
-        s = ycyl(6.0, h["pi_carrier_y"] + 4, h["pi_carrier_y"] + 4 + h["pi_standoff"], x, z)
-        stand = s if stand is None else stand.union(s)
+        p[name] = (_rot(s, [((1, 0, 0), -90), ((0, 1, 0), 180)]).translate((PI5["w"] / 2, pi_y, -PI5["h"] / 2)), m)
+    screws = None
+    for x, z in hq_holes:                                       # M2.5 x 6 through the HQ board
+        y = hq_at[1] + HQ_PCB_T
+        s = ycyl(2.5, y - 6.0, y, x, z).union(ycyl(M25["head_d"], y, y + M25["head_k"], x, z))
+        screws = s if screws is None else screws.union(s)
+    for x, z in pi_holes:                                       # M2.5 x 6 through the Pi 5
+        y = pi_y + PI5["t"]
+        screws = screws.union(ycyl(2.5, y - 6.0, y, x, z).union(ycyl(M25["head_d"], y, y + M25["head_k"], x, z)))
+    for x, z in col_c:                                          # countersunk M2.5 x 10, carrier to columns
+        screws = screws.union(ycyl(2.5, cy + 4 - 10.0, cy + 2.5, x, z))
+    if wide:
+        for x, z in h["nose_screws"]:                           # M2.5 x 10 from inside the frame into the nose
+            screws = screws.union(ycyl(2.5, pt - 10.0, pt, x, z).union(ycyl(M25["head_d"], pt, pt + M25["head_k"],
+                                                                                 x, z)))
+    ins = None
     for sx in (-1, 1):
-        for sz in (-1, 1):
-            stand = stand.union(ycyl(5.2, pt, pt + h["hq_standoff"], h["hq_x"] + sx * HQ_PITCH / 2,
-                                     sz * HQ_PITCH / 2))
-    p["standoffs"] = (stand, "steel")
+        xf = sx * (x1 + h["boss_t"])
+        s = xcyl(INSERT_M4["od"] - 0.4, xf, xf - sx * INSERT_M4["l"], h["axis_y"], 0.0)
+        ins = s if ins is None else ins.union(s)
+    p["screws"] = (screws, "steel")
+    p["inserts"] = (ins, "brass")
     zr = z0 - 6.0
     yb = pi_y + PI5["t"] + 4.5
     p["HQ ribbon"] = (_strip([(hq_at[1] + 2.0, -HQ_BOARD / 2 + 3.0), (hq_at[1] + 2.0, zr), (yb, zr),
@@ -372,7 +490,7 @@ def yoke(kind):
     bar out to two arms that drop to the tilt axis, each with an M4 clearance hole."""
     half, _ = head_spec(kind)
     depth = tilt_depth(kind)
-    a0, a1 = half + 0.5, half + 0.5 + ARM_T
+    a0, a1 = half + ARM_GAP, half + ARM_GAP + ARM_T
     t, bw = PAD["t"], PAD["bar_w"]
     pad = cyl(PAD["d"], t, z=-t)
     bar = box(-a1, -bw / 2, -t, a1, bw / 2, 0).edges("|Z").fillet(3.0)
@@ -390,47 +508,95 @@ def yoke(kind):
     return y
 
 
-def stud_knob():
-    """Thumb nut, mount frame (its top against the pad): an M6 nut pressed into a hex pocket, the stud through."""
+def stud_knob_part():
+    """Thumb nut in its print frame: the face against the yoke's pad on top (z = KNOB['h']), with the crush-rib pocket
+    for the M6 nut opening there, so it prints without supports. The nut stands proud of the face, so it, not the
+    knob, clamps the washer and pad; the knob only turns it."""
     k = KNOB
-    z0 = -PAD["t"] - k["h"]
-    knob = cyl(k["d"], k["h"], z=z0)
+    knob = cyl(k["d"], k["h"])
     for i in range(k["flutes"]):
         a = 2 * math.pi * i / k["flutes"]
         knob = knob.cut(cyl(6.0, k["h"] + 2, x=(k["d"] / 2 + 1.2) * math.cos(a), y=(k["d"] / 2 + 1.2) * math.sin(a),
-                            z=z0 - 1))
-    knob = knob.cut(cyl(STUD["clear"], k["h"] + 2, z=z0 - 1))
-    hexp = (cq.Workplane("XY").polygon(6, (STUD["nut_af"] + 0.3) / math.cos(math.pi / 6))
-            .extrude(STUD["nut_t"] + 0.3).translate((0, 0, -PAD["t"] - STUD["nut_t"] - 0.3)))
-    return knob.cut(hexp)
+                            z=-1))
+    knob = knob.faces("<Z").edges().chamfer(0.4)               # no elephant's foot on the grip
+    knob = knob.cut(cyl(STUD["clear"], k["h"] + 2, z=-1))
+    return knob.cut(rib_hex_pocket(NUT_POCKET, k["h"]))
+
+
+def stud_knob():
+    """Thumb nut, mount frame: below the washer under the pad."""
+    return stud_knob_part().translate((0, 0, -PAD["t"] - WASHER_M6["t"] - KNOB["h"] + nut_proud()))
+
+
+def nut_proud():
+    """How far the nominal M6 nut stands above the thumb nut's face."""
+    return 0.5 * (NUT_M6["m_max"] + NUT_M6["m_min"]) - NUT_POCKET["depth"]
+
+
+def tilt_knob_part():
+    """Tilt knob in its print frame: the face against the yoke's arm on the bed (z = 0), the crush-rib pocket for the
+    M4 bolt's head opening on top, with a recess under it for an M4 washer that spreads the clamp load."""
+    k, hp = TILT, HEAD_POCKET
+    knob = cyl(k["knob_d"], k["knob_h"])
+    for i in range(8):
+        a = 2 * math.pi * i / 8
+        knob = knob.cut(cyl(5.0, k["knob_h"] + 2, x=(k["knob_d"] / 2 + 1.0) * math.cos(a),
+                            y=(k["knob_d"] / 2 + 1.0) * math.sin(a), z=-1))
+    knob = knob.faces("<Z").edges().chamfer(0.4)
+    knob = knob.cut(cyl(TILT["clear"], k["knob_h"] + 2, z=-1))
+    z_hex = k["knob_h"] - hp["depth"]
+    knob = knob.cut(cyl(hp["washer_d"], hp["washer_t"] + 0.01, z=z_hex - hp["washer_t"]))
+    return knob.cut(rib_hex_pocket(hp, k["knob_h"]))
+
+
+def tilt_stack(kind):
+    """x positions (+ side; the - side mirrors) along the tilt axis: boss face, arm inner and outer faces, the knob's
+    outer face, the bolt head's bearing face and its tip. The arm closes the ARM_GAP when the knob is tightened."""
+    half, _ = head_spec(kind)
+    a0 = half + ARM_GAP
+    a1 = a0 + ARM_T
+    k1 = a1 + TILT["knob_h"]
+    bear = k1 - HEAD_POCKET["depth"] - WASHER_M4["t"]          # under-head face, on the washer
+    return dict(boss=half, arm0=a0, arm1=a1, knob1=k1, bear=bear, tip=bear - BOLT_M4["l"])
+
+
+def bolt_m4(x_bear, x_tip, y=0.0, z=0.0):
+    """ISO 4017 M4 hex bolt along x: bearing face at x_bear, tip at x_tip."""
+    sx = 1 if x_bear > x_tip else -1
+    k = 0.5 * (BOLT_M4["k_max"] + BOLT_M4["k_min"])
+    shank = xcyl(4.0, x_tip, x_bear, y, z)
+    head = (cq.Workplane("YZ").polygon(6, 7.0 / math.cos(math.pi / 6)).extrude(k)
+            .translate((x_bear if sx > 0 else x_bear - k, y, z)))
+    return shank.union(head)
 
 
 def tilt_knobs(kind):
-    """Two thumb knobs on M4 x 16 cap screws, mount frame, outside the yoke's arms on the tilt axis."""
-    half, _ = head_spec(kind)
+    """Two tilt knobs with their bolts and washers, mount frame, outside the yoke's arms on the tilt axis.
+    Returns (knobs, steel: bolts and washers)."""
     depth = tilt_depth(kind)
-    a1 = half + 0.5 + ARM_T
-    t = TILT
-    out, screws = None, None
+    s = tilt_stack(kind)
+    out, steel = None, None
     for sx in (-1, 1):
-        x0 = a1 if sx > 0 else -a1 - t["knob_h"]
-        k = xcyl(t["knob_d"], x0, x0 + t["knob_h"], 0.0, -depth)
-        for i in range(8):
-            a = 2 * math.pi * i / 8
-            k = k.cut(xcyl(5.0, x0 - 1, x0 + t["knob_h"] + 1, (t["knob_d"] / 2 + 1.0) * math.cos(a),
-                           -depth + (t["knob_d"] / 2 + 1.0) * math.sin(a)))
+        k = tilt_knob_part().rotate((0, 0, 0), (0, 1, 0), 90 * sx)    # knob z -> +x on the + side
+        k = k.translate((s["arm1"] * sx, 0.0, -depth))
         out = k if out is None else out.union(k)
-        xs = a1 + t["knob_h"] - 2.0 if sx > 0 else -a1 - t["knob_h"] + 2.0
-        sc = xcyl(4.0, xs, sx * (half - 6.0), 0.0, -depth)
-        screws = sc if screws is None else screws.union(sc)
-    return out, screws
+        b = bolt_m4(s["bear"] * sx, s["tip"] * sx, 0.0, -depth)
+        w = xcyl(WASHER_M4["d_out"], sx * s["bear"], sx * (s["bear"] - WASHER_M4["t"]), 0.0, -depth).cut(
+            xcyl(WASHER_M4["d_in"], sx * (s["bear"] + 1), sx * (s["bear"] - WASHER_M4["t"] - 1), 0.0, -depth))
+        b = b.union(w)
+        steel = b if steel is None else steel.union(b)
+    return out, steel
 
 
 def ceiling_stud():
-    """The welded stud with its weld bead and a washer under the thumb nut's nut, mount frame."""
+    """The welded stud with its weld bead, the M6 washer under the pad, and the M6 nut, mount frame."""
     stud = cyl(STUD["d"], STUD["length"], z=-STUD["length"])
     bead = cyl(STUD["weld_d"] - 3.0, STUD["weld_h"] - 0.3, z=-(STUD["weld_h"] - 0.3))
-    return stud.union(bead)
+    zw = -PAD["t"] - WASHER_M6["t"]
+    washer = cyl(WASHER_M6["d_out"], WASHER_M6["t"], z=zw).cut(cyl(WASHER_M6["d_in"], 4, z=zw - 1))
+    m = 0.5 * (NUT_M6["m_max"] + NUT_M6["m_min"])
+    nut = hex_prism(10.0, zw - m, zw).cut(cyl(STUD["d"], m + 2, z=zw - m - 1))
+    return stud.union(bead).union(washer).union(nut)
 
 
 # ---------------------------------------------------------------------------------------- assembly
@@ -456,61 +622,65 @@ def lens_point(kind):
 
 
 def parts(kind, wide=True):
-    """{piece: {name: (Workplane, material)}} with pieces 'fixed' (stud), 'pan' (yoke, knobs) and 'head', each in its
-    own frame: fixed and pan in the mount frame at pan 0, head in the head frame."""
-    knobs, screws = tilt_knobs(kind)
+    """{piece: {name: (Workplane, material)}} with pieces 'fixed' (stud, washer, nut), 'pan' (yoke, knobs) and 'head',
+    each in its own frame: fixed and pan in the mount frame at pan 0, head in the head frame."""
+    knobs, bolts = tilt_knobs(kind)
     head = head_zero_parts() if kind == "zero" else head_hq_parts(wide=wide)
     return {"fixed": {"ceiling stud": (ceiling_stud(), "steel")},
             "pan": {"yoke": (yoke(kind), "petg"), "stud thumb nut": (stud_knob(), "knob"),
-                    "tilt knobs": (knobs, "knob"), "M4 screws": (screws, "steel")},
+                    "tilt knobs": (knobs, "knob"), "tilt bolts": (bolts, "steel")},
             "head": head}
+
+
+COLOURS = dict(petg=(0.15, 0.16, 0.17), knob=(0.85, 0.42, 0.10), steel=(0.75, 0.77, 0.80), brass=(0.80, 0.62, 0.25),
+               pcb=(0.12, 0.48, 0.24), lens=(0.08, 0.08, 0.09), glass=(0.30, 0.45, 0.65), white=(0.93, 0.93, 0.93),
+               port=(0.70, 0.72, 0.75), black=(0.1, 0.1, 0.1), cooler=(0.55, 0.58, 0.62), ribbon=(0.85, 0.65, 0.25))
 
 
 def assembly(kind, pan=0.0, tilt=45.0, wide=True):
     """CadQuery Assembly at a pose, mount frame."""
-    colours = dict(petg=(0.15, 0.16, 0.17), knob=(0.85, 0.42, 0.10), steel=(0.75, 0.77, 0.80),
-                   pcb=(0.12, 0.48, 0.24), lens=(0.08, 0.08, 0.09), glass=(0.30, 0.45, 0.65),
-                   white=(0.93, 0.93, 0.93), port=(0.70, 0.72, 0.75), black=(0.1, 0.1, 0.1),
-                   cooler=(0.55, 0.58, 0.62), ribbon=(0.85, 0.65, 0.25))
     depth = tilt_depth(kind)
     pc = parts(kind, wide)
     asm = cq.Assembly(name=f"stud_mount_{kind}")
     rz = cq.Location(cq.Vector(0, 0, 0), cq.Vector(0, 0, 1), pan)
     for name, (s, m) in pc["fixed"].items():
-        asm.add(s, name=name, color=cq.Color(*colours[m]))
+        asm.add(s, name=name, color=cq.Color(*COLOURS[m]))
     for name, (s, m) in pc["pan"].items():
-        asm.add(s, name=name, loc=rz, color=cq.Color(*colours[m]))
+        asm.add(s, name=name, loc=rz, color=cq.Color(*COLOURS[m]))
     head_loc = rz * cq.Location(cq.Vector(0, 0, -depth)) * cq.Location(cq.Vector(0, 0, 0), cq.Vector(1, 0, 0), tilt)
     for name, (s, m) in pc["head"].items():
-        asm.add(s, name=name.replace(" ", "_"), loc=head_loc, color=cq.Color(*colours[m]))
+        asm.add(s, name=name.replace(" ", "_"), loc=head_loc, color=cq.Color(*COLOURS[m]))
     return asm
 
 
+def on_bed(shape, steps):
+    """`shape` rotated by `steps` [(axis, degrees)] and moved so it sits on z = 0, centred in x and y."""
+    s = _rot(shape, steps)
+    bb = s.val().BoundingBox()
+    return s.translate((-(bb.xmin + bb.xmax) / 2, -(bb.ymin + bb.ymax) / 2, -bb.zmin))
+
+
+X, Y = (1, 0, 0), (0, 1, 0)
+# Printed parts in their print orientation (on the bed at z = 0), chosen so none needs support: yokes on the face
+# that meets the ceiling, heads on their front faces, the back cover and carrier with their posts up, the Wide's
+# nose on its side strip, knobs on the face that meets the yoke (the thumb nut on its grip face, pocket up).
 PRINTED = {
-    "zero": {"yoke_zero": lambda: yoke("zero"), "head_zero_case": lambda: head_zero_parts()["case"][0],
-             "head_zero_back_cover": lambda: head_zero_parts()["back cover"][0]},
-    "hq": {"yoke_hq": lambda: yoke("hq"), "head_hq_camera_plate": lambda: head_hq_parts()["camera plate"][0],
-           "head_hq_cheeks": lambda: head_hq_parts()["cheeks"][0],
-           "head_hq_pi_carrier": lambda: head_hq_parts()["Pi carrier"][0],
-           "head_hq_wide_nose": lambda: head_hq_parts()["Wide nose"][0]},
-    "common": {"stud_thumb_nut": stud_knob, "tilt_knob": lambda: _one_tilt_knob()},
+    "zero": {"yoke_zero": lambda: on_bed(yoke("zero"), [(X, 180)]),
+             "head_zero_case": lambda: on_bed(head_zero_parts()["case"][0], [(X, 90)]),
+             "head_zero_back_cover": lambda: on_bed(head_zero_parts()["back cover"][0], [(X, -90)])},
+    "hq": {"yoke_hq": lambda: on_bed(yoke("hq"), [(X, 180)]),
+           "head_hq_frame": lambda: on_bed(head_hq_parts()["frame"][0], [(X, 90)]),
+           "head_hq_pi_carrier": lambda: on_bed(head_hq_parts()["Pi carrier"][0], [(X, 90)]),
+           "head_hq_wide_nose": lambda: on_bed(head_hq_parts()["Wide nose"][0], [(Y, 90)])},
+    "common": {"stud_thumb_nut": stud_knob_part, "tilt_knob": tilt_knob_part},
 }
-
-
-def _one_tilt_knob():
-    k = TILT
-    knob = cyl(k["knob_d"], k["knob_h"])
-    for i in range(8):
-        a = 2 * math.pi * i / 8
-        knob = knob.cut(cyl(5.0, k["knob_h"] + 2, x=(k["knob_d"] / 2 + 1.0) * math.cos(a),
-                            y=(k["knob_d"] / 2 + 1.0) * math.sin(a), z=-1))
-    knob = knob.cut(cyl(TILT["clear"], k["knob_h"] + 2, z=-1))
-    return knob.cut(cq.Workplane("XY").polygon(6, 7.3 / math.cos(math.pi / 6)).extrude(k["head_h"] + 0.2)
-                    .translate((0, 0, k["knob_h"] - k["head_h"] - 0.2)))
+# copies of each printed part per mount
+PER_MOUNT = {"yoke_zero": 1, "head_zero_case": 1, "head_zero_back_cover": 1, "yoke_hq": 1, "head_hq_frame": 1,
+             "head_hq_pi_carrier": 1, "head_hq_wide_nose": 1, "stud_thumb_nut": 1, "tilt_knob": 2}
 
 
 if __name__ == "__main__":
     for kind in ("zero", "hq"):
-        print(kind, "swing radius %.1f, behind %.1f, tilt-axis depth %d mm, lens %s" % (
+        print(kind, "swing radius %.1f, behind %.1f, tilt-axis depth %d mm, lens %s, stack %s" % (
             swing_radius(kind), swing_radius_behind(kind), tilt_depth(kind),
-            tuple(round(c, 1) for c in lens_point(kind))))
+            tuple(round(c, 1) for c in lens_point(kind)), {k: round(v, 2) for k, v in tilt_stack(kind).items()}))

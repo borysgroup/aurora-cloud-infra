@@ -43,7 +43,8 @@ KNOB = dict(d=34.0, h=13.0, flutes=10)                   # thumb nut on the stud
 TILT = dict(clear=4.4, knob_d=24.0, knob_h=8.0)          # tilt knobs, M4 x 16 hex bolts into heat-set inserts
 PAD = dict(t=8.0, d=46.0, bar_w=24.0)                    # the yoke's top, against the ceiling
 ARM_T = 5.0
-ARM_GAP = 0.5                                            # arm to boss face before the tilt knob is tightened
+ARM_GAP = 0.3                                            # arm to boss face before the tilt knob is tightened
+GUSSET = 5.0                                             # 45-degree gusset inside each arm's root
 SWING_CLEAR = 3.0                                        # head to stud tip / thumb nut, at any tilt
 
 # --------------------------------------------------------------------------------------------- helpers
@@ -496,7 +497,8 @@ def tilt_depth(kind):
 
 def yoke(kind):
     """The yoke, mount frame: the pad against the ceiling with the stud through it (and a recess for the weld), a
-    bar out to two arms that drop to the tilt axis, each with an M4 clearance hole."""
+    bar out to two arms that drop to the tilt axis, each with an M4 clearance hole and a gusset inside its root
+    (tightening a tilt knob bends the arm in by ARM_GAP, which puts the root's layers in tension)."""
     half, _ = head_spec(kind)
     depth = tilt_depth(kind)
     a0, a1 = half + ARM_GAP, half + ARM_GAP + ARM_T
@@ -510,7 +512,11 @@ def yoke(kind):
         prof = [(-bw / 2, 0.0), (bw / 2, 0.0), (br, -depth), (-br, -depth)]
         arm = cq.Workplane("YZ").polyline(prof).close().extrude(ARM_T).translate((x0, 0, 0))
         arm = arm.union(xcyl(2 * br, x0, x0 + ARM_T, 0.0, -depth))
-        y = y.union(arm)
+        xi = sx * a0                                     # the arm's inner face
+        g = GUSSET
+        gus = (cq.Workplane("XZ").polyline([(xi, -t + 0.01), (xi - sx * g, -t + 0.01), (xi, -t - g)]).close()
+               .extrude(bw / 2 - 2.0, both=True))
+        y = y.union(arm).union(gus)
         y = y.cut(xcyl(TILT["clear"], x0 - 1, x0 + ARM_T + 1, 0.0, -depth))
     y = y.cut(cyl(STUD["clear"], t + 2, z=-t - 1))
     y = y.cut(cyl(STUD["weld_d"], STUD["weld_h"], z=-STUD["weld_h"]))

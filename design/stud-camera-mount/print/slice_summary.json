@@ -17,13 +17,13 @@
     {
      "filament_id": "GFA00",
      "id": 1,
-     "main_used_g": 16.335371017456055,
-     "total_used_g": 16.335371017456055
+     "main_used_g": 16.336023330688477,
+     "total_used_g": 16.336023330688477
     }
    ],
    "id": 1,
    "layer_filament_change": 0,
-   "main_predication": 1754.2767333984375,
+   "main_predication": 1754.864990234375,
    "obj_cached_cnt": 0,
    "objects": [
     {
@@ -54,33 +54,33 @@
     }
    ],
    "times": {
-    "conflict_check_time": 25,
-    "detect_overhangs_time": 21,
-    "export_gcode_time": 817,
+    "conflict_check_time": 27,
+    "detect_overhangs_time": 27,
+    "export_gcode_time": 854,
     "flush_plan_time": 0,
-    "generate_support_material_time": 129,
-    "infill_generate_time": 68,
-    "infill_time": 267,
+    "generate_support_material_time": 159,
+    "infill_generate_time": 78,
+    "infill_time": 288,
     "ironing_time": 0,
-    "make_perimeters_time": 488,
+    "make_perimeters_time": 481,
     "multifilament_segment_2d_time": 0,
     "other_slice_time": 1,
-    "prepare_infill_time": 199,
+    "prepare_infill_time": 210,
     "region_split_time": 0,
-    "skirt_brim_time": 9,
-    "slice_layers_time": 108,
-    "sliced_time": 1784,
-    "sliced_time_with_cache": 826,
+    "skirt_brim_time": 8,
+    "slice_layers_time": 110,
+    "sliced_time": 1872,
+    "sliced_time_with_cache": 862,
     "support_detect_time": 0,
     "support_interface_time": 0,
     "support_normal_generate_time": 0,
     "support_toolpath_time": 0,
     "support_tree_generate_time": 0,
     "toolpath_time": 14,
-    "wall_time": 380,
+    "wall_time": 371,
     "wipe_tower_time": 11
    },
-   "total_predication": 1773.4837646484375,
+   "total_predication": 1774.072021484375,
    "triangle_count": 10236,
    "warning_message": ""
   }
@@ -94,8 +94,8 @@
    "stud_thumb_nut": 2,
    "tilt_knob": 4
   },
-  "time_h": 4.48,
-  "filament_g": 170.2,
+  "time_h": 4.52,
+  "filament_g": 171.1,
   "warnings": "",
   "layer_height": 0.20000000298023224,
   "sparse_infill_density": 100.0,
@@ -106,47 +106,47 @@
     {
      "filament_id": "GFA00",
      "id": 1,
-     "main_used_g": 170.16424560546875,
-     "total_used_g": 170.16424560546875
+     "main_used_g": 171.1410369873047,
+     "total_used_g": 171.1410369873047
     }
    ],
    "id": 1,
    "layer_filament_change": 0,
-   "main_predication": 16097.375,
+   "main_predication": 16263.1748046875,
    "obj_cached_cnt": 0,
    "objects": [
     {
      "bbox": {
       "depth": 45.985713958740234,
       "height": 57.996891021728516,
-      "width": 104.0,
-      "x": 158.7922821044922,
+      "width": 103.5999984741211,
+      "x": 158.99227905273438,
       "y": 209.79800415039062,
       "z": 0.0
      },
      "id": 222,
      "name": "yoke_zero.stl",
-     "triangle_count": 3280
+     "triangle_count": 3304
     },
     {
      "bbox": {
       "depth": 45.985721588134766,
       "height": 57.996891021728516,
-      "width": 104.0,
-      "x": 158.7922821044922,
+      "width": 103.5999984741211,
+      "x": 158.99227905273438,
       "y": 161.81231689453125,
       "z": 0.0
      },
      "id": 233,
      "name": "yoke_zero.stl",
-     "triangle_count": 3280
+     "triangle_count": 3304
     },
     {
      "bbox": {
       "depth": 34.000003814697266,
       "height": 16.997520446777344,
       "width": 93.0,
-      "x": 169.7922821044922,
+      "x": 169.59226989746094,
       "y": 125.81234741210938,
       "z": 0.0
      },
@@ -159,7 +159,7 @@
       "depth": 33.999996185302734,
       "height": 16.997520446777344,
       "width": 93.0,
-      "x": 169.7922821044922,
+      "x": 169.59226989746094,
       "y": 89.81239318847656,
       "z": 0.0
      },
@@ -171,8 +171,8 @@
      "bbox": {
       "depth": 79.0,
       "height": 7.0,
-      "width": 34.000003814697266,
-      "x": 122.79229736328125,
+      "width": 34.0,
+      "x": 122.9923095703125,
       "y": 176.78372192382812,
       "z": 0.0
      },
@@ -184,8 +184,8 @@
      "bbox": {
       "depth": 79.0,
       "height": 7.0,
-      "width": 34.000003814697266,
-      "x": 122.79229736328125,
+      "width": 34.0,
+      "x": 122.9923095703125,
       "y": 95.78376007080078,
       "z": 0.0
      },
@@ -197,8 +197,8 @@
      "bbox": {
       "depth": 47.783447265625,
       "height": 13.0,
-      "width": 47.783443450927734,
-      "x": 80.38186645507812,
+      "width": 47.78343963623047,
+      "x": 80.58187866210938,
       "y": 152.45013427734375,
       "z": 0.0
      },
@@ -211,7 +211,7 @@
       "depth": 33.991371154785156,
       "height": 13.0,
       "width": 33.58461380004883,
-      "x": 87.20770263671875,
+      "x": 87.40771484375,
       "y": 195.3425750732422,
       "z": 0.0
      },
@@ -223,8 +223,8 @@
      "bbox": {
       "depth": 23.59615135192871,
       "height": 8.0,
-      "width": 23.596155166625977,
-      "x": 97.19618225097656,
+      "width": 23.59615135192871,
+      "x": 97.39619445800781,
       "y": 133.91427612304688,
       "z": 0.0
      },
@@ -234,11 +234,11 @@
     },
     {
      "bbox": {
-      "depth": 23.59615707397461,
+      "depth": 23.596155166625977,
       "height": 8.0,
-      "width": 23.596160888671875,
-      "x": 151.34530639648438,
-      "y": 72.79244995117188,
+      "width": 23.596147537231445,
+      "x": 151.280029296875,
+      "y": 72.61923217773438,
       "z": 0.0
      },
      "id": 321,
@@ -250,7 +250,7 @@
       "depth": 23.59615707397461,
       "height": 8.0,
       "width": 23.596158981323242,
-      "x": 189.1357879638672,
+      "x": 189.11390686035156,
       "y": 64.21627044677734,
       "z": 0.0
      },
@@ -260,10 +260,10 @@
     },
     {
      "bbox": {
-      "depth": 23.59615707397461,
+      "depth": 23.596145629882812,
       "height": 8.0,
-      "width": 23.596155166625977,
-      "x": 97.19618225097656,
+      "width": 23.59615135192871,
+      "x": 97.39619445800781,
       "y": 231.1288604736328,
       "z": 0.0
      },
@@ -273,34 +273,34 @@
     }
    ],
    "times": {
-    "conflict_check_time": 235,
-    "detect_overhangs_time": 105,
-    "export_gcode_time": 5100,
+    "conflict_check_time": 217,
+    "detect_overhangs_time": 102,
+    "export_gcode_time": 5131,
     "flush_plan_time": 0,
-    "generate_support_material_time": 622,
-    "infill_generate_time": 473,
-    "infill_time": 1421,
+    "generate_support_material_time": 666,
+    "infill_generate_time": 506,
+    "infill_time": 1477,
     "ironing_time": 0,
-    "make_perimeters_time": 2343,
+    "make_perimeters_time": 2567,
     "multifilament_segment_2d_time": 0,
-    "other_slice_time": 2,
-    "prepare_infill_time": 948,
-    "region_split_time": 3,
+    "other_slice_time": 3,
+    "prepare_infill_time": 971,
+    "region_split_time": 0,
     "skirt_brim_time": 36,
-    "slice_layers_time": 544,
-    "sliced_time": 10023,
-    "sliced_time_with_cache": 5136,
+    "slice_layers_time": 584,
+    "sliced_time": 10365,
+    "sliced_time_with_cache": 5167,
     "support_detect_time": 0,
     "support_interface_time": 0,
     "support_normal_generate_time": 0,
     "support_toolpath_time": 0,
     "support_tree_generate_time": 0,
-    "toolpath_time": 105,
-    "wall_time": 1796,
-    "wipe_tower_time": 52
+    "toolpath_time": 111,
+    "wall_time": 1983,
+    "wipe_tower_time": 54
    },
-   "total_predication": 16116.521484375,
-   "triangle_count": 66832,
+   "total_predication": 16282.322265625,
+   "triangle_count": 66880,
    "warning_message": ""
   }
  },
@@ -314,8 +314,8 @@
    "stud_thumb_nut": 1,
    "tilt_knob": 2
   },
-  "time_h": 4.28,
-  "filament_g": 170.6,
+  "time_h": 4.29,
+  "filament_g": 171.1,
   "warnings": "",
   "layer_height": 0.20000000298023224,
   "sparse_infill_density": 100.0,
@@ -326,34 +326,34 @@
     {
      "filament_id": "GFA00",
      "id": 1,
-     "main_used_g": 170.6494598388672,
-     "total_used_g": 170.6494598388672
+     "main_used_g": 171.14442443847656,
+     "total_used_g": 171.14442443847656
     }
    ],
    "id": 1,
    "layer_filament_change": 0,
-   "main_predication": 15371.115234375,
+   "main_predication": 15419.0029296875,
    "obj_cached_cnt": 0,
    "objects": [
     {
      "bbox": {
       "depth": 45.98571014404297,
       "height": 85.99689483642578,
-      "width": 118.00000762939453,
-      "x": 137.0299835205078,
+      "width": 117.59999084472656,
+      "x": 137.43194580078125,
       "y": 195.0071258544922,
       "z": 0.0
      },
      "id": 129,
      "name": "yoke_hq.stl",
-     "triangle_count": 3264
+     "triangle_count": 3288
     },
     {
      "bbox": {
       "depth": 59.99999237060547,
       "height": 9.0,
-      "width": 96.0,
-      "x": 159.0299835205078,
+      "width": 95.99999237060547,
+      "x": 159.0319366455078,
       "y": 133.0071563720703,
       "z": 0.0
      },
@@ -365,8 +365,8 @@
      "bbox": {
       "depth": 52.0,
       "height": 24.0,
-      "width": 107.0,
-      "x": 148.0299835205078,
+      "width": 106.99999237060547,
+      "x": 148.0319366455078,
       "y": 79.00717163085938,
       "z": 0.0
      },
@@ -379,7 +379,7 @@
       "depth": 82.17496490478516,
       "height": 32.0,
       "width": 48.33019256591797,
-      "x": 92.6796646118164,
+      "x": 93.08161163330078,
       "y": 158.7873077392578,
       "z": 0.0
      },
@@ -392,8 +392,8 @@
       "depth": 47.78343963623047,
       "height": 13.0,
       "width": 47.7834358215332,
-      "x": 113.02345275878906,
-      "y": 115.98600006103516,
+      "x": 113.00108337402344,
+      "y": 115.93827056884766,
       "z": 0.0
      },
      "id": 173,
@@ -402,11 +402,11 @@
     },
     {
      "bbox": {
-      "depth": 23.596153259277344,
+      "depth": 23.596155166625977,
       "height": 8.0,
-      "width": 23.596153259277344,
-      "x": 122.43382263183594,
-      "y": 97.33147430419922,
+      "width": 23.59615135192871,
+      "x": 122.43577575683594,
+      "y": 97.27989196777344,
       "z": 0.0
      },
      "id": 184,
@@ -415,11 +415,11 @@
     },
     {
      "bbox": {
-      "depth": 23.59615707397461,
+      "depth": 23.596155166625977,
       "height": 8.0,
-      "width": 23.596155166625977,
-      "x": 94.97000122070312,
-      "y": 135.285888671875,
+      "width": 23.59615135192871,
+      "x": 94.96805572509766,
+      "y": 135.319091796875,
       "z": 0.0
      },
      "id": 195,
@@ -428,34 +428,34 @@
     }
    ],
    "times": {
-    "conflict_check_time": 177,
-    "detect_overhangs_time": 48,
-    "export_gcode_time": 3158,
+    "conflict_check_time": 183,
+    "detect_overhangs_time": 58,
+    "export_gcode_time": 3328,
     "flush_plan_time": 0,
-    "generate_support_material_time": 307,
-    "infill_generate_time": 375,
-    "infill_time": 867,
+    "generate_support_material_time": 376,
+    "infill_generate_time": 393,
+    "infill_time": 955,
     "ironing_time": 0,
-    "make_perimeters_time": 1381,
+    "make_perimeters_time": 1492,
     "multifilament_segment_2d_time": 0,
     "other_slice_time": 2,
-    "prepare_infill_time": 492,
+    "prepare_infill_time": 562,
     "region_split_time": 1,
     "skirt_brim_time": 20,
-    "slice_layers_time": 337,
-    "sliced_time": 6081,
-    "sliced_time_with_cache": 3178,
+    "slice_layers_time": 355,
+    "sliced_time": 6545,
+    "sliced_time_with_cache": 3348,
     "support_detect_time": 0,
     "support_interface_time": 0,
     "support_normal_generate_time": 0,
     "support_toolpath_time": 0,
     "support_tree_generate_time": 0,
-    "toolpath_time": 88,
-    "wall_time": 1043,
-    "wipe_tower_time": 32
+    "toolpath_time": 94,
+    "wall_time": 1136,
+    "wipe_tower_time": 36
    },
-   "total_predication": 15390.2978515625,
-   "triangle_count": 42920,
+   "total_predication": 15438.185546875,
+   "triangle_count": 42944,
    "warning_message": ""
   }
  }

@@ -1,0 +1,7 @@
+{"name": "stud_mounts_pi_zero_x2",
+ "parts": [{"stl": "../stl/yoke_zero.stl", "copies": 2},
+           {"stl": "../stl/head_zero_case.stl", "copies": 2},
+           {"stl": "../stl/head_zero_back_cover.stl", "copies": 2},
+           {"stl": "../stl/stud_thumb_nut.stl", "copies": 2},
+           {"stl": "../stl/tilt_knob.stl", "copies": 4}],
+ "supports": false, "outdir": "../sliced"}

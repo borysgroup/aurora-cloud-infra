@@ -1,0 +1,193 @@
+{
+  "bambu_studio_version": "02.09.01.70",
+  "bbl_profile_version": "02.09.00.74",
+  "generated_by": "slice_h2d.py resolve",
+  "presets": {
+    "Bambu Lab H2D 0.4 nozzle": {
+      "file": "Bambu Lab H2D 0.4 nozzle.json",
+      "type": "machine",
+      "keys": 116,
+      "sha256": "bcde4b4cad04153386952914e61792967e80a407b2c42af19f95d35144daa8dc",
+      "merged_from": [
+        {
+          "name": "fdm_machine_common",
+          "file": "BBL/machine/fdm_machine_common.json",
+          "sha256": "8adb536acf0fda1ff91e437d6581a2e501ac98b8eea4004115edfd059498c64e"
+        },
+        {
+          "name": "fdm_bbl_3dp_002_common",
+          "file": "BBL/machine/fdm_bbl_3dp_002_common.json",
+          "sha256": "1155134a56c94be6865f1b7e90534b76fff90c73da87d18e2b07f040da7a7b2e"
+        },
+        {
+          "name": "Bambu Lab H2D 0.4 nozzle template machine_start_gcode",
+          "file": "BBL/machine/Bambu Lab H2D 0.4 nozzle template machine_start_gcode.json",
+          "sha256": "885783190201e95c7c7a5743d598a081c51e63162fedb4f639f8b7a5b8200f20"
+        },
+        {
+          "name": "Bambu Lab H2D 0.4 nozzle template machine_end_gcode",
+          "file": "BBL/machine/Bambu Lab H2D 0.4 nozzle template machine_end_gcode.json",
+          "sha256": "b2707f3bf45e72dba0daf7e5d4ed4ee9a8668865452bbb7a6c46a0dbaac58fd8"
+        },
+        {
+          "name": "Bambu Lab H2D 0.4 nozzle template layer_change_gcode",
+          "file": "BBL/machine/Bambu Lab H2D 0.4 nozzle template layer_change_gcode.json",
+          "sha256": "265ec334535be0abe69c8fe8ac66c2425aaf84c3962dcce6dff9a395425c3a7e"
+        },
+        {
+          "name": "Bambu Lab H2D 0.4 nozzle template time_lapse_gcode",
+          "file": "BBL/machine/Bambu Lab H2D 0.4 nozzle template time_lapse_gcode.json",
+          "sha256": "e8f7376381fe7e0586082b8fef5d2d5eaa132d57f36fc17063711b2ae0e018f0"
+        },
+        {
+          "name": "Bambu Lab H2D 0.4 nozzle template wrapping_detection_gcode",
+          "file": "BBL/machine/Bambu Lab H2D 0.4 nozzle template wrapping_detection_gcode.json",
+          "sha256": "a3863ec8c9cf38663b22c573dea0392adc39c61211307fd90e31ed11171781c7"
+        },
+        {
+          "name": "Bambu Lab H2D 0.4 nozzle template change_filament_gcode",
+          "file": "BBL/machine/Bambu Lab H2D 0.4 nozzle template change_filament_gcode.json",
+          "sha256": "519ccd20c3ee60d89b5bb922e99e92170a8f3d360768a5907d36adfa555ecabf"
+        },
+        {
+          "name": "Bambu Lab H2D 0.4 nozzle",
+          "file": "BBL/machine/Bambu Lab H2D 0.4 nozzle.json",
+          "sha256": "fa8705d5e654edb3597e77f85c495e24ccb3d6a90d486cef80a80296833f0c4d"
+        }
+      ],
+      "include_overrides_inherited_value": [
+        "Bambu Lab H2D 0.4 nozzle template machine_start_gcode: machine_start_gcode",
+        "Bambu Lab H2D 0.4 nozzle template machine_end_gcode: machine_end_gcode",
+        "Bambu Lab H2D 0.4 nozzle template layer_change_gcode: layer_change_gcode",
+        "Bambu Lab H2D 0.4 nozzle template time_lapse_gcode: time_lapse_gcode",
+        "Bambu Lab H2D 0.4 nozzle template wrapping_detection_gcode: wrapping_detection_gcode",
+        "Bambu Lab H2D 0.4 nozzle template change_filament_gcode: change_filament_gcode"
+      ]
+    },
+    "0.20mm Standard @BBL H2D": {
+      "file": "0.20mm Standard @BBL H2D.json",
+      "type": "process",
+      "keys": 211,
+      "sha256": "61dfd2774dd1f2d57ddc1c69bf6e63d39d410fed8aa8a7c4728002ed987c6ec8",
+      "merged_from": [
+        {
+          "name": "fdm_process_common",
+          "file": "BBL/process/fdm_process_common.json",
+          "sha256": "01aade8883965f60ec3e481680946a13d1656ed94741d887125938edf4d3e36b"
+        },
+        {
+          "name": "fdm_process_dual_common",
+          "file": "BBL/process/fdm_process_dual_common.json",
+          "sha256": "df8e9a0a63217304c8c196a6bbfd0806abdf0cb46cbdc3fa972c784075028ac3"
+        },
+        {
+          "name": "fdm_process_dual_0.20_nozzle_0.4",
+          "file": "BBL/process/fdm_process_dual_0.20_nozzle_0.4.json",
+          "sha256": "8015670b40629f69ec2a2bff47d549d778e95ee545350e5fa9f60f8d8cbf2adc"
+        },
+        {
+          "name": "0.20mm Standard @BBL H2D",
+          "file": "BBL/process/0.20mm Standard @BBL H2D.json",
+          "sha256": "b7b8b85568a62ddb58f05c685058a61197e51e1ce9e4263d8d6e4bb6cea50b35"
+        }
+      ],
+      "include_overrides_inherited_value": []
+    },
+    "0.20mm Balanced Strength @BBL H2D": {
+      "file": "0.20mm Balanced Strength @BBL H2D.json",
+      "type": "process",
+      "keys": 211,
+      "sha256": "41efc830d9ea3a853ca3990c8ef8bbb17bea73ba500d9f8aeec3790798e3a01f",
+      "merged_from": [
+        {
+          "name": "fdm_process_common",
+          "file": "BBL/process/fdm_process_common.json",
+          "sha256": "01aade8883965f60ec3e481680946a13d1656ed94741d887125938edf4d3e36b"
+        },
+        {
+          "name": "fdm_process_dual_common",
+          "file": "BBL/process/fdm_process_dual_common.json",
+          "sha256": "df8e9a0a63217304c8c196a6bbfd0806abdf0cb46cbdc3fa972c784075028ac3"
+        },
+        {
+          "name": "fdm_process_dual_0.20_nozzle_0.4",
+          "file": "BBL/process/fdm_process_dual_0.20_nozzle_0.4.json",
+          "sha256": "8015670b40629f69ec2a2bff47d549d778e95ee545350e5fa9f60f8d8cbf2adc"
+        },
+        {
+          "name": "0.20mm Balanced Strength @BBL H2D",
+          "file": "BBL/process/0.20mm Balanced Strength @BBL H2D.json",
+          "sha256": "2fb53f19ea8f2d3ea75fbb16e63217125b46ba8b717ec6896fde1eec1609cee9"
+        }
+      ],
+      "include_overrides_inherited_value": []
+    },
+    "Bambu PLA Basic @BBL H2D": {
+      "file": "Bambu PLA Basic @BBL H2D.json",
+      "type": "filament",
+      "keys": 142,
+      "sha256": "9fe6fd632644bed756e13eff874688de759a640d4190b0595a0c57115ad0cf88",
+      "merged_from": [
+        {
+          "name": "fdm_filament_common",
+          "file": "BBL/filament/fdm_filament_common.json",
+          "sha256": "20cd180533ef29214dea72fb96173758719a263f6109a781a5ecdd22b6ba771f"
+        },
+        {
+          "name": "fdm_filament_pla",
+          "file": "BBL/filament/fdm_filament_pla.json",
+          "sha256": "94dea69d9e7270e2321ac191749bad102150c49a7b8eceff8a2dd4ca4fd6ff10"
+        },
+        {
+          "name": "Bambu PLA Basic @base",
+          "file": "BBL/filament/Bambu PLA Basic @base.json",
+          "sha256": "323f1054521c15ad53e39550d1a9c49e8d3d775e443cceb8a9bed7770701f586"
+        },
+        {
+          "name": "fdm_filament_template_direct_dual_e3d",
+          "file": "BBL/filament/fdm_filament_template_direct_dual_e3d.json",
+          "sha256": "308498826d6206f611be063e9ed7e6afe50b48e5410bb9e132f00eda483eab19"
+        },
+        {
+          "name": "Bambu PLA Basic @BBL H2D",
+          "file": "BBL/filament/Bambu PLA Basic @BBL H2D.json",
+          "sha256": "157e8d4e3a3c565ce357f548727a3b0e9e9e5fe686a7c1289614dd879ab90a02"
+        }
+      ],
+      "include_overrides_inherited_value": [
+        "fdm_filament_template_direct_dual_e3d: filament_adaptive_volumetric_speed",
+        "fdm_filament_template_direct_dual_e3d: filament_preheat_temperature_delta",
+        "fdm_filament_template_direct_dual_e3d: filament_deretraction_speed",
+        "fdm_filament_template_direct_dual_e3d: filament_enable_overhang_speed",
+        "fdm_filament_template_direct_dual_e3d: filament_extruder_variant",
+        "fdm_filament_template_direct_dual_e3d: filament_flush_temp",
+        "fdm_filament_template_direct_dual_e3d: filament_flush_temp_fast",
+        "fdm_filament_template_direct_dual_e3d: filament_flush_volumetric_speed",
+        "fdm_filament_template_direct_dual_e3d: filament_long_retractions_when_cut",
+        "fdm_filament_template_direct_dual_e3d: filament_overhang_1_4_speed",
+        "fdm_filament_template_direct_dual_e3d: filament_overhang_2_4_speed",
+        "fdm_filament_template_direct_dual_e3d: filament_overhang_3_4_speed",
+        "fdm_filament_template_direct_dual_e3d: filament_overhang_4_4_speed",
+        "fdm_filament_template_direct_dual_e3d: filament_overhang_totally_speed",
+        "fdm_filament_template_direct_dual_e3d: filament_bridge_speed",
+        "fdm_filament_template_direct_dual_e3d: filament_pre_cooling_temperature",
+        "fdm_filament_template_direct_dual_e3d: filament_pre_cooling_temperature_nc",
+        "fdm_filament_template_direct_dual_e3d: filament_ramming_travel_time_nc",
+        "fdm_filament_template_direct_dual_e3d: filament_retract_length_nc",
+        "fdm_filament_template_direct_dual_e3d: filament_ramming_volumetric_speed",
+        "fdm_filament_template_direct_dual_e3d: filament_ramming_volumetric_speed_nc",
+        "fdm_filament_template_direct_dual_e3d: filament_retract_before_wipe",
+        "fdm_filament_template_direct_dual_e3d: filament_retract_restart_extra",
+        "fdm_filament_template_direct_dual_e3d: filament_retract_when_changing_layer",
+        "fdm_filament_template_direct_dual_e3d: filament_retraction_distances_when_cut",
+        "fdm_filament_template_direct_dual_e3d: filament_retraction_minimum_travel",
+        "fdm_filament_template_direct_dual_e3d: filament_retraction_speed",
+        "fdm_filament_template_direct_dual_e3d: filament_z_hop",
+        "fdm_filament_template_direct_dual_e3d: long_retractions_when_ec",
+        "fdm_filament_template_direct_dual_e3d: override_process_overhang_speed",
+        "fdm_filament_template_direct_dual_e3d: retraction_distances_when_ec",
+        "fdm_filament_template_direct_dual_e3d: volumetric_speed_coefficients"
+      ]
+    }
+  }
+}

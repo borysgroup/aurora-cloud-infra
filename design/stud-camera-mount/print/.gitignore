@@ -1,0 +1,4 @@
+profiles/*.json
+!profiles/manifest.json
+out/
+sliced/*.slicer.log

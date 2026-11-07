@@ -27,9 +27,18 @@ import math
 import cadquery as cq
 
 # ---------------------------------------------------------------------------------------------- parameters
-STUD = dict(d=6.0, clear=6.6, length=25.0, nut_af=10.0, nut_t=5.0, weld_d=14.0, weld_h=1.5)   # assumed M6 x 25
-KNOB = dict(d=34.0, h=13.0, flutes=10)                   # thumb nut on the stud (an M6 hex nut pressed in)
-TILT = dict(clear=4.4, insert_d=5.6, insert_l=7.0, knob_d=24.0, knob_h=9.0, head_d=7.4, head_h=4.2)  # M4 + insert
+STUD = dict(d=6.0, clear=6.6, length=25.0, nut_af=10.0, nut_t=5.2, weld_d=14.0, weld_h=1.5,  # assumed M6 x 25;
+            washer_d=18.0, washer_t=1.6)                 # ISO 4032 nut (m <= 5.2), ISO 7093 washer 6.4 x 18 x 1.6
+# Thumb nut on the stud. The nut sits in a hex pocket and the large washer in a recess above it, standing WASHER_PROUD
+# above the knob's face, so the clamp load runs stud -> nut -> washer -> pad and never through the printed knob.
+KNOB = dict(d=34.0, h=13.0, flutes=10, hex_af=10.15, washer_proud=0.5, recess_gap=0.3)
+# Tilt joint: an M4 x 16 HEX-HEAD bolt (ISO 4017, 7 mm across flats, k = 2.8) driven by the knob's hex pocket, into a
+# standard M4 x 8.1 heat-set insert (5.6 mm hole) that sits wholly inside the head's boss. A socket-head cap screw
+# would spin in the hex pocket.
+# An ISO 7089 washer (4.3 x 9 x 0.8) under the bolt head spreads its load on the knob (the head's own bearing ring is
+# only ~12 mm^2).
+TILT = dict(clear=4.4, insert_d=5.6, insert_l=8.1, hole=9.1, bolt_l=16.0, knob_d=24.0, knob_h=9.0, hex_af=7.3,
+            head_h=2.8, washer_d=9.0, washer_t=0.8)
 PAD = dict(t=8.0, d=46.0, bar_w=24.0)                    # the yoke's top, against the ceiling
 ARM_T = 5.0
 SWING_CLEAR = 3.0                                        # head to stud tip / thumb nut, at any tilt
@@ -193,9 +202,10 @@ def pi_zero_parts():
 
 # ----------------------------------------------------------------------------------------------- heads
 ZERO = dict(half=34.0, cheek_t=2.5, zmax=17.0, plate_t=2.5, back=(15.5, 18.0), lens_x=-14.0, lens_z=1.5,
-            cm3_gap=1.5, pi_y=10.0, axis_y=9.0, boss_d=16.0, boss_t=1.0)
+            cm3_gap=1.5, pi_y=10.5, axis_y=9.0, boss_d=16.0, boss_t=7.6)
 HQ = dict(plate=(-48.0, 48.0, -26.0, 26.0), plate_t=5.0, hq_x=-15.0, hq_standoff=4.0, wide_x=24.0, wide_z=2.0,
-          pi_carrier_y=24.0, pi_standoff=5.0, axis_y=10.0, boss_d=18.0, boss_t=2.0)
+          pi_carrier_y=24.0, pi_standoff=5.0, axis_y=14.0, boss_d=18.0, boss_t=6.1)   # boss within the cheek: no overhang
+M25_CLEAR, M2_CLEAR = 2.7, 2.2
 HQ["nose_y"] = -(round(HQ_CS_SEAT - HQ["plate_t"] - HQ["hq_standoff"] + LENS_ZOOM["profile"][-1][1]))  # lens front
 
 
@@ -211,14 +221,18 @@ def head_zero_parts():
     for sx in (-1, 1):                                               # tilt bosses with M4 heat-set inserts
         x0 = a + ct if sx > 0 else -a - ct - h["boss_t"]
         case = case.union(xcyl(h["boss_d"], x0, x0 + h["boss_t"], h["axis_y"], 0.0))
+        # "tombstone" down to the front face, so the boss stands on the bed when the case prints front-down
+        case = case.union(box(x0, 0.0, -h["boss_d"] / 2, x0 + h["boss_t"], h["axis_y"], h["boss_d"] / 2))
         xi = a + ct + h["boss_t"] if sx > 0 else -a - ct - h["boss_t"]
-        case = case.cut(xcyl(TILT["insert_d"], xi, xi - sx * TILT["insert_l"], h["axis_y"], 0.0))
+        case = case.cut(xcyl(TILT["insert_d"], xi, xi - sx * TILT["hole"], h["axis_y"], 0.0))
+    for u, v in PIZ["holes"]:                                        # M2.5 screws into the Pi's standoffs
+        case = case.cut(ycyl(M25_CLEAR, -1, pt + 1, PIZ["w"] / 2 - u, v - PIZ["h"] / 2))
     lx, lz = h["lens_x"], h["lens_z"]
     case = case.cut(box(lx - 5.0, -1, lz - 5.0, lx + 5.0, pt + 1, lz + 5.0))          # window for the lens housing
     for sx in (-1, 1):
         for dz in (CM3["lens_from_top"] - 2.0, CM3["lens_from_top"] - 14.5):
             case = case.cut(ycyl(2.2, -1, pt + 1, lx + sx * 10.5, lz + dz))             # M2 screws for the camera
-    case = case.cut(box(a - 1, h["pi_y"] - 1, -6.0, a + ct + 1, h["back"][0] + 1, 6.0))   # microSD slot
+    case = case.cut(box(a - 1, h["pi_y"] - 1, -6.0, a + ct, h["back"][0] + 1, 6.0))   # microSD slot (not into the boss)
     back = box(-a - ct, h["back"][0], -zm, a + ct, h["back"][1], zm).edges("|Y").fillet(3.0)
     for i in range(5):                                                                # vents
         back = back.cut(box(-20 + i * 10, h["back"][0] - 1, -8, -16 + i * 10, h["back"][1] + 1, 8))
@@ -258,6 +272,9 @@ def head_hq_parts(wide=True):
     foot = _to_head(_poly_z(_hq_tripod_outline(), -HQ_HOUSING_FRONT - 1, 2.0), hq_at)
     lock = _to_head(box(-6.1, 15.0, -HQ_HOUSING_FRONT - 1, 6.1, 22.6, 2.0), hq_at)
     plate = plate.cut(foot).cut(lock)
+    for sx in (-1, 1):                                               # M2.5 screws into the HQ Camera's standoffs
+        for sz in (-1, 1):
+            plate = plate.cut(ycyl(M25_CLEAR, -1, pt + 1, h["hq_x"] + sx * HQ_PITCH / 2, sz * HQ_PITCH / 2))
     p["camera plate"] = (plate, "petg")
     if wide:
         plate = plate.cut(box(h["wide_x"] - 12.0, -1, h["wide_z"] - 16.0, h["wide_x"] + 4.0, pt + 1,
@@ -270,6 +287,9 @@ def head_hq_parts(wide=True):
                             h["wide_z"] + 5.7))
         nose = nose.union(box(wx0, ny, h["wide_z"] - 20, wx1, 0, h["wide_z"] - 16))
         nose = nose.union(box(wx1 - 4, ny + 5, h["wide_z"] - 16, wx1, 0, h["wide_z"] + 8))
+        for sx in (-1, 1):                                           # M2 screws for the Wide
+            for dz in (CM3["lens_from_top"] - 2.0, CM3["lens_from_top"] - 14.5):
+                nose = nose.cut(ycyl(M2_CLEAR, ny - 1, ny + 6, h["wide_x"] + sx * 10.5, h["wide_z"] + dz))
         p["Wide nose"] = (nose, "petg")
         wide_at = (h["wide_x"], ny + 5 + 2.5, h["wide_z"])
         for name, (s, m) in cm3_parts(wide=True).items():
@@ -281,7 +301,10 @@ def head_hq_parts(wide=True):
         xb = x1 if sx > 0 else x0 - h["boss_t"]
         cheeks = cheeks.union(xcyl(h["boss_d"], xb, xb + h["boss_t"], h["axis_y"], 0.0))
         xi = x1 + h["boss_t"] if sx > 0 else x0 - h["boss_t"]
-        cheeks = cheeks.cut(xcyl(TILT["insert_d"], xi, xi - sx * TILT["insert_l"], h["axis_y"], 0.0))
+        cheeks = cheeks.cut(xcyl(TILT["insert_d"], xi, xi - sx * TILT["hole"], h["axis_y"], 0.0))
+    for u, v in PI5["holes"]:                                        # M2.5 screws into the Pi 5's standoffs
+        carrier = carrier.cut(ycyl(M25_CLEAR, h["pi_carrier_y"] - 1, h["pi_carrier_y"] + 5, PI5["w"] / 2 - u,
+                                   v - PI5["h"] / 2))
     p["Pi carrier"] = (carrier, "petg")
     p["cheeks"] = (cheeks, "petg")
     for name, (s, m) in hq_camera_parts().items():
@@ -362,7 +385,7 @@ def swing_radius_behind(kind):
 def tilt_depth(kind):
     """Depth of the tilt axis below the ceiling: the head clears the stud's tip and the thumb nut when it looks
     anywhere from level to straight down. The zero head is small enough to clear them at any angle."""
-    top = max(PAD["t"] + KNOB["h"], STUD["length"])
+    top = max(PAD["t"] + KNOB["washer_proud"] + KNOB["h"], STUD["length"])
     r = swing_radius(kind) if kind == "zero" else swing_radius_behind(kind)
     return math.ceil(top + SWING_CLEAR + r)
 
@@ -391,22 +414,28 @@ def yoke(kind):
 
 
 def stud_knob():
-    """Thumb nut, mount frame (its top against the pad): an M6 nut pressed into a hex pocket, the stud through."""
+    """Thumb nut, mount frame: an M6 nut in a hex pocket, a large washer on it in a recess, standing proud of the
+    knob's face so it, not the knob, bears on the pad; the stud through."""
     k = KNOB
-    z0 = -PAD["t"] - k["h"]
+    ztop = -PAD["t"] - k["washer_proud"]                   # the knob's face, just below the pad
+    z0 = ztop - k["h"]
     knob = cyl(k["d"], k["h"], z=z0)
     for i in range(k["flutes"]):
         a = 2 * math.pi * i / k["flutes"]
         knob = knob.cut(cyl(6.0, k["h"] + 2, x=(k["d"] / 2 + 1.2) * math.cos(a), y=(k["d"] / 2 + 1.2) * math.sin(a),
                             z=z0 - 1))
     knob = knob.cut(cyl(STUD["clear"], k["h"] + 2, z=z0 - 1))
-    hexp = (cq.Workplane("XY").polygon(6, (STUD["nut_af"] + 0.3) / math.cos(math.pi / 6))
-            .extrude(STUD["nut_t"] + 0.3).translate((0, 0, -PAD["t"] - STUD["nut_t"] - 0.3)))
+    washer_bot = -PAD["t"] - STUD["washer_t"]
+    recess_floor = washer_bot - k["recess_gap"]
+    knob = knob.cut(cyl(STUD["washer_d"] + 0.6, ztop + 1 - recess_floor, z=recess_floor))
+    hex_floor = washer_bot - STUD["nut_t"]
+    hexp = (cq.Workplane("XY").polygon(6, k["hex_af"] / math.cos(math.pi / 6))
+            .extrude(recess_floor - hex_floor + 0.01).translate((0, 0, hex_floor)))
     return knob.cut(hexp)
 
 
 def tilt_knobs(kind):
-    """Two thumb knobs on M4 x 16 cap screws, mount frame, outside the yoke's arms on the tilt axis."""
+    """Two thumb knobs on M4 x 16 hex-head bolts, mount frame, outside the yoke's arms on the tilt axis."""
     half, _ = head_spec(kind)
     depth = tilt_depth(kind)
     a1 = half + 0.5 + ARM_T
@@ -420,8 +449,11 @@ def tilt_knobs(kind):
             k = k.cut(xcyl(5.0, x0 - 1, x0 + t["knob_h"] + 1, (t["knob_d"] / 2 + 1.0) * math.cos(a),
                            -depth + (t["knob_d"] / 2 + 1.0) * math.sin(a)))
         out = k if out is None else out.union(k)
-        xs = a1 + t["knob_h"] - 2.0 if sx > 0 else -a1 - t["knob_h"] + 2.0
-        sc = xcyl(4.0, xs, sx * (half - 6.0), 0.0, -depth)
+        xh = a1 + t["knob_h"] - t["head_h"] - 0.2 if sx > 0 else -a1 - t["knob_h"] + t["head_h"] + 0.2  # under head
+        sc = xcyl(4.0, xh, xh - sx * t["bolt_l"], 0.0, -depth)
+        hx = (cq.Workplane("YZ").polygon(6, 7.0 / math.cos(math.pi / 6)).extrude(t["head_h"])
+              .translate((min(xh, xh + sx * t["head_h"]), 0.0, -depth)))
+        sc = sc.union(hx)
         screws = sc if screws is None else screws.union(sc)
     return out, screws
 
@@ -505,8 +537,10 @@ def _one_tilt_knob():
         knob = knob.cut(cyl(5.0, k["knob_h"] + 2, x=(k["knob_d"] / 2 + 1.0) * math.cos(a),
                             y=(k["knob_d"] / 2 + 1.0) * math.sin(a), z=-1))
     knob = knob.cut(cyl(TILT["clear"], k["knob_h"] + 2, z=-1))
-    return knob.cut(cq.Workplane("XY").polygon(6, 7.3 / math.cos(math.pi / 6)).extrude(k["head_h"] + 0.2)
-                    .translate((0, 0, k["knob_h"] - k["head_h"] - 0.2)))
+    hex_floor = k["knob_h"] - k["head_h"] - 0.2
+    knob = knob.cut(cyl(k["washer_d"] + 0.4, k["washer_t"] + 0.1 + 0.01, z=hex_floor - k["washer_t"] - 0.1))
+    return knob.cut(cq.Workplane("XY").polygon(6, k["hex_af"] / math.cos(math.pi / 6)).extrude(k["head_h"] + 0.21)
+                    .translate((0, 0, hex_floor)))
 
 
 if __name__ == "__main__":

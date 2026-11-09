@@ -7,13 +7,11 @@ simplified solids for CAD (STEP/STL) are in cad.py; both read the same numbers.
 import numpy as np
 import pyvista as pv
 
-from . import robot
+from . import robot, specs
 from .params import (ANTE_DOOR_C, ANTE_DOOR_R, BACK_LEAN, CEILING_SLOT, CEILING_STUD_LEN, CEILING_STUD_NOTES,
-                     CEILING_STUDS_DROP, COLUMN_XY, DOME_C, ESTOP_C, EXF_DECK_Z, EXF_STROKE, EXF_X0, EXF_X1,
-                     EXF_Y0, EXF_Y1, FILTER_C, FLANGE_PITCH, FLANGE_STUD_LEN, FRONT_LEAN, GB_D, GB_H, GB_W,
-                     GLOVE_R, GLOVE_X, GLOVE_Z, MICRO_OBJ_C, MICRO_STAGE_C, MINI_C, MINI_R, OPENING, PLATE_C,
-                     PLATE_SIZE, RISER_H, SHELF_T, SIGN, SPOOL_C, STAND_H, STUD_D, T6, TERMINAL_BOX,
-                     TIP_C, TRAY_SIZE, WALL_T, BASE_BACK, from_drop)
+                     CEILING_STUDS_DROP, DOME_C, FILTER_C, FLANGE_PITCH, FLANGE_STUD_LEN, FRONT_LEAN, GB_D, GB_H,
+                     GB_W, GLOVE_R, GLOVE_X, GLOVE_Z, MINI_C, MINI_R, OPENING, PLATE_C, SHELF_T, SIGN, STAND_H,
+                     STUD_D, TERMINAL_BOX, TIP_C, WALL_T, from_drop)
 from .primitives import box, box_from, cyl, ring, tube_path
 
 STAINLESS = "#c9ced3"
@@ -149,69 +147,35 @@ def antechambers():
     return pv.merge(big), pv.merge(mini)
 
 
-# --- Exfoliator ------------------------------------------------------------------------------------------
-# From the antechamber end: the gantry with its cable chain, the Montalvo controller, the press column with
-# the roller under the tape spool, the rear linear stage with the white substrate plate the Epson drops the
-# chip tray on, the heater/fan box, the e-stop on the LED source, and the microscope.
+# --- Specs to meshes ------------------------------------------------------------------------------------------
+
+def to_pv(spec):
+    """PyVista mesh of one primitive spec (see specs.py)."""
+    k = spec["kind"]
+    if k == "box":
+        return box_from(spec["lo"], spec["hi"])
+    if k == "obox":
+        m = box((0, 0, 0), spec["size"])
+        m.rotate_z(spec["yaw"], inplace=True)
+        return m.translate(spec["center"], inplace=False)
+    if k == "cyl":
+        return cyl(spec["center"], spec["direction"], spec["r"], spec["h"])
+    if k == "ring":
+        return ring(spec["center"], spec["normal"], spec["r_in"], spec["r_out"], spec["t"])
+    if k == "tube":
+        return tube_path(spec["points"], spec["r"])
+    if k == "ribbon":
+        return pv.Spline(spec["points"], 60).ribbon(width=spec["width"], normal=spec["normal"])
+    raise ValueError(k)
+
+
+def from_specs(spec_list):
+    return [(to_pv(sp), sp["color"]) for sp in spec_list]
+
 
 def exfoliator():
-    """Returns a list of (mesh, color) for the exfoliator."""
-    out = []
-    x0, x1, y0, y1, dz = EXF_X0, EXF_X1, EXF_Y0, EXF_Y1, EXF_DECK_Z
-    xb = ESTOP_C[0] - 240.0     # the breadboard stops before the fan box; the far-end items stand on the deck
-    out.append((box_from((x0, y0, dz - 13), (xb, y1, dz)), BLACK))                        # breadboard
-    for px in (x0 + 40, (x0 + xb) / 2, xb - 40):
-        for py in (y0 + 40, y1 - 40):
-            out.append((cyl((px, py, (dz - 13) / 2), (0, 0, 1), 14, dz - 13), STAINLESS))
-    out.append((box_from((x0, y0 - 18, dz - 30), (xb, y0 + 4, dz + 22)), "#2b5fd9"))    # slotted cable rail, front
-    # gantry at the antechamber end: Z axis on a short X axis, drag chain, blue vacuum lines
-    gx, gy = x0 + 90, y0 + 190
-    out.append((box((gx, gy, dz + 25), (150, 300, 50)), ALUMINIUM))
-    out.append((box((gx, gy - 30, dz + 200), (60, 70, 300)), BLACK))
-    out.append((box((gx + 10, gy - 70, dz + 380), (60, 60, 60)), BLACK))                 # Z motor
-    for dzz in (0, 16):
-        pts = [(gx + 20, gy - 80, dz + 260 + dzz), (gx + 120, gy - 120, dz + 300 + dzz),
-               (gx + 260, gy - 150, dz + 140 + dzz), (gx + 330, y0 + 10, dz + 40 + dzz)]
-        out.append((tube_path(pts, 6), BLUE_TUBE))
-    out.append((box((x0 + 140, y0 + 30, dz + 70), (110, 35, 80)), "#3a8ee8"))             # Montalvo controller
-    # rear linear stage: 400 mm-stroke ball-screw axis along x with the white substrate plate
-    sy = PLATE_C[1]
-    ax_len = EXF_STROKE + 210.0
-    ax_x0 = PLATE_C[0] - 0.35 * ax_len
-    out.append((box_from((ax_x0, sy - 40, dz), (ax_x0 + ax_len, sy + 40, dz + 40)), ALUMINIUM))
-    out.append((cyl((ax_x0 + ax_len / 2, sy, dz + 48), (1, 0, 0), 8, ax_len - 20), "#b0b4b8"))
-    out.append((box((ax_x0 + ax_len + 38, sy, dz + 30), (76, 57, 57)), BLACK))           # NEMA 23
-    pz = PLATE_C[2]
-    out.append((box((PLATE_C[0], sy, (dz + 40 + pz) / 2), (90, 70, pz - dz - 40)), BLACK))  # carriage riser
-    out.append((box((PLATE_C[0], sy, pz - 4), (PLATE_SIZE[0], PLATE_SIZE[1], 8)), "#e6e8ea"))
-    # press column with the roller under the supply spool
-    cx, cy = COLUMN_XY
-    out.append((box((cx, cy, dz + 160), (150, 26, 320)), ALUMINIUM))
-    tx, ty, tz = TIP_C
-    out.append((box((tx, ty, tz + 75), (60, 40, 110)), ALUMINIUM))
-    out.append((cyl((tx, ty, tz + 12), (0, 1, 0), 12, 30), YELLOW))                       # roller
-    out.append((box((tx, ty, tz - 6), (200, 70, 8)), "#9aa3ad"))                           # carrier on the front stage
-    sx, sy_, sz = SPOOL_C
-    out.append((ring((sx, sy_, sz), (0, 1, 0), 22, 52, 46), RED_HUB))
-    out.append((ring((sx, sy_, sz), (0, 1, 0), 52, 76, 40), BLUE_TAPE))
-    out.append((box((sx - 120, sy_ + 10, sz), (90, 60, 60)), BLACK))                       # reel motor
-    web = pv.Spline(np.array([(sx - 30, sy_, sz - 72), (tx + 30, ty, tz + 40), (tx, ty, tz + 25),
-                              (tx - 40, ty, tz + 30), (tx - 90, ty, tz + 120)]), 60)
-    out.append((web.ribbon(width=17, normal=(0, 1, 0)), "#5b8def"))
-    # heater/fan box, e-stop on the LED source, microscope at the far end
-    out.append((box((ESTOP_C[0] - 150, y0 + 90, 80), (150, 140, 160)), "#1b1c1e"))
-    ex, ey, ez = ESTOP_C
-    out.append((box((ex, ey, (ez - 35) / 2), (140, 110, ez - 35)), "#e9e9e9"))             # LED source
-    out.append((box((ex, ey, ez), (80, 80, 70)), YELLOW))
-    out.append((cyl((ex, ey, ez + 50), (0, 0, 1), 22, 30), RED_HUB))
-    mx, my, mz = MICRO_STAGE_C
-    out.append((box((mx, my + 20, mz - 10), (200, 160, 20)), "#2d3034"))                 # XY stage
-    ox, oy, oz = MICRO_OBJ_C
-    out.append((box((mx, my + 20, (mz - 20) / 2), (120, 100, mz - 20)), "#2d3034"))       # stage support
-    out.append((box_from((x1 - 120, my + 120, 0), (x1 - 10, y1, dz + 420)), "#e4e6e8"))   # stand
-    out.append((box_from((ox - 70, oy - 60, oz + 40), (x1 - 10, y1, oz + 200)), "#e4e6e8"))  # arm and head
-    out.append((cyl((ox, oy, oz + 20), (0, 0, 1), 16, 50), "#2d3034"))                    # objective
-    return out
+    """Returns a list of (mesh, color) for the exfoliator (specs.exfoliator_specs)."""
+    return from_specs(specs.exfoliator_specs())
 
 
 def exfoliator_tip():
@@ -225,7 +189,7 @@ TRAY_C = PLATE_C.copy()   # the chip tray sits on the substrate plate
 def pnp_tray():
     """8 x 8 chip tray in its metal holder, on the substrate plate (6 Nov close-up)."""
     cx, cy, cz = TRAY_C
-    out = [(box((cx, cy, cz + TRAY_SIZE[2] / 2), TRAY_SIZE), "#c3c8cd")]
+    out = from_specs([specs.tray_spec()])
     for i in range(8):
         for j in range(8):
             out.append((box((cx - 56 + i * 16, cy - 49 + j * 14, cz + 15), (11, 10, 2)), "#6f7f99"))
@@ -234,76 +198,18 @@ def pnp_tray():
 
 # --- Epson T6-B602S ---------------------------------------------------------------------------------------
 
-def _seg(a, b, w, z0, z1, end_r=None):
-    """Link from a to b (xy), width w, between heights z0 and z1, with rounded ends."""
-    vec = b - a
-    seg = box((0, 0, 0), (np.linalg.norm(vec), w, z1 - z0))
-    seg.rotate_z(np.degrees(np.arctan2(vec[1], vec[0])), inplace=True)
-    mid = (a + b) / 2
-    seg.translate((mid[0], mid[1], (z0 + z1) / 2), inplace=True)
-    r = w / 2 if end_r is None else end_r
-    return [seg] + [cyl((p[0], p[1], (z0 + z1) / 2), (0, 0, 1), r, z1 - z0) for p in (a, b)]
-
-
-def duct_path(j1, j2, riser=None):
-    """Centre line of the black corrugated duct: base top (over J1) to the top of arm 2 (over J2), arching to
-    just under the ceiling."""
-    bz = RISER_H if riser is None else riser
-    top_z, dt = bz + T6["arm2"][1] + 25.0, robot.duct_top(bz) - 18.0
-    mid = (j1 + j2) / 2
-    return [(j1[0], j1[1], top_z), (j1[0], j1[1], (top_z + dt) / 2 + 20), (*(j1 + 0.25 * (j2 - j1)), dt - 8),
-            (mid[0], mid[1], dt), (*(j1 + 0.75 * (j2 - j1)), dt - 8), (j2[0], j2[1], (top_z + dt) / 2 + 20),
-            (j2[0], j2[1], top_z)]
-
-
 def scara(target=None, quill_z=None, riser=None):
     """Epson T6-B602S, arm posed over `target` (x, y); returns (parts, tool point)."""
-    out = []
-    bx, by, bz = robot.base_xyz(riser)
-    target = robot.PARK_J3 if target is None else np.asarray(target, float)[:2]
-    quill_z = bz + 120.0 if quill_z is None else quill_z
-    j1, j2, j3 = robot.joints(target)
-    u = np.asarray(BASE_BACK, float)
-    w, front, back = T6["base"]
-
-    def base_box(z0, z1, b0, b1, width):
-        c = j1 + u * (b0 + b1) / 2
-        m = box((0, 0, 0), (width, b1 - b0, z1 - z0))
-        m.rotate_z(np.degrees(np.arctan2(u[1], u[0])) - 90.0, inplace=True)
-        return m.translate((c[0], c[1], (z0 + z1) / 2), inplace=False)
-
-    out.append((base_box(SHELF_T, bz, -front - 40, back + 40, w + 80), "#b9bec4"))           # riser block
-    out.append((base_box(bz, bz + T6["arm1"][0], -front, back, w), EPSON_WHITE))             # lower base
-    out.append((base_box(bz + T6["arm1"][0], bz + T6["box"][0], 70.0, back, w), EPSON_WHITE))
-    out.append((base_box(bz + T6["box"][0], bz + T6["box"][1], -10.0, back, w), EPSON_GREY))  # controller box
-    out.append((cyl((bx, by, bz + T6["box"][1] + 12), (0, 0, 1), 12, 24), "#ff9d2e"))       # lamp
-    for m in _seg(j1, j2, T6["arm1_w"], bz + T6["arm1"][0], bz + T6["arm1"][1], end_r=67.0):
-        out.append((m, EPSON_WHITE))
-    for m in _seg(j2, j3, T6["arm2_w"], bz + T6["arm2"][0], bz + T6["arm2"][1], end_r=T6["arm2_end"]):
-        out.append((m, EPSON_GREY))
-    out.append((cyl((j3[0], j3[1], bz + T6["arm2"][0] - 12), (0, 0, 1), 30, 24), "#2f5fb3"))  # blue ring
-    shaft_top = robot.shaft_top_z(quill_z)
-    out.append((cyl((j3[0], j3[1], (quill_z + shaft_top) / 2), (0, 0, 1), T6["shaft_r"], shaft_top - quill_z),
-                "#b5b9bd"))
-    out.append((cyl((j3[0], j3[1], shaft_top - 6), (0, 0, 1), T6["nut_r"], 12), "#3a3d41"))
-    out.append((box((j3[0], j3[1], quill_z - 15), (40, 40, 30)), "#3a3d41"))                # vacuum tool
-    out.append((tube_path(duct_path(j1, j2, bz), 18), BLACK))
-    return out, np.array([j3[0], j3[1], quill_z])
+    sp, tool = specs.scara_specs(target, quill_z, riser)
+    return from_specs(sp), tool
 
 
-def scara_envelope(riser=None):
-    """The robot's swept volume (full J1 turn) as one mesh, clipped to the box."""
-    e = robot.envelope(riser)
-    bx, by, _ = robot.base_xyz(riser)
-    z0 = e["riser"] - 12.0
-
-    def c(r, za, zb, res=96):
-        return pv.Cylinder(center=(bx, by, (za + zb) / 2), direction=(0, 0, 1), radius=r, height=zb - za,
-                           resolution=res)
-    parts = [c(e["arm2_r"], z0, e["arm2_top"]), c(e["shaft_r"], e["arm2_top"], e["shaft_top"]),
-             c(e["arch_r"], e["shaft_top"], e["arch_top"], 64)]
+def scara_envelope(risers=None):
+    """The robot's swept volume (full J1 turn, over the riser range) as one mesh, clipped to the box."""
     clip = (0, GB_W, 0, GB_D, 0, GB_H)
-    return pv.merge([m.clip_box(clip, invert=False).extract_surface(algorithm="dataset_surface") for m in parts])
+    meshes = [pv.Cylinder(center=sp["center"], direction=sp["direction"], radius=sp["r"], height=sp["h"],
+                          resolution=96) for sp in specs.envelope_specs(risers)]
+    return pv.merge([m.clip_box(clip, invert=False).extract_surface(algorithm="dataset_surface") for m in meshes])
 
 
 def raised_shelf():

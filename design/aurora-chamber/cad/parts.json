@@ -1,0 +1,167 @@
+{
+ "units": "mm",
+ "frame": "scene frame of aurora_chamber/params.py: x along the box from the antechamber-end wall, y from the open side, z up from the deck",
+ "scale": 1.0,
+ "riser_mm": 180.0,
+ "riser_range_mm": [
+  150.0,
+  180.0
+ ],
+ "robot_pose": "walkthrough's parked pose",
+ "parts": {
+  "chamber_shell": {
+   "bounds_mm": [
+    -12.0,
+    1212.0,
+    -0.0,
+    1120.0,
+    -12.0,
+    802.0
+   ],
+   "volume_cm3": 50697.2
+  },
+  "windows": {
+   "bounds_mm": [
+    -0.0,
+    1200.0,
+    -10.0,
+    1130.0,
+    -0.0,
+    790.0
+   ],
+   "volume_cm3": 18960.0
+  },
+  "window_frames": {
+   "bounds_mm": [
+    -10.0,
+    1210.0,
+    -30.7,
+    1150.8,
+    -10.0,
+    800.0
+   ],
+   "volume_cm3": 12432.0
+  },
+  "flange_studs": {
+   "bounds_mm": [
+    22.0,
+    1178.0,
+    -71.9,
+    1191.7,
+    42.0,
+    781.4
+   ],
+   "volume_cm3": 96.7
+  },
+  "ceiling_studs": {
+   "bounds_mm": [
+    58.0,
+    580.0,
+    281.0,
+    592.0,
+    765.0,
+    790.0
+   ],
+   "volume_cm3": 2.8
+  },
+  "antechamber_doors": {
+   "bounds_mm": [
+    -0.2,
+    118.2,
+    62.0,
+    649.0,
+    20.5,
+    401.5
+   ],
+   "volume_cm3": 3891.9
+  },
+  "exfoliator": {
+   "bounds_mm": [
+    165.0,
+    1155.0,
+    14.0,
+    532.0,
+    -0.0,
+    580.0
+   ],
+   "volume_cm3": 32039.2
+  },
+  "substrate_plate": {
+   "bounds_mm": [
+    437.0,
+    597.0,
+    328.0,
+    508.0,
+    207.0,
+    215.0
+   ],
+   "volume_cm3": 230.4
+  },
+  "chip_tray": {
+   "bounds_mm": [
+    442.0,
+    592.0,
+    358.0,
+    478.0,
+    215.0,
+    229.0
+   ],
+   "volume_cm3": 252.0
+  },
+  "robot_shelf": {
+   "bounds_mm": [
+    700.0,
+    1180.0,
+    642.0,
+    1090.0,
+    -0.0,
+    13.0
+   ],
+   "volume_cm3": 2795.5
+  },
+  "epson_t6_parked": {
+   "bounds_mm": [
+    568.0,
+    1055.0,
+    651.5,
+    1032.0,
+    13.0,
+    690.6
+   ],
+   "volume_cm3": 36722.8
+  },
+  "epson_duct": {
+   "bounds_mm": [
+    604.6,
+    970.6,
+    695.2,
+    856.0,
+    660.6,
+    786.1
+   ],
+   "volume_cm3": 487.2
+  },
+  "epson_swept_volume": {
+   "bounds_mm": [
+    280.0,
+    1201.7,
+    172.0,
+    1121.7,
+    103.3,
+    785.0
+   ],
+   "volume_cm3": 491834.2
+  },
+  "ceiling_items": {
+   "bounds_mm": [
+    114.9,
+    856.0,
+    70.0,
+    904.5,
+    639.9,
+    799.1
+   ],
+   "volume_cm3": 2679.9
+  }
+ }
+}

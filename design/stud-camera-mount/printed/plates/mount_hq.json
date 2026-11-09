@@ -1,0 +1,9 @@
+{"name": "printed_mount_hq",
+ "parts": [{"stl": "../stl/yoke_hq.stl", "copies": 1},
+           {"stl": "../stl/head_hq_tub.stl", "copies": 1},
+           {"stl": "../stl/head_hq_retainer.stl", "copies": 1},
+           {"stl": "../stl/head_hq_carrier.stl", "copies": 1},
+           {"stl": "../stl/head_hq_pi5_retainer.stl", "copies": 1},
+           {"stl": "../stl/head_hq_wide_nose.stl", "copies": 1}],
+ "overrides": {"layer_height": "0.16"},
+ "supports": false, "outdir": "../sliced"}

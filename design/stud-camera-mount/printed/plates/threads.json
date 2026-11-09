@@ -1,0 +1,5 @@
+{"name": "printed_thumb_nuts_x3_tilt_screws_x6",
+ "parts": [{"stl": "../stl/stud_thumb_nut.stl", "copies": 3},
+           {"stl": "../stl/tilt_screw.stl", "copies": 6}],
+ "overrides": {"layer_height": "0.16", "sparse_infill_density": "100%", "sparse_infill_pattern": "zig-zag"},
+ "supports": false, "outdir": "../sliced"}

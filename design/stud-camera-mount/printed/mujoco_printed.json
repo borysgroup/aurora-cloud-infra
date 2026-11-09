@@ -1,6 +1,6 @@
 {
  "zero": {
-  "head_mass_g": 55.3,
+  "head_mass_g": 55.2,
   "head_com_mm": [
    -3.2,
    0.5,
@@ -139,7 +139,7 @@
   }
  },
  "hq": {
-  "head_mass_g": 357.8,
+  "head_mass_g": 357.7,
   "head_com_mm": [
    -6.9,
    -22.7,

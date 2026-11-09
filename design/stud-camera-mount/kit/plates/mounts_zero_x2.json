@@ -1,0 +1,6 @@
+{"name": "kit_mounts_pi_zero_x2",
+ "parts": [{"stl": "../stl/yoke_zero.stl", "copies": 2},
+           {"stl": "../stl/head_zero_case.stl", "copies": 2},
+           {"stl": "../stl/head_zero_back_cover.stl", "copies": 2}],
+ "overrides": {"layer_height": "0.16"},
+ "supports": false, "outdir": "../sliced"}

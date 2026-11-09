@@ -1,4 +1,4 @@
-"""Small geometry helpers for the Aurora camera-layout render (PyVista)."""
+"""Small PyVista geometry helpers shared by the chamber model and the designs that use it."""
 
 import numpy as np
 import pyvista as pv

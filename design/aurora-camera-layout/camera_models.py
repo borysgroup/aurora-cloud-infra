@@ -2,7 +2,7 @@
 +Z is "up" in the image, +X is image right. Units are millimetres.
 """
 
-from scene_primitives import box, cyl
+from aurora_chamber.primitives import box, cyl
 
 PCB_GREEN = "#1f7a3c"
 CASE_RED = "#c8102e"

@@ -25,16 +25,18 @@ from PIL import Image, ImageDraw, ImageFont
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
+sys.path.insert(0, str(HERE.parent / "aurora-chamber"))
 sys.path.insert(0, str(HERE.parent / "aurora-stud-mount"))
 sys.path.insert(0, str(HERE.parent / "stud-camera-mount"))
 
-import aurora_equipment as eq  # noqa: E402
+import aurora_chamber as ch  # noqa: E402
 import camera_models as cm  # noqa: E402
+import work_areas as wa  # noqa: E402
 import render_mount as rm  # noqa: E402
 import stud_pan_tilt_mount as sm  # noqa: E402
 import render_stud_mount as ym  # noqa: E402  (yoke mount: meshes and pose matrices)
 import stud_mount as yoke_mount  # noqa: E402
-from scene_primitives import frustum, frustum_edges, look_frame  # noqa: E402
+from aurora_chamber.primitives import frustum, frustum_edges, look_frame  # noqa: E402
 
 pv.OFF_SCREEN = True
 
@@ -49,6 +51,12 @@ CM3 = (66.0, 41.0)
 CM3_WIDE = (102.0, 67.0)
 HQ_12MM = (29.0, 22.0)
 AMCREST = (90.0, 50.0)
+
+# The chamber at the design riser (RISER_H, 180 mm until someone measures it) and the studs this plan uses:
+# S1-S4 from the chamber model, plus S5, a stud the plan needs.
+ENV = ch.envelope()
+J1 = ch.base_xyz()
+STUDS = {k: dict(v) for k, v in ch.CEILING_STUDS.items()}
 
 
 @dataclass
@@ -84,15 +92,15 @@ class CameraPlacement:
         return KIND_COLOR[self.kind]
 
 
-TIP = eq.exfoliator_tip()
+TIP = ch.exfoliator_tip()
 
 
 def stud_pod_pose(stud, target, iters=4):
     """Pan (free) and tilt (nearest index stop) that aim a stud pod's lens at `target`.
 
     Returns pan, tilt, lens position and viewing direction in scene coordinates."""
-    sx, sy = eq.CEILING_STUDS[stud]["xy"]
-    origin = np.array([sx, sy, eq.GB_H])
+    sx, sy = STUDS[stud]["xy"]
+    origin = np.array([sx, sy, ch.GB_H])
     lens_c, lens_d = sm.lens_axis()
     target = np.asarray(target, float)
     pos = origin.copy()
@@ -126,8 +134,8 @@ STUD_MOUNT = "yoke"
 
 
 def stud_root(stud):
-    x, y = eq.CEILING_STUDS[stud]["xy"]
-    return np.array([x, y, eq.GB_H])
+    x, y = STUDS[stud]["xy"]
+    return np.array([x, y, ch.GB_H])
 
 
 def yoke_aim(kind, stud, target, iters=10):
@@ -162,44 +170,44 @@ def wide_on_hq_head(cam, title, detail):
     lens_y = h["nose_y"] + 5.0 + 2.5 - yoke_mount.CM3["lens_h"] - h["axis_y"]   # the Wide's lens front
     o = (m @ np.array([h["wide_x"], lens_y, h["wide_z"], 1.0]))[:3]
     aim = np.asarray(cam.direction)
-    return CameraPlacement("pnp_wide", title, detail, "hq", tuple(o), tuple(o + aim * (o[2] - eq.PNP_C[2])
+    return CameraPlacement("pnp_wide", title, detail, "hq", tuple(o), tuple(o + aim * (o[2] - ch.TRAY_C[2])
                                                                           / max(-aim[2], 1e-3)), CM3_WIDE,
                            up_hint=cam.up_hint, aspect=3 / 2, overshoot=1.0, stud=cam.stud, pan=cam.pan,
                            tilt=cam.tilt, yoke=True, hardware=False)
 
 
 # A new stud over the mother-tape area: S3, the only free stud near it, is inside the reach of the
-# Epson's shaft, which rises to SHAFT_TOP, about 40 mm under the ceiling.
-eq.add_needed_stud("S5", eq.MOTHER_TAPE_C[:2], "needed: a new stud over the mother-tape area")
+# Epson's shaft, which rises to within 10 mm (riser 180) to 40 mm (riser 150) of the ceiling.
+STUDS["S5"] = dict(xy=tuple(wa.MOTHER_TAPE_C[:2]), state="needed", note="needed: a new stud over the mother-tape area")
 
 # overhead camera of the pod variant: flat on the ceiling, straight above the tray
-PNP_CAM_Z = eq.GB_H - 60.0
+PNP_CAM_Z = ch.GB_H - 60.0
 PNP_LENS_FRONT = PNP_CAM_Z - 18.0 - 68.3  # HQ Camera mount + 8-50 mm zoom (camera_models.hq_camera)
 
 if STUD_MOUNT == "yoke":
-    # The tray is at the edge of the Epson's reach, where its shaft passes about 40 mm under the ceiling,
+    # The tray is at the edge of the Epson's reach, where its shaft rises to 10-40 mm under the ceiling,
     # so the HQ camera hangs from S2, outside the reach, and looks at the tray at an angle.
     _PNP = yoke_camera(
         "pnp", "Pick-and-place: tray on the substrate plate",
-        "Pi 5 + HQ Camera, 8-50 mm zoom, yoke mount", "hq", "S2", tuple(eq.PNP_C + np.array([0.0, 0.0, 15.0])),
+        "Pi 5 + HQ Camera, 8-50 mm zoom, yoke mount", "hq", "S2", tuple(ch.TRAY_C + np.array([0.0, 0.0, 15.0])),
         HQ_12MM, aspect=4 / 3, overshoot=1.0)
     _STUD_CAMS = [
         yoke_camera("unpack", "Bulk-crystal unpacking area", "Priority 1. Pi Zero 2 W + CM3 on a yoke mount",
-                    "zero", "S1", (eq.UNPACK_C[0], eq.UNPACK_C[1], 0.0), CM3),
+                    "zero", "S1", (wa.UNPACK_C[0], wa.UNPACK_C[1], 0.0), CM3),
         yoke_camera("mother_tape", "Mother-tape preparation area", "Priority 1. Pi Zero 2 W + CM3 on a yoke mount",
-                    "zero", "S5", (eq.MOTHER_TAPE_C[0], eq.MOTHER_TAPE_C[1], 0.0), CM3)]
+                    "zero", "S5", (wa.MOTHER_TAPE_C[0], wa.MOTHER_TAPE_C[1], 0.0), CM3)]
     _OVERHEAD = [_PNP, wide_on_hq_head(_PNP, "Overhead wide: the Epson's work area",
                                        "Optional. CM3 Wide on the same head, the Pi 5's second port (#16)")]
 else:
     _STUD_CAMS = [
         stud_camera("unpack", "Bulk-crystal unpacking area", "Priority 1. Pi Zero 2 W + CM3 on a stud pod",
-                    "S1", (eq.UNPACK_C[0], eq.UNPACK_C[1], 0.0)),
+                    "S1", (wa.UNPACK_C[0], wa.UNPACK_C[1], 0.0)),
         stud_camera("mother_tape", "Mother-tape preparation area", "Priority 1. Pi Zero 2 W + CM3 on a stud pod",
-                    "S5", (eq.MOTHER_TAPE_C[0], eq.MOTHER_TAPE_C[1], 0.0))]
+                    "S5", (wa.MOTHER_TAPE_C[0], wa.MOTHER_TAPE_C[1], 0.0))]
     _OVERHEAD = [CameraPlacement(
         "pnp", "Overhead: pick-and-place",
-        f"Pi 5 + HQ Camera, straight above the tray, lens {PNP_LENS_FRONT - eq.SCARA_TOP:.0f} mm above the SCARA",
-        "hq", (eq.PNP_C[0], eq.PNP_C[1], PNP_CAM_Z), (eq.PNP_C[0], eq.PNP_C[1] + 1.0, eq.PNP_C[2]), HQ_12MM,
+        f"Pi 5 + HQ Camera, straight above the tray, lens {PNP_LENS_FRONT - ENV['arm2_top']:.0f} mm above the SCARA",
+        "hq", (ch.TRAY_C[0], ch.TRAY_C[1], PNP_CAM_Z), (ch.TRAY_C[0], ch.TRAY_C[1] + 1.0, ch.TRAY_C[2]), HQ_12MM,
         up_hint=(0, 1, 0), aspect=4 / 3, overshoot=1.0)]
 
 # Numbered in the order a sample passes them, from the antechamber to the tray.
@@ -214,21 +222,21 @@ CAMERAS = _STUD_CAMS + [
     CameraPlacement(
         "dome", "Existing Amcrest dome (overview)",
         "Already on the ceiling, front left, behind the top flange",
-        "existing", tuple(eq.DOME_C - np.array([0.0, 0.0, 60.0])), (0.6 * eq.GB_W, 0.55 * eq.GB_D, 0.0), AMCREST,
+        "existing", tuple(ch.DOME_C - np.array([0.0, 0.0, 60.0])), (0.6 * ch.GB_W, 0.55 * ch.GB_D, 0.0), AMCREST,
         overshoot=1.0),
 ]
 
 # Sample route: antechamber door -> unpacking -> mother tape -> tip -> tray
 SAMPLE_STOPS = [
-    np.array([40.0, eq.ANTE_DOOR_C[1], eq.ANTE_DOOR_C[2]]),
-    eq.UNPACK_C + np.array([-40.0, -20.0, 40.0]),
-    eq.MOTHER_TAPE_C + np.array([20.0, 0.0, 30.0]),
+    np.array([40.0, ch.ANTE_DOOR_C[1], ch.ANTE_DOOR_C[2]]),
+    wa.UNPACK_C + np.array([-40.0, -20.0, 40.0]),
+    wa.MOTHER_TAPE_C + np.array([20.0, 0.0, 30.0]),
     TIP + np.array([0.0, 0.0, -12.0]),
-    eq.PNP_C + np.array([0.0, 0.0, 34.0]),
+    ch.TRAY_C + np.array([0.0, 0.0, 34.0]),
 ]
 
 # The Epson's parked pose in the walkthrough (arm folded back over its base)
-SCARA_PARK = tuple(eq.SCARA_PARK_J3)
+SCARA_PARK = tuple(ch.robot.PARK_J3)
 
 
 def camera_plan():
@@ -250,7 +258,7 @@ def add_parts(plotter, parts, **kw):
 
 
 def build_static_scene(plotter, cutaway=True):
-    shell = eq.glovebox_shell()
+    shell = ch.glovebox_shell()
     for name, (mesh, style) in shell.items():
         style = dict(style)
         if cutaway and name == "ceiling":
@@ -258,23 +266,22 @@ def build_static_scene(plotter, cutaway=True):
         if cutaway and name == "window_frame":
             style["opacity"] = 0.45
         plotter.add_mesh(mesh, **style)
-    plotter.add_mesh(eq.stand(), color=eq.STAINLESS_DARK, specular=0.5)
-    big, mini = eq.antechambers()
-    plotter.add_mesh(big, color=eq.STAINLESS, specular=0.6)
-    plotter.add_mesh(mini, color=eq.STAINLESS, specular=0.6)
-    add_parts(plotter, eq.wall_signs())
-    add_parts(plotter, eq.exfoliator())
-    add_parts(plotter, eq.optics_bench())
-    add_parts(plotter, eq.raised_shelf())
-    scara_parts, _ = eq.scara(target=SCARA_PARK)
+    plotter.add_mesh(ch.stand(), color=ch.STAINLESS_DARK, specular=0.5)
+    big, mini = ch.antechambers()
+    plotter.add_mesh(big, color=ch.STAINLESS, specular=0.6)
+    plotter.add_mesh(mini, color=ch.STAINLESS, specular=0.6)
+    add_parts(plotter, ch.wall_signs())
+    add_parts(plotter, ch.exfoliator())
+    add_parts(plotter, ch.raised_shelf())
+    scara_parts, _ = ch.scara(target=SCARA_PARK)
     add_parts(plotter, scara_parts)
     if cutaway:
-        plotter.add_mesh(eq.scara_envelope(), color="#7c3aed", opacity=0.07, lighting=False)
-    add_parts(plotter, eq.ceiling_studs(used=[c.stud for c in camera_plan() if c.stud]))
-    add_parts(plotter, eq.unpack_area())
-    add_parts(plotter, eq.mother_tape_area())
-    add_parts(plotter, eq.pnp_tray())
-    add_parts(plotter, eq.ceiling_items(), opacity=0.35 if cutaway else 1.0)
+        plotter.add_mesh(ch.scara_envelope(), color="#7c3aed", opacity=0.07, lighting=False)
+    add_parts(plotter, ch.ceiling_studs(studs=STUDS, used=[c.stud for c in camera_plan() if c.stud]))
+    add_parts(plotter, wa.unpack_area())
+    add_parts(plotter, wa.mother_tape_area())
+    add_parts(plotter, ch.pnp_tray())
+    add_parts(plotter, ch.ceiling_items(), opacity=0.35 if cutaway else 1.0)
     add_parts(plotter, camera_supports())
 
 
@@ -289,21 +296,21 @@ def camera_supports():
                 out += [(m.transform(mats["pan"], inplace=False), ym.COLOURS[mat])
                         for m, mat in ym.mount_meshes(c.kind)["pan"]]
         elif c.stud:
-            sx, sy = eq.CEILING_STUDS[c.stud]["xy"]
-            out += [(m, col) for m, col in rm.static_parts((sx, sy, eq.GB_H), c.pan, ceiling=False)]
+            sx, sy = STUDS[c.stud]["xy"]
+            out += [(m, col) for m, col in rm.static_parts((sx, sy, ch.GB_H), c.pan, ceiling=False)]
         elif c.key == "tip":
-            out.append((pv.Cylinder(center=(o[0], o[1], (eq.EXF_DECK_Z + o[2]) / 2 - 10), direction=(0, 0, 1),
-                                    radius=6.35, height=o[2] - eq.EXF_DECK_Z - 20), eq.STAINLESS))
-            out.append((pv.Box(bounds=(o[0] - 25, o[0] + 25, o[1] - 25, o[1] + 25, eq.EXF_DECK_Z - 8, eq.EXF_DECK_Z)),
-                        eq.BLACK))
+            out.append((pv.Cylinder(center=(o[0], o[1], (ch.EXF_DECK_Z + o[2]) / 2 - 10), direction=(0, 0, 1),
+                                    radius=6.35, height=o[2] - ch.EXF_DECK_Z - 20), ch.STAINLESS))
+            out.append((pv.Box(bounds=(o[0] - 25, o[0] + 25, o[1] - 25, o[1] + 25, ch.EXF_DECK_Z - 8, ch.EXF_DECK_Z)),
+                        ch.BLACK))
         elif c.key == "pnp":
             # plate flat on the ceiling, drop to the camera, Pi 5 beside it
-            out.append((pv.Box(bounds=(o[0] - 70, o[0] + 120, o[1] - 50, o[1] + 50, eq.GB_H - 12, eq.GB_H)),
-                        eq.BLACK))
-            out.append((pv.Box(bounds=(o[0] - 26, o[0] - 20, o[1] - 20, o[1] + 20, o[2] + 30, eq.GB_H - 12)),
-                        eq.BLACK))
+            out.append((pv.Box(bounds=(o[0] - 70, o[0] + 120, o[1] - 50, o[1] + 50, ch.GB_H - 12, ch.GB_H)),
+                        ch.BLACK))
+            out.append((pv.Box(bounds=(o[0] - 26, o[0] - 20, o[1] - 20, o[1] + 20, o[2] + 30, ch.GB_H - 12)),
+                        ch.BLACK))
             for m, col in cm.pi5_box():
-                m = m.rotate_x(180, inplace=False).translate((o[0] + 75, o[1], eq.GB_H - 22), inplace=False)
+                m = m.rotate_x(180, inplace=False).translate((o[0] + 75, o[1], ch.GB_H - 22), inplace=False)
                 out.append((m, col))
     return out
 
@@ -315,15 +322,15 @@ def camera_hardware(cam):
         mats = ym.mount_matrices(cam.kind, cam.pan, cam.tilt, stud_root(cam.stud))
         return [(m.transform(mats["head"], inplace=False), ym.COLOURS[mat]) for m, mat in ym.mount_meshes(cam.kind)["head"]]
     if cam.stud:
-        sx, sy = eq.CEILING_STUDS[cam.stud]["xy"]
-        return rm.moving_parts(cam.tilt, cam.pan, (sx, sy, eq.GB_H))
+        sx, sy = STUDS[cam.stud]["xy"]
+        return rm.moving_parts(cam.tilt, cam.pan, (sx, sy, ch.GB_H))
     if cam.kind == "hq":
         parts = cm.hq_camera()
     elif cam.kind == "zero":
         parts = cm.picam_zero()
     else:
-        dome, _ = eq.amcrest_dome()
-        return [(dome, eq.WHITE)]
+        dome, _ = ch.amcrest_dome()
+        return [(dome, ch.WHITE)]
     return place(parts, cam.origin, cam.direction, cam.up_hint)
 
 
@@ -338,7 +345,7 @@ def clipped_frustum(cam):
     ed = frustum_edges(cam.origin, cam.direction, cam.fov[0], cam.fov[1], length, cam.up_hint)
     o = np.asarray(cam.origin, float)
     lo = np.minimum([0.0, 0.0, 0.0], o - 5)
-    hi = np.maximum([eq.GB_W, eq.GB_D, eq.GB_H], o + 5)
+    hi = np.maximum([ch.GB_W, ch.GB_D, ch.GB_H], o + 5)
     bounds = (lo[0], hi[0], lo[1], hi[1], lo[2], hi[2])
     fr = fr.clip_box(bounds, invert=False).extract_surface(algorithm="dataset_surface")
     ed = ed.clip_box(bounds, invert=False)
@@ -380,7 +387,7 @@ def set_camera_state(cam, grow, fade, show_tag):
 def new_plotter(size):
     p = pv.Plotter(off_screen=True, window_size=size, lighting="none")
     p.set_background("#f8fafc", top="#d9e2ec")
-    center = (eq.GB_W / 2, eq.GB_D / 2, 300)
+    center = (ch.GB_W / 2, ch.GB_D / 2, 300)
     p.add_light(pv.Light(position=(950, -2600, 2600), focal_point=center, intensity=0.80))
     p.add_light(pv.Light(position=(-1800, 1800, 2200), focal_point=center, intensity=0.35))
     p.add_light(pv.Light(position=(3600, 1200, 1500), focal_point=center, intensity=0.30))
@@ -391,7 +398,7 @@ def new_plotter(size):
 
 # --- camera path -------------------------------------------------------------------
 
-CENTER = np.array([eq.GB_W / 2, eq.GB_D / 2, 230.0])
+CENTER = np.array([ch.GB_W / 2, ch.GB_D / 2, 230.0])
 VIEW_DIST = 3800.0
 
 
@@ -554,8 +561,10 @@ def run(size, fps, out_dir, stills_only=False):
     note = ("Box, equipment and studs measured on the walkthrough's 3D reconstruction (+/-5 %). Robot, cameras "
             "and mounts to scale. Purple: the Epson's swept volume.")
     title = "Aurora glovebox: planned camera locations"
-    subtitle = ("Measured interior 1.20 x 1.12 x 0.79 m. The cameras hang from welded ceiling studs on pan/tilt "
-                "mounts; the tray camera stays outside the Epson's reach, whose shaft rises to 40 mm under the ceiling.")
+    subtitle = (f"Measured interior {ch.GB_W / 1000:.2f} x {ch.GB_D / 1000:.2f} x {ch.GB_H / 1000:.2f} m. The cameras "
+                f"hang from welded ceiling studs on pan/tilt mounts; the tray camera stays outside the Epson's reach, "
+                f"whose shaft rises to {ch.GB_H - ENV['shaft_top']:.0f} mm under the ceiling on a "
+                f"{ch.RISER_H:.0f} mm riser.")
 
     n_flow = len(SAMPLE_STOPS) - 1
     seg = build_timeline(len(cams), fps)
@@ -662,22 +671,22 @@ def ceiling_still(out_dir, size=(1600, 900)):
     """The ceiling seen from below (parallel projection, front window at the top, as in the 6 Nov photo of the
     studs): the studs, the mounts on them, the Epson and the reach of its swept volume."""
     p = new_plotter(size)
-    cx, cy = eq.GB_W / 2, eq.GB_D / 2
-    p.add_light(pv.Light(position=(cx, cy, -1500), focal_point=(cx, cy, eq.GB_H), intensity=0.75))
-    ceiling = pv.Box(bounds=(0, eq.GB_W, eq.front_window_y(eq.GB_H), eq.back_window_y(eq.GB_H), eq.GB_H, eq.GB_H + 12))
-    p.add_mesh(ceiling, color=eq.STAINLESS, specular=0.4)
-    add_parts(p, eq.ceiling_items())
-    add_parts(p, eq.ceiling_studs(used=[c.stud for c in camera_plan() if c.stud]))
-    scara_parts, _ = eq.scara(target=SCARA_PARK)
+    cx, cy = ch.GB_W / 2, ch.GB_D / 2
+    p.add_light(pv.Light(position=(cx, cy, -1500), focal_point=(cx, cy, ch.GB_H), intensity=0.75))
+    ceiling = pv.Box(bounds=(0, ch.GB_W, ch.front_window_y(ch.GB_H), ch.back_window_y(ch.GB_H), ch.GB_H, ch.GB_H + 12))
+    p.add_mesh(ceiling, color=ch.STAINLESS, specular=0.4)
+    add_parts(p, ch.ceiling_items())
+    add_parts(p, ch.ceiling_studs(studs=STUDS, used=[c.stud for c in camera_plan() if c.stud]))
+    scara_parts, _ = ch.scara(target=SCARA_PARK)
     add_parts(p, scara_parts, opacity=0.35)
     for c in camera_plan():
         if c.stud and c.hardware:
             for mesh, col in camera_supports_for(c) + camera_hardware(c):
-                col = "#8a94a3" if col in (ym.COLOURS["petg"], eq.BLACK) else col   # lighter, to read from below
+                col = "#8a94a3" if col in (ym.COLOURS["petg"], ch.BLACK) else col   # lighter, to read from below
                 p.add_mesh(mesh, color=col, specular=0.3, ambient=0.35)
-    dome, _ = eq.amcrest_dome()
-    p.add_mesh(dome, color=eq.WHITE)
-    for name, s in eq.CEILING_STUDS.items():
+    dome, _ = ch.amcrest_dome()
+    p.add_mesh(dome, color=ch.WHITE)
+    for name, s in STUDS.items():
         x, y = s["xy"]
         users = [c for c in camera_plan() if c.stud == name and c.hardware]
         cams = ", ".join(f"camera {camera_plan().index(c) + 1}" for c in users)
@@ -686,25 +695,25 @@ def ceiling_still(out_dir, size=(1600, 900)):
             text += " (no stud here yet)"
         if s["state"] == "reach":
             text = f"{name}: in the shaft's reach"
-        p.add_point_labels([(x, y - 80.0, eq.GB_H - 200.0)], [text], font_size=18, bold=True, text_color="white",
+        p.add_point_labels([(x, y - 80.0, ch.GB_H - 200.0)], [text], font_size=18, bold=True, text_color="white",
                            shape_color={"needed": "#b91c1c", "reach": "#6d28d9"}.get(s["state"], "#334155"),
                            shape="rounded_rect",
                            shape_opacity=0.92, show_points=False, always_visible=True, margin=5)
-    for r_, z_ in ((eq.SCARA_REACH, eq.SCARA_TOP), (eq.SHAFT_REACH, eq.SHAFT_TOP), (eq.SCARA_ARCH[0], eq.SCARA_ARCH[1])):
-        ring = pv.Circle(radius=r_, resolution=160).translate((eq.SCARA_BASE[0], eq.SCARA_BASE[1], z_),
+    for r_, z_ in ((ENV["arm2_r"], ENV["arm2_top"]), (ENV["shaft_r"], ENV["shaft_top"]), (ENV["arch_r"], ENV["arch_top"])):
+        ring = pv.Circle(radius=r_, resolution=160).translate((J1[0], J1[1], z_),
                                                                inplace=False)
-        ring = ring.clip_box((0, eq.GB_W, 0, eq.GB_D, 0, eq.GB_H), invert=False).extract_feature_edges(
+        ring = ring.clip_box((0, ch.GB_W, 0, ch.GB_D, 0, ch.GB_H), invert=False).extract_feature_edges(
             boundary_edges=True, feature_edges=False, manifold_edges=False, non_manifold_edges=False)
         p.add_mesh(ring.tube(radius=4.0), color="#7c3aed")
-    p.add_point_labels([(eq.SCARA_BASE[0] - 120.0, eq.SCARA_BASE[1] - 420.0, eq.SCARA_TOP - 50.0)],
-                       [f"Epson reach: arm 2 (top {eq.SCARA_TOP:.0f}), shaft (top {eq.SHAFT_TOP:.0f}), duct arch"],
+    p.add_point_labels([(J1[0] - 120.0, J1[1] - 420.0, ENV["arm2_top"] - 50.0)],
+                       [f"Epson reach: arm 2 (top {ENV['arm2_top']:.0f}), shaft (top {ENV['shaft_top']:.0f}), duct arch"],
                        font_size=15,
                        text_color="#6d28d9", shape_color="white", shape_opacity=0.9, show_points=False,
                        always_visible=True, margin=4)
     p.add_text("Ceiling from below, open side at the top. S1-S4 located on the 3D reconstruction (+/-50 mm); "
                "S5 is not a circled stud.", position=(20, 18), font_size=12, color="#334155")
     p.enable_parallel_projection()
-    p.camera_position = [(cx, cy, -2500.0), (cx, cy, eq.GB_H), (0.0, -1.0, 0.0)]
+    p.camera_position = [(cx, cy, -2500.0), (cx, cy, ch.GB_H), (0.0, -1.0, 0.0)]
     p.camera.parallel_scale = 640.0
     p.camera.clipping_range = (10, 8000)
     p.screenshot(str(out_dir / "still_ceiling_studs.png"))
@@ -716,41 +725,60 @@ def camera_supports_for(c):
     if c.yoke:
         mats = ym.mount_matrices(c.kind, c.pan, c.tilt, stud_root(c.stud))
         return [(m.transform(mats["pan"], inplace=False), ym.COLOURS[mat]) for m, mat in ym.mount_meshes(c.kind)["pan"]]
-    sx, sy = eq.CEILING_STUDS[c.stud]["xy"]
-    return list(rm.static_parts((sx, sy, eq.GB_H), c.pan, ceiling=False))
+    sx, sy = STUDS[c.stud]["xy"]
+    return list(rm.static_parts((sx, sy, ch.GB_H), c.pan, ceiling=False))
+
+
+REPORT_TARGETS = {
+    # points each camera is meant to see, for the coverage columns of the report
+    "unpack": lambda: ch.grid_on_rect(wa.UNPACK_C + (0, 0, 3.0), (260, 220)),
+    "mother_tape": lambda: ch.grid_on_rect(wa.MOTHER_TAPE_C + (0, 0, 3.0), (240, 180)),
+    "tip": lambda: ch.grid_on_rect(TIP + (0, 0, -1.5), (60, 40), (7, 5)),   # carrier top round the roller
+    "pnp": lambda: ch.grid_on_rect(ch.TRAY_C + (0, 0, ch.TRAY_SIZE[2]), ch.TRAY_SIZE[:2]),
+    "pnp_wide": lambda: ch.grid_on_rect(ch.TRAY_C + (0, 0, ch.TRAY_SIZE[2]), ch.TRAY_SIZE[:2]),
+}
 
 
 def clearance_report():
-    """Per camera: aim, distance, footprint at the target, and the gap between its mount and the Epson's swept
-    volume (every vertex of the mount and head checked against the robot's top at that x, y)."""
+    """Per camera: aim, distance, view size at the target, the share of its target in view and in line of
+    sight (robot parked), and the 3D gap between its mount and head and the Epson's swept volume, taken over
+    the whole riser range (aurora_chamber.robot_clearance)."""
+    print(f"ceiling {ch.GB_H:.0f} mm; Epson J1 at ({J1[0]:.0f}, {J1[1]:.0f}); riser {ch.RISER_RANGE[0]:.0f} to "
+          f"{ch.RISER_RANGE[1]:.0f} mm, scene drawn at {ch.RISER_H:.0f}")
+    for r in ch.RISER_RANGE:
+        e = ch.envelope(r)
+        print(f"  riser {r:.0f}: arm 2 top {e['arm2_top']:.0f} (r <= {e['arm2_r']:.0f}); shaft top {e['shaft_top']:.1f} "
+              f"(r <= {e['shaft_r']:.0f}), {ch.GB_H - e['shaft_top']:.1f} mm under the ceiling; duct arch "
+              f"{e['arch_top']:.0f} (r <= {e['arch_r']:.0f})")
+    tray = ch.TRAY_C
+    print(f"tray (plate top) at ({tray[0]:.0f}, {tray[1]:.0f}, {tray[2]:.0f}), {np.hypot(*(tray[:2] - J1[:2])):.0f} "
+          f"from J1. Straight above it the robot reaches "
+          + ", ".join(f"{ch.robot_top_at(tray[:2], r):.1f} (riser {r:.0f})" for r in ch.RISER_RANGE))
+    flat = np.array([[tray[0], tray[1], ch.GB_H - 25.0]])
+    print("  a flat Camera Module 3 (25 mm deep) on the ceiling straight above it: gap "
+          + ", ".join(f"{ch.robot_clearance(flat, risers=r)['gap']:.1f} mm (riser {r:.0f})" for r in ch.RISER_RANGE))
+    for name, st in STUDS.items():
+        x, y = st["xy"]
+        print(f"  {name}: ({x:.0f}, {y:.0f}) {st['state']:6s} {np.hypot(x - J1[0], y - J1[1]):5.0f} "
+              f"from J1, robot top there {ch.robot_top_at((x, y)):.0f}")
+    occluders = ch.static_parts(with_dome=False)
     rows = []
     for i, c in enumerate(camera_plan()):
-        d = np.asarray(c.direction)
-        tilt = float(np.degrees(np.arcsin(-d[2])))
-        w, h = (2 * c.reach * np.tan(np.radians(f / 2)) for f in c.fov)
+        view = ch.camera_view(c.origin, c.target, c.fov, c.up_hint)
+        w, h = view.footprint(c.reach)
         parts = camera_hardware(c) + (camera_supports_for(c) if c.stud and c.hardware else [])
-        gap = None
-        for m, _ in parts:
-            for q in np.asarray(m.points)[::3]:
-                for z0, z1 in eq.swept_bands_at(q[:2]):
-                    g = q[2] - z1 if q[2] >= z1 else (z0 - q[2] if q[2] <= z0 else -min(q[2] - z0, z1 - q[2]))
-                    gap = g if gap is None else min(gap, g)
+        gap = ch.robot_clearance(parts)["gap"] if parts else None
         low = min(float(np.asarray(m.points)[:, 2].min()) for m, _ in parts) if parts else float("nan")
-        rows.append((i + 1, c.key, c.stud or "-", tilt, c.reach, w, h, low, gap))
-    print(f"ceiling {eq.GB_H:.0f}; Epson J1 at ({eq.SCARA_BASE[0]:.0f}, {eq.SCARA_BASE[1]:.0f}), base {eq.SCARA_BASE[2]:.0f} "
-          f"above the deck; arm 2 top {eq.SCARA_TOP:.0f} (r <= {eq.SCARA_REACH:.0f}); shaft top {eq.SHAFT_TOP:.0f} "
-          f"(r <= {eq.SHAFT_REACH:.0f}); duct arch {eq.SCARA_ARCH[1]:.0f} (r <= {eq.SCARA_ARCH[0]:.0f})")
-    print(f"tray (plate) at ({eq.PNP_C[0]:.0f}, {eq.PNP_C[1]:.0f}, {eq.PNP_C[2]:.0f}), "
-          f"{np.hypot(*(eq.PNP_C[:2] - eq.SCARA_BASE[:2])):.0f} from J1; straight above it the robot reaches "
-          f"{eq.robot_top_at(eq.PNP_C[:2]):.0f}, leaving {eq.GB_H - eq.robot_top_at(eq.PNP_C[:2]):.0f} mm under the ceiling")
-    for name, st in eq.CEILING_STUDS.items():
-        x, y = st["xy"]
-        print(f"  {name}: ({x:.0f}, {y:.0f}) {st['state']:6s} {np.hypot(x - eq.SCARA_BASE[0], y - eq.SCARA_BASE[1]):5.0f} "
-              f"from J1, robot top there {eq.robot_top_at((x, y)):.0f}")
-    print(" #  key          stud  tilt  dist   view at target   lowest  gap to robot")
-    for n, key, stud, tilt, dist, w, h, low, gap in rows:
-        g = "-" if gap is None else f"{gap:.0f}"
-        print(f"{n:2d}  {key:12s} {stud:4s} {tilt:5.0f} {dist:5.0f}   {w:4.0f} x {h:4.0f} mm   {low:5.0f}   {g}")
+        cover = (ch.view_coverage(view, REPORT_TARGETS[c.key](), occluders) if c.key in REPORT_TARGETS
+                 else dict(in_view=None, visible=None))
+        rows.append(dict(n=i + 1, key=c.key, stud=c.stud or "-", tilt=view.tilt, dist=c.reach, view=(w, h),
+                         lowest=low, gap=gap, in_view=cover["in_view"], visible=cover["visible"]))
+    print(" #  key          stud  tilt  dist   view at target   lowest  gap to robot  target in view / visible")
+    for r in rows:
+        g = "-" if r["gap"] is None else f"{r['gap']:.0f}"
+        cov = "-" if r["in_view"] is None else f"{100 * r['in_view']:.0f} % / {100 * r['visible']:.0f} %"
+        print(f"{r['n']:2d}  {r['key']:12s} {r['stud']:4s} {r['tilt']:5.0f} {r['dist']:5.0f}   {r['view'][0]:4.0f} x "
+              f"{r['view'][1]:4.0f} mm   {r['lowest']:5.0f}   {g:>6s}        {cov}")
     return rows
 
 

@@ -138,6 +138,25 @@ GH_TOKEN=$GH_READ_PAT_STAGING gh api "repos/sgbaird/agent-staging/contents/<path
 - Never echo the token or save it in a remote or a commit. If it is unset or returns
   401/403/404, say so and stop; don't rebuild the content some other way.
 
+## Aurora chamber model (`design/aurora-chamber/`)
+
+Designs for the Aurora glovebox build on [`design/aurora-chamber/`](design/aurora-chamber/README.md),
+even when the request doesn't mention it. This covers mounts, fixtures, camera placement and anything
+near the Epson. Add the folder to `sys.path` and `import aurora_chamber as ac`. The module holds the measured
+box with its sloped windows, the window flanges and their studs, ceiling studs S1-S4, the antechamber door,
+the exfoliator with its substrate plate and tray, and the Epson T6-B602S with its duct and swept volume. It
+also has `ac.robot_clearance`, `ac.camera_view` and `ac.view_coverage`, and STEP/STL files in `cad/`.
+
+- Import chamber numbers; don't copy them into a design. A new measurement goes into
+  `aurora_chamber/params.py` through `param()`, with its source and uncertainty.
+- The Epson's riser is unmeasured (150 to 180 mm). Check above the robot at 180 mm and below it at 150 mm,
+  which is what `robot_clearance` does by default. The README lists the other open items.
+- The numbers come from three `sgbaird/agent-staging` drops: `2026-11-07-aurora-glovebox-3d/`,
+  `2026-11-06-aurora-camera-mount-keyframes/` and `2026-11-07-aurora-recon-writeup-and-scripts/`. They
+  were made from a private walkthrough recording. The staging rules above still apply. Fetch them only when
+  Sterling points you to them, and work from `/tmp`. Commit only derived numbers and renders of the
+  simplified geometry; never commit the frames, point cloud, mesh, pose files or write-up.
+
 ## YouTube (Aurora PCL Hardware Streams)
 
 [Aurora PCL Hardware Streams](https://www.youtube.com/@aurora-hardware-streams) (`UCAgxwuxVk_rzuwGfuMD7YCg`, owned by aurora.hardware.streams@gmail.com) has two tokens, each a base64 pickled `google.oauth2.credentials.Credentials` (unpickling needs `google-auth>=2.59`):

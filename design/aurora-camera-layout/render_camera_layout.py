@@ -1,6 +1,11 @@
 """Animated 3D render of the Aurora glovebox and the planned camera positions.
 
-    xvfb-run -a python design/aurora-camera-layout/render_camera_layout.py [--stills-only]
+    xvfb-run -a python design/aurora-camera-layout/render_camera_layout.py [--stills-only | --report]
+
+The glovebox, the equipment and the Epson come from the chamber model in
+../aurora-chamber (aurora_chamber); this file only adds the cameras, their mounts
+and the proposed work areas (work_areas.py). --report prints each camera's aim,
+view, target coverage and 3D gap to the robot's swept volume over the riser range.
 
 Writes PNG stills, an MP4 and a GIF next to this file. Needs pyvista, imageio,
 imageio-ffmpeg, pillow and cadquery (gifsicle optional, shrinks the GIF); on a headless

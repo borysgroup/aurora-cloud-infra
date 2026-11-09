@@ -41,7 +41,8 @@ PARTS = {
     "pilot_coupon": (sk.pilot_coupon, lambda: [], [], 1),
 }
 PRINTED = {"case", "back cover", "tub", "carrier", "Wide nose"}
-KIT = {"M2.5 screws", "M2 screws"}
+def KIT(name):
+    return name.startswith(("M2 screws", "M2.5 screws"))
 
 
 def export():
@@ -69,7 +70,7 @@ def check(tol=0.05):
         names = [n for n in head if "lead" not in n and "ribbon" not in n]
         n_pairs = 0
         for a, b in itertools.combinations(names, 2):
-            if a not in PRINTED and b not in PRINTED and a not in KIT and b not in KIT:
+            if a not in PRINTED and b not in PRINTED and not KIT(a) and not KIT(b):
                 continue                                   # vendor-vs-vendor is byu-vcl's model
             n_pairs += 1
             v = epx._vol_common(epx._shape(head[a][0]), epx._shape(head[b][0]))

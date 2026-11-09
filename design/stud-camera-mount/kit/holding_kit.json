@@ -29,8 +29,8 @@
  },
  "bom": {
   "zero": {
-   "M2.5 x 6 pan head": 8,
-   "M2 x 6 pan head": 4
+   "M2 x 6 pan head": 4,
+   "M2.5 x 6 pan head": 8
   },
   "hq": {
    "M2.5 x 6 pan head": 15,

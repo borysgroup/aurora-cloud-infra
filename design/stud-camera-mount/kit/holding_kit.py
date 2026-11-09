@@ -83,10 +83,11 @@ def hq_camera_screws(Fi, F_strip, g_shock=10.0):
 
 
 # ------------------------------------------------------------------------------------------ MuJoCo
-MASSES = {"zero": {"Pi Zero": 11.0, "CM3": 4.0, "ribbon": 1.0, "USB power lead": 5.0,
-                   "M2.5 screws": 8 * STEEL_G["M2.5"], "M2 screws": 4 * STEEL_G["M2"]},
-          "hq": dict([(k, v) for k, v in mm.MASSES["hq"].items() if k != "standoffs"]
-                     + [("M2.5 screws", 15 * STEEL_G["M2.5"]), ("M2 screws", 4 * STEEL_G["M2"])])}
+# groups match by substring, first match wins: the screw groups ("M2.5 screws, Pi 5", ...) come first
+MASSES = {"zero": {"M2.5 screws": 8 * STEEL_G["M2.5"], "M2 screws": 4 * STEEL_G["M2"],
+                   "Pi Zero": 11.0, "CM3": 4.0, "ribbon": 1.0, "USB power lead": 5.0},
+          "hq": dict([("M2.5 screws", 15 * STEEL_G["M2.5"]), ("M2 screws", 4 * STEEL_G["M2"])]
+                     + [(k, v) for k, v in mm.MASSES["hq"].items() if k != "standoffs"])}
 
 
 def lens_point(kind):

@@ -86,7 +86,7 @@ def _zero_case_frame():
     lx, lz = h["lens_x"], h["lens_z"]
     case = case.cut(box(lx - 5.0, -1, lz - 5.0, lx + 5.0, pt + 1, lz + 5.0))         # lens window
     case = case.cut(box(a - 1, h["pi_y"] - 1, -6.0, a + ct, b0 + 1, 6.0))           # microSD clearance
-    screws = {"M2.5": [], "M2": []}
+    screws = {"M2 screws, CM3": [], "M2.5 screws, Pi Zero": [], "M2.5 screws, back cover": []}
     # Camera Module 3: four shoulders, M2 pilot holes right through (the 5 mm under the board takes an M2 x 6)
     cam_back = pt + h["cm3_gap"] + CM3["pcb_t"]
     for sx in (-1, 1):
@@ -94,14 +94,14 @@ def _zero_case_frame():
             x, z = lx + sx * 10.5, lz + dz
             case = case.union(ycyl(h["cm3_shoulder"], pt - 0.5, pt + h["cm3_gap"], x, z))
             case = case.cut(ycyl(m2["pilot"], -1, pt + h["cm3_gap"] + 1, x, z))
-            screws["M2"].append(_yscrew("M2", x, cam_back, z))
+            screws["M2 screws, CM3"].append(_yscrew("M2", x, cam_back, z))
     # Pi Zero: posts up to its underside with blind M2.5 pilot holes
     pi_back = h["pi_y"] + PIZ["t"]
     for u, v in PIZ["holes"]:
         x, z = PIZ["w"] / 2 - u, v - PIZ["h"] / 2
         case = case.union(ycyl(h["pi_post_d"], pt - 0.5, h["pi_y"], x, z))
         case = case.cut(ycyl(m25["pilot"], h["pi_y"] + 1, h["pi_y"] - (m25["L"] - PIZ["t"]) - 1.0, x, z))
-        screws["M2.5"].append(_yscrew("M2.5", x, pi_back, z))
+        screws["M2.5 screws, Pi Zero"].append(_yscrew("M2.5", x, pi_back, z))
     # posts for the back cover's screws, on the cheeks' outer faces above and below the bosses
     cpx, cpz = h["cover_post"]
     posts = [(sx * cpx, sz * cpz) for sx in (-1, 1) for sz in (-1, 1)]
@@ -118,7 +118,7 @@ def _zero_case_frame():
         back = back.union(ycyl(h["cover_post_d"], b0, b1, x, z)).union(
             box(min(xi, x), b0, z - r, max(xi, x), b1, z + r))
         back = back.cut(ycyl(m25["clear"], b0 - 1, b1 + 1, x, z))
-        screws["M2.5"].append(_yscrew("M2.5", x, b1, z))
+        screws["M2.5 screws, back cover"].append(_yscrew("M2.5", x, b1, z))
     return case, back, ops, screws
 
 
@@ -126,8 +126,8 @@ def head_zero_parts():
     """Pi Zero 2 W + Camera Module 3 head, head frame."""
     h = ZK
     case, back, _, screws = _zero_case_frame()
-    p = {"case": (case, "petg"), "back cover": (back, "petg"),
-         "M2.5 screws": (_union(screws["M2.5"]), "steel"), "M2 screws": (_union(screws["M2"]), "steel")}
+    p = {"case": (case, "petg"), "back cover": (back, "petg")}
+    p.update({n: (_union(v), "steel") for n, v in screws.items()})
     lx, lz = h["lens_x"], h["lens_z"]
     cam_at = (lx, h["plate_t"] + h["cm3_gap"], lz)
     for name, (s, m) in cm3_parts(wide=False).items():
@@ -157,7 +157,8 @@ def _hq_frame():
     cy0 = h["pi_carrier_y"]                                  # carrier front face
     cy1 = cy0 + 4.0
     hq_at = (h["hq_x"], pt + h["hq_standoff"], 0.0)
-    screws = {"M2.5": [], "M2": []}
+    screws = {"M2.5 screws, HQ Camera": [], "M2.5 screws, Wide nose": [], "M2.5 screws, carrier": [],
+              "M2.5 screws, Pi 5": [], "M2 screws, Wide": []}
     # tub: plate with the lens-mount opening, cheeks, bosses with blind M10 threads
     tub = box(x0, 0, z0, x1, pt, z1).edges("|Y").fillet(4.0)
     tub = tub.cut(cq.Workplane("XZ").circle(37.0 / 2).extrude(-pt - 2).translate((h["hq_x"], -1, 0)))
@@ -188,25 +189,25 @@ def _hq_frame():
     for x, z in hq_holes:
         tub = tub.union(ycyl(h["hq_post_d"], pt - 0.5, pt + h["hq_standoff"], x, z))
         tub = tub.cut(ycyl(m25["pilot"], pt + h["hq_standoff"] + 1, 2.0, x, z))
-        screws["M2.5"].append(_yscrew("M2.5", x, hq_back, z))
+        screws["M2.5 screws, HQ Camera"].append(_yscrew("M2.5", x, hq_back, z))
     # the Wide's ribbon goes through a slot in the plate; the nose's screws come through counterbored holes from inside
     sx0, sx1, sz0, sz1 = h["wide_slot"]
     tub = tub.cut(box(sx0, -1, sz0, sx1, pt + 1, sz1))
     for x, z in h["nose_screws"]:
         tub = tub.cut(ycyl(m25["clear"], -1, pt + 1, x, z)).cut(ycyl(m25["cbore"], h["cbore_floor"], pt + 1, x, z))
-        screws["M2.5"].append(_yscrew("M2.5", x, h["cbore_floor"], z))
+        screws["M2.5 screws, Wide nose"].append(_yscrew("M2.5", x, h["cbore_floor"], z, into=-1))
     # carrier: plate, counterbored holes onto the ribs, posts with blind M2.5 pilot holes for the Pi 5 on its back
     carrier = box(x0, cy0, z0 - 4, x1, cy1, z1 + 4).edges("|Y").fillet(4.0)
     for x, z in car:
         carrier = carrier.cut(ycyl(m25["clear"], cy0 - 1, cy1 + 1, x, z))
         carrier = carrier.cut(ycyl(m25["cbore"], cy0 + h["cbore_floor"], cy1 + 1, x, z))
-        screws["M2.5"].append(_yscrew("M2.5", x, cy0 + h["cbore_floor"], z))
+        screws["M2.5 screws, carrier"].append(_yscrew("M2.5", x, cy0 + h["cbore_floor"], z))
     pi_y = cy1 + h["pi_standoff"]
     pi_holes = [(PI5["w"] / 2 - u, v - PI5["h"] / 2) for u, v in PI5["holes"]]
     for x, z in pi_holes:
         carrier = carrier.union(ycyl(h["pi_post_d"], cy1 - 0.5, pi_y, x, z))
         carrier = carrier.cut(ycyl(m25["pilot"], pi_y + 1, pi_y - (m25["L"] - PI5["t"]) - 1.0, x, z))
-        screws["M2.5"].append(_yscrew("M2.5", x, pi_y + PI5["t"], z))
+        screws["M2.5 screws, Pi 5"].append(_yscrew("M2.5", x, pi_y + PI5["t"], z))
     # Wide nose: frame level with the zoom's front, a 6 mm floor and a side wall back to the plate, shoulders with M2
     # pilot holes for the Wide, M2.5 pilot holes in the floor's and the wall's ends for the screws from the tub
     wx0, wx1 = h["wide_x"] - 14.0, h["wide_x"] + 18.0
@@ -224,7 +225,7 @@ def _hq_frame():
             x, z = h["wide_x"] + sx * 10.5, wz + dz
             nose = nose.union(ycyl(h["wide_shoulder"], ny + 4.5, ny + 5 + 2.5, x, z))
             nose = nose.cut(ycyl(m2["pilot"], ny + 5 + 2.5 + 1, ny + 2.0, x, z))
-            screws["M2"].append(_yscrew("M2", x, wide_back, z))
+            screws["M2 screws, Wide"].append(_yscrew("M2", x, wide_back, z))
     for x, z in h["nose_screws"]:
         nose = nose.cut(ycyl(m25["pilot"], 1.0, -(m25["L"] - h["cbore_floor"]) - 1.0, x, z))
     parts = {"tub": tub, "carrier": carrier, "Wide nose": nose}
@@ -234,14 +235,8 @@ def _hq_frame():
 def head_hq_parts(wide=True):
     h = HK
     pr, _, at, screws = _hq_frame()
-    if not wide:
-        screws = dict(screws, M2=[])
-    m25 = [s for s in screws["M2.5"]]
-    if not wide:                                             # the nose's three screws go with the nose
-        m25 = m25[:4] + m25[7:]
-    p = {"tub": (pr["tub"], "petg"), "carrier": (pr["carrier"], "petg"), "M2.5 screws": (_union(m25), "steel")}
-    if screws["M2"]:
-        p["M2 screws"] = (_union(screws["M2"]), "steel")
+    p = {"tub": (pr["tub"], "petg"), "carrier": (pr["carrier"], "petg")}
+    p.update({n: (_union(v), "steel") for n, v in screws.items() if wide or "Wide" not in n})
     for name, (s, m) in hq_camera_parts().items():
         p[name] = (_to_head(s, at["hq_at"]), m)
     pi_y = at["pi_y"]
@@ -391,7 +386,8 @@ def assembly(kind, pan=0.0, tilt=45.0, wide=True):
         asm.add(s, name=name.replace(" ", "_"), loc=rz, color=cq.Color(*colours[m]))
     head_loc = rz * cq.Location(cq.Vector(0, 0, -depth)) * cq.Location(cq.Vector(0, 0, 0), cq.Vector(1, 0, 0), tilt)
     for name, (s, m) in pc["head"].items():
-        asm.add(s, name=name.replace(" ", "_").replace(".", "_"), loc=head_loc, color=cq.Color(*colours[m]))
+        asm.add(s, name=name.replace(", ", "_").replace(" ", "_").replace(".", "_"), loc=head_loc,
+                color=cq.Color(*colours[m]))
     return asm
 
 
@@ -414,7 +410,11 @@ def bom():
             _, _, _, s = _zero_case_frame()
         else:
             _, _, _, s = _hq_frame()
-        out[kind] = {f"{k} x 6 pan head": len(v) for k, v in s.items()}
+        n = {}
+        for k, v in s.items():
+            size = k.split()[0]
+            n[f"{size} x 6 pan head"] = n.get(f"{size} x 6 pan head", 0) + len(v)
+        out[kind] = n
     return out
 
 

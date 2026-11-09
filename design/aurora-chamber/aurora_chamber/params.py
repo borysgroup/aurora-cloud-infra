@@ -243,6 +243,6 @@ def params_table(sources=None):
             continue
         v = p.value
         if isinstance(v, dict) and name == "T6":
-            v = "see robot.py"
+            v = "see params.py"
         rows.append(f"| `{name}` | {v} | {p.unc} | {p.source} | {p.note} |")
     return "\n".join(rows)

@@ -124,6 +124,11 @@ The checks take the union over the riser range: bottoms from 150 mm and tops fro
 riser is measured, anything above the robot's reach has to clear the 180 mm case and anything below it
 the 150 mm case.
 
+The model doesn't pin arm 2 to one place. The arm moves during the video, so the cloud mixes several
+poses. One reading puts arm 2 at drop y -700 to -430; the highest arm-cover points sit at x 480-565 and
+y -900 to -640. `scara(target=...)` draws any pose by inverse kinematics, and the scene uses the parked
+pose (`PARK_J3`). Clearance is always checked against the swept volume, not against one pose.
+
 Consequences:
 
 - **Nothing fits straight above the tray.** At 180 mm, a flat Camera Module 3 (about 25 mm deep) on the
@@ -134,6 +139,10 @@ Consequences:
 - **S4** is 651 mm from J1. That is outside the shaft's reach (619) but inside arm 2's (658.5). Its tip
   is 32 mm from the swept volume.
 - S1 and S2 are 914 and 885 mm from J1, so they are well clear.
+- **The roller's close-up camera** (on a post beside the roller in the camera layout) is 628 mm from J1 at
+  257 mm height, 9 mm outside the shaft's 619 mm reach. The shaft's band runs from 105 to 780.5 mm, so
+  the post is at the edge of the robot's path if J1 can turn that way. The earlier z-only check reported
+  it as 180 mm under arm 2.
 - Epson's drawing puts the duct arch 700 mm above the base, which is above this ceiling for any riser over 90 mm.
   The video shows it arching to just under the ceiling, so the model caps it 6 mm below.
 
@@ -155,7 +164,9 @@ re-run of the two scripts above.
    designs need at least 13.6 mm of stud.
 4. **Which way the Epson's base faces** (`BASE_BACK`, now drawn towards the far window). With it and J1's
    ±132° range, the swept volume could be cut to the real arc, which might take S3 out of the robot's path.
-5. **J1's position** is ±30 mm. `robot_clearance(..., xy_margin=30)` checks against it.
+5. **J1's position** is ±30 mm, and the vacuum tool is a guess. The reach uses the shaft nut's 19 mm radius;
+   the drawn 40 x 40 mm tool reaches about 9 mm further. `robot_clearance(..., xy_margin=30)` checks
+   against both.
 6. **Not in the reconstruction:** the glove ports (two per side assumed), the mini antechamber and the
    Amcrest dome (both read off photos, ±50 to 100 mm), and the floor and stand.
 7. **The back-left corner** (x 50-400, y 800-1060) isn't empty in the cloud. Something up to about 0.5 m
@@ -212,7 +223,7 @@ re-run of the two scripts above.
 | `EPSON_L2` | 275.0 | exact | datasheet | J2 to J3 (T6-B602S) |
 | `EPSON_STROKE` | 200.0 | exact | datasheet | J3 (Z) stroke |
 | `EPSON_J1_RANGE` | 132.0 | exact | datasheet | J1 range is +/-132 deg about the base's forward direction; the swept volume uses a full turn because the base's facing is unknown |
-| `T6` | see robot.py | +/-2 mm | datasheet | T6-B outline: arm 1 and arm 2 z ranges, controller box, shaft top at Z fully up, duct arch height, widths, arm 2 end radius, shaft and nut radii, base (width, front, back); heights above the base |
+| `T6` | see params.py | +/-2 mm | datasheet | T6-B outline: arm 1 and arm 2 z ranges, controller box, shaft top at Z fully up, duct arch height, widths, arm 2 end radius, shaft and nut radii, base (width, front, back); heights above the base |
 | `ARM2_FITTINGS` | 25.0 | +/-10 mm | reconstruction | fittings on arm 2 stand this far above its cover |
 | `SHAFT_NUT` | 10.0 | +/-5 mm | assumption | nut and fittings on top of the J3 shaft |
 | `TOOL_BELOW_BASE` | 45.0 | +/-30 mm | assumption | lowest point of the vacuum tool below the base's underside at Z fully down |

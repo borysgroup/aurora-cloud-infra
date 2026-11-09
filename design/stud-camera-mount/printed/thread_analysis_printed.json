@@ -1,0 +1,205 @@
+{
+ "assumptions": {
+  "f_thread_pla_steel": 0.3,
+  "f_thread_pla_pla": 0.3,
+  "mu_pla_pla": 0.3,
+  "mu_pla_steel": 0.3,
+  "E_pla": 3500.0,
+  "E_creep_ratio": 0.6,
+  "tau_interlayer": 15.0,
+  "sigma_z": 20.0,
+  "Kt_root": 2.2,
+  "Sp_A2_70": 450.0
+ },
+ "hand_torque_Nm": {
+  "stud": {
+   "snug": 0.3,
+   "firm": 0.8,
+   "hard": 1.5
+  },
+  "tilt": {
+   "snug": 0.15,
+   "firm": 0.4,
+   "hard": 0.8
+  }
+ },
+ "stud": {
+  "thread": "M6x1, PLA nut on the steel stud",
+  "allowance_mm": 0.2,
+  "engaged_mm": 12.2,
+  "K": 0.729,
+  "thread_raise_Nmm_per_N": 1.11,
+  "thread_loosen_Nmm_per_N": 0.75,
+  "collar_Nmm_per_N": 3.26,
+  "strip_area_mm2": 116.7,
+  "F_strip_N": 1750,
+  "C": 0.907,
+  "preload_left_after_creep": 0.62,
+  "pan_hold_Nmm_per_N": 4.93,
+  "knob_face_drag_Nmm_per_N": 3.26,
+  "min_engagement_SF3_hard_mm": 7.2,
+  "min_stud_proud_mm": 16.0,
+  "rows": [
+   {
+    "level": "snug",
+    "T_Nm": 0.3,
+    "Fi_N": 69,
+    "n_strip_PLA_nut": 25.5,
+    "stud_stress_MPa": 3.4,
+    "nut_face_on_pad_MPa": 0.11,
+    "T_pan_hold_Nm": 0.34,
+    "Fi_after_creep_N": 43
+   },
+   {
+    "level": "firm",
+    "T_Nm": 0.8,
+    "Fi_N": 183,
+    "n_strip_PLA_nut": 9.6,
+    "stud_stress_MPa": 9.1,
+    "nut_face_on_pad_MPa": 0.31,
+    "T_pan_hold_Nm": 0.9,
+    "Fi_after_creep_N": 114
+   },
+   {
+    "level": "hard",
+    "T_Nm": 1.5,
+    "Fi_N": 343,
+    "n_strip_PLA_nut": 5.1,
+    "stud_stress_MPa": 17.1,
+    "nut_face_on_pad_MPa": 0.57,
+    "T_pan_hold_Nm": 1.69,
+    "Fi_after_creep_N": 214
+   }
+  ]
+ },
+ "tilt": {
+  "zero": {
+   "kind": "zero",
+   "thread": "M10x1.25, PLA screw in a PLA boss",
+   "allowances_mm": [
+    0.15,
+    0.15
+   ],
+   "engaged_mm": 9.4,
+   "K": 0.437,
+   "thread_raise_Nmm_per_N": 1.82,
+   "thread_loosen_Nmm_per_N": 1.37,
+   "collar_Nmm_per_N": 2.56,
+   "strip_area_boss_mm2": 171.3,
+   "strip_area_screw_mm2": 124.9,
+   "F_strip_boss_N": 2569,
+   "F_strip_screw_N": 1874,
+   "screw_root_area_mm2": 52.4,
+   "F_screw_z_break_N": 476,
+   "C": 0.19,
+   "preload_left_after_creep": 0.6,
+   "hold_knobs_turn_Nmm_per_N": 9.52,
+   "hold_bolts_turn_Nmm_per_N": 7.6,
+   "knob_face_drag_Nmm_per_N": 2.56,
+   "arm_gap_closing_force_N": 11.3,
+   "arm_root_bending_MPa": 4.9,
+   "rows": [
+    {
+     "level": "snug",
+     "T_Nm": 0.15,
+     "Fi_N": 34,
+     "screw_vm_MPa": 1.2,
+     "n_screw_z_tension": 7.6,
+     "n_strip_boss": 74.9,
+     "n_strip_screw": 54.6,
+     "knob_on_arm_MPa": 0.12,
+     "T_tilt_hold_Nm": 0.26,
+     "Fi_after_creep_N": 21
+    },
+    {
+     "level": "firm",
+     "T_Nm": 0.4,
+     "Fi_N": 91,
+     "screw_vm_MPa": 3.2,
+     "n_screw_z_tension": 2.8,
+     "n_strip_boss": 28.1,
+     "n_strip_screw": 20.5,
+     "knob_on_arm_MPa": 0.32,
+     "T_tilt_hold_Nm": 0.7,
+     "Fi_after_creep_N": 55
+    },
+    {
+     "level": "hard",
+     "T_Nm": 0.8,
+     "Fi_N": 183,
+     "screw_vm_MPa": 6.4,
+     "n_screw_z_tension": 1.4,
+     "n_strip_boss": 14.0,
+     "n_strip_screw": 10.2,
+     "knob_on_arm_MPa": 0.63,
+     "T_tilt_hold_Nm": 1.39,
+     "Fi_after_creep_N": 110
+    }
+   ]
+  },
+  "hq": {
+   "kind": "hq",
+   "thread": "M10x1.25, PLA screw in a PLA boss",
+   "allowances_mm": [
+    0.15,
+    0.15
+   ],
+   "engaged_mm": 9.4,
+   "K": 0.437,
+   "thread_raise_Nmm_per_N": 1.82,
+   "thread_loosen_Nmm_per_N": 1.37,
+   "collar_Nmm_per_N": 2.56,
+   "strip_area_boss_mm2": 171.3,
+   "strip_area_screw_mm2": 124.9,
+   "F_strip_boss_N": 2569,
+   "F_strip_screw_N": 1874,
+   "screw_root_area_mm2": 52.4,
+   "F_screw_z_break_N": 476,
+   "C": 0.19,
+   "preload_left_after_creep": 0.6,
+   "hold_knobs_turn_Nmm_per_N": 9.87,
+   "hold_bolts_turn_Nmm_per_N": 7.95,
+   "knob_face_drag_Nmm_per_N": 2.56,
+   "arm_gap_closing_force_N": 2.1,
+   "arm_root_bending_MPa": 1.6,
+   "rows": [
+    {
+     "level": "snug",
+     "T_Nm": 0.15,
+     "Fi_N": 34,
+     "screw_vm_MPa": 1.2,
+     "n_screw_z_tension": 7.6,
+     "n_strip_boss": 74.9,
+     "n_strip_screw": 54.6,
+     "knob_on_arm_MPa": 0.12,
+     "T_tilt_hold_Nm": 0.27,
+     "Fi_after_creep_N": 21
+    },
+    {
+     "level": "firm",
+     "T_Nm": 0.4,
+     "Fi_N": 91,
+     "screw_vm_MPa": 3.2,
+     "n_screw_z_tension": 2.8,
+     "n_strip_boss": 28.1,
+     "n_strip_screw": 20.5,
+     "knob_on_arm_MPa": 0.32,
+     "T_tilt_hold_Nm": 0.73,
+     "Fi_after_creep_N": 55
+    },
+    {
+     "level": "hard",
+     "T_Nm": 0.8,
+     "Fi_N": 183,
+     "screw_vm_MPa": 6.4,
+     "n_screw_z_tension": 1.4,
+     "n_strip_boss": 14.0,
+     "n_strip_screw": 10.2,
+     "knob_on_arm_MPa": 0.63,
+     "T_tilt_hold_Nm": 1.45,
+     "Fi_after_creep_N": 110
+    }
+   ]
+  }
+ }
+}

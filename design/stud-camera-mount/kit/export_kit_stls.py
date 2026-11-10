@@ -1,8 +1,8 @@
-"""Export the kit-screw stud mount's printed parts in print orientation, threads included, and check the assemblies.
+"""Export the nylon-kit stud mount's printed parts in print orientation, threads included, and check the assemblies.
 
     python kit/export_kit_stls.py            # writes kit/stl/*.stl, prints sizes and an overhang check
-    python kit/export_kit_stls.py --check    # also: overlaps inside each head (screws included), and head vs yoke/
-                                             # stud/thumb nut/tilt screws at tilts -10..90 deg
+    python kit/export_kit_stls.py --check    # also: overlaps inside each head (kit screws, nuts and standoffs
+                                             # included), and head vs yoke/stud/thumb nut/tilt screws at tilts -10..90
 
 The thumb nut is the all-printed mount's (../printed/stl/stud_thumb_nut.stl). Threads are cut or added at mesh level
 with manifold3d (../printed/threads.py). Orientation: yokes on their ceiling face; tilt screw on its knob; Pi Zero
@@ -38,11 +38,13 @@ PARTS = {
     "head_hq_tub": (lambda: sk.head_hq_parts()["tub"][0], lambda: sk.head_thread_ops("hq"), X_UP, 1),
     "head_hq_carrier": (lambda: sk.head_hq_parts()["carrier"][0], lambda: [], X_UP, 1),
     "head_hq_wide_nose": (lambda: sk.head_hq_parts()["Wide nose"][0], lambda: [], X_UP, 1),
-    "pilot_coupon": (sk.pilot_coupon, lambda: [], [], 1),
+    "fit_coupon": (sk.fit_coupon, lambda: [], [], 1),
 }
 PRINTED = {"case", "back cover", "tub", "carrier", "Wide nose"}
+
+
 def KIT(name):
-    return name.startswith(("M2 screws", "M2.5 screws"))
+    return name.startswith(("M2 ", "M2.5 "))
 
 
 def export():

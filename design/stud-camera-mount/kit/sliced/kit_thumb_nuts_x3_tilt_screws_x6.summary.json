@@ -40,7 +40,7 @@
     "--debug",
     "3",
     "--datadir",
-    "/tmp/bambu-kit_thumb_nuts_x3_tilt_screws_x6-owxxdhq7/datadir",
+    "/tmp/bambu-kit_thumb_nuts_x3_tilt_screws_x6-95im2b8a/datadir",
     "--load-settings",
     "/home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/print/profiles/Bambu Lab H2D 0.4 nozzle.json;/home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/print/profiles/0.20mm Standard @BBL H2D.json",
     "--load-filaments",
@@ -65,13 +65,13 @@
     "--slice",
     "0",
     "--outputdir",
-    "/tmp/bambu-kit_thumb_nuts_x3_tilt_screws_x6-owxxdhq7/out",
+    "/tmp/bambu-kit_thumb_nuts_x3_tilt_screws_x6-95im2b8a/out",
     "--export-3mf",
     "kit_thumb_nuts_x3_tilt_screws_x6.gcode.3mf",
     "/home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/printed/stl/stud_thumb_nut.stl",
     "/home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/kit/stl/tilt_screw.stl"
   ],
-  "command_line": "/tmp/bambu/app/bin/bambu-studio --debug 3 --datadir /tmp/bambu-kit_thumb_nuts_x3_tilt_screws_x6-owxxdhq7/datadir --load-settings '/home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/print/profiles/Bambu Lab H2D 0.4 nozzle.json;/home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/print/profiles/0.20mm Standard @BBL H2D.json' --load-filaments '/home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/print/profiles/Bambu PLA Basic @BBL H2D.json' --clone-objects 3,6 --layer-height=0.16 --wall-loops=6 --top-shell-layers=6 --bottom-shell-layers=5 --sparse-infill-density=100% --sparse-infill-pattern=zig-zag '--curr-bed-type=Textured PEI Plate' --nozzle-volume-type=Standard,Standard --filament-map-mode=Manual --filament-map=1 --enable-support=0 --arrange 1 --orient 0 --slice 0 --outputdir /tmp/bambu-kit_thumb_nuts_x3_tilt_screws_x6-owxxdhq7/out --export-3mf kit_thumb_nuts_x3_tilt_screws_x6.gcode.3mf /home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/printed/stl/stud_thumb_nut.stl /home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/kit/stl/tilt_screw.stl",
+  "command_line": "/tmp/bambu/app/bin/bambu-studio --debug 3 --datadir /tmp/bambu-kit_thumb_nuts_x3_tilt_screws_x6-95im2b8a/datadir --load-settings '/home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/print/profiles/Bambu Lab H2D 0.4 nozzle.json;/home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/print/profiles/0.20mm Standard @BBL H2D.json' --load-filaments '/home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/print/profiles/Bambu PLA Basic @BBL H2D.json' --clone-objects 3,6 --layer-height=0.16 --wall-loops=6 --top-shell-layers=6 --bottom-shell-layers=5 --sparse-infill-density=100% --sparse-infill-pattern=zig-zag '--curr-bed-type=Textured PEI Plate' --nozzle-volume-type=Standard,Standard --filament-map-mode=Manual --filament-map=1 --enable-support=0 --arrange 1 --orient 0 --slice 0 --outputdir /tmp/bambu-kit_thumb_nuts_x3_tilt_screws_x6-95im2b8a/out --export-3mf kit_thumb_nuts_x3_tilt_screws_x6.gcode.3mf /home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/printed/stl/stud_thumb_nut.stl /home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/kit/stl/tilt_screw.stl",
   "warnings": [],
   "allowed_warning_patterns": [],
   "unexpected_log_errors": [],
@@ -180,9 +180,9 @@
     "firmware_extruder_name": "Left Nozzle"
   },
   "results": {
-    "print_time_s": 10798,
-    "print_time": "2h 59m 58s",
-    "model_printing_time": "2h 54m 40s",
+    "print_time_s": 10777,
+    "print_time": "2h 59m 37s",
+    "model_printing_time": "2h 54m 19s",
     "filament_g": 73.27,
     "filament_m": 24.18,
     "filament_used": [
@@ -314,19 +314,19 @@
       "Flush": 26,
       "Gap infill": 6,
       "Inner wall": 4167,
-      "Internal solid infill": 1047,
+      "Internal solid infill": 1029,
       "Outer wall": 1378,
-      "Sparse infill": 2781,
-      "Top surface": 100,
-      "Travel": 869,
-      "Undefined": 860
+      "Sparse infill": 2780,
+      "Top surface": 95,
+      "Travel": 871,
+      "Undefined": 863
     },
     "thumbnail_in_3mf": false,
     "gcode_header": {
-      "model_printing_time": "2h 54m 40s",
-      "total_estimated_time": "2h 59m 58s",
+      "model_printing_time": "2h 54m 19s",
+      "total_estimated_time": "2h 59m 37s",
       "total_layers": 152,
-      "filament_length_mm": 24176.81,
+      "filament_length_mm": 24176.83,
       "filament_weight_g": 73.27,
       "max_z_height_mm": 24.36,
       "bambu_studio_version": "02.09.01.70"
@@ -334,8 +334,8 @@
   },
   "outputs": {
     "gcode_3mf": "/home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/kit/sliced/kit_thumb_nuts_x3_tilt_screws_x6.gcode.3mf",
-    "sha256": "f6352ffc6d40c0e87f98ea53fdd8bd4ee3683f64e25d72fb68a2ce805b27c506",
-    "size_bytes": 10105234,
+    "sha256": "9591fb70816b676071291eade50411294bae0ba1c9392c36382e1d79f23ae843",
+    "size_bytes": 10098948,
     "log": "/home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/kit/sliced/kit_thumb_nuts_x3_tilt_screws_x6.slicer.log"
   },
   "failures": []

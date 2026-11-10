@@ -1,15 +1,27 @@
 {
  "assumptions": {
-  "f_thread_pla_steel": 0.3,
-  "f_thread_pla_pla": 0.3,
-  "mu_pla_pla": 0.3,
-  "mu_pla_steel": 0.3,
-  "E_pla": 3500.0,
-  "E_creep_ratio": 0.6,
-  "tau_interlayer": 15.0,
-  "sigma_z": 20.0,
-  "Kt_root": 2.2,
-  "Sp_A2_70": 450.0
+  "nylon": {
+   "sigma_u": 60.0,
+   "tau_u": 36.0,
+   "rho": 0.00114,
+   "f_thread": 0.2,
+   "f_collar": 0.25,
+   "relax": 0.5
+  },
+  "drive_fraction": 0.5,
+  "tau_pla_punch_MPa": 15.0,
+  "printed": {
+   "f_thread_pla_steel": 0.3,
+   "f_thread_pla_pla": 0.3,
+   "mu_pla_pla": 0.3,
+   "mu_pla_steel": 0.3,
+   "E_pla": 3500.0,
+   "E_creep_ratio": 0.6,
+   "tau_interlayer": 15.0,
+   "sigma_z": 20.0,
+   "Kt_root": 2.2,
+   "Sp_A2_70": 450.0
+  }
  },
  "hand_torque_Nm": {
   "stud": {
@@ -23,18 +35,43 @@
    "hard": 0.8
   }
  },
- "screw_drive_torque_Nm": {
-  "M2.5": 0.1,
-  "M2": 0.05
- },
  "bom": {
-  "zero": {
-   "M2 x 6 pan head": 4,
-   "M2.5 x 6 pan head": 8
+  "per mount": {
+   "zero": {
+    "M2 nut": 4,
+    "M2 screw 6": 4,
+    "M2.5 F-F 6": 4,
+    "M2.5 screw 12": 4,
+    "M2.5 screw 6": 4
+   },
+   "hq": {
+    "M2 nut": 4,
+    "M2 screw 8": 4,
+    "M2.5 nut": 15,
+    "M2.5 screw 12": 4,
+    "M2.5 screw 6": 4,
+    "M2.5 screw 8": 7
+   }
   },
-  "hq": {
-   "M2.5 x 6 pan head": 15,
-   "M2 x 6 pan head": 4
+  "2 Pi Zero + 1 HQ": {
+   "M2 nut": 12,
+   "M2 screw 6": 8,
+   "M2 screw 8": 4,
+   "M2.5 F-F 6": 8,
+   "M2.5 nut": 15,
+   "M2.5 screw 12": 12,
+   "M2.5 screw 6": 12,
+   "M2.5 screw 8": 7
+  },
+  "left in the kits": {
+   "M2 nut": 38,
+   "M2 screw 6": 12,
+   "M2 screw 8": 16,
+   "M2.5 F-F 6": 17,
+   "M2.5 nut": 35,
+   "M2.5 screw 12": 8,
+   "M2.5 screw 6": 8,
+   "M2.5 screw 8": 13
   }
  },
  "thread": {
@@ -111,8 +148,8 @@
     "hold_knobs_turn_Nmm_per_N": 9.52,
     "hold_bolts_turn_Nmm_per_N": 7.6,
     "knob_face_drag_Nmm_per_N": 2.56,
-    "arm_gap_closing_force_N": 11.3,
-    "arm_root_bending_MPa": 4.9,
+    "arm_gap_closing_force_N": 10.5,
+    "arm_root_bending_MPa": 4.7,
     "rows": [
      {
       "level": "snug",
@@ -218,71 +255,111 @@
    }
   }
  },
- "kit_screws": [
+ "nylon_screws": {
+  "M2.5": {
+   "size": "M2.5",
+   "At_mm2": 3.39,
+   "d3_mm": 1.948,
+   "K": 0.33,
+   "F_tensile_N": 203,
+   "T_twist_off_pure_torsion_Nm": 0.052,
+   "T_shank_yield_Nm": 0.1,
+   "T_tighten_max_Nm": 0.05,
+   "Fi_at_T_tighten_N": 60.8,
+   "Fi_after_relaxation_N": 30.4
+  },
+  "M2": {
+   "size": "M2",
+   "At_mm2": 2.07,
+   "d3_mm": 1.509,
+   "K": 0.335,
+   "F_tensile_N": 124,
+   "T_twist_off_pure_torsion_Nm": 0.024,
+   "T_shank_yield_Nm": 0.048,
+   "T_tighten_max_Nm": 0.024,
+   "Fi_at_T_tighten_N": 35.6,
+   "Fi_after_relaxation_N": 17.8
+  }
+ },
+ "joints": [
   {
-   "screw": "M2.5 x 6",
-   "use": "Pi Zero 2 W (1.0 mm board)",
-   "pilot_mm": 2.2,
-   "engaged_mm": 5.0,
-   "K": 0.42,
-   "T_snug_Nm": 0.1,
-   "Fi_snug_N": 95,
-   "strip_area_mm2": 34.3,
-   "F_strip_N": 515,
-   "strip_margin_at_snug": 5.4,
-   "T_strip_Nm": 0.54
+   "size": "M2",
+   "joint": "CM3: M2 x 6 into nuts in the case's front face",
+   "engaged_mm": 1.6,
+   "F_strip_N": 213,
+   "strip_margin_at_T_tighten": 6.0,
+   "nut_on_PLA_MPa": 3.8,
+   "PLA_over_nut_mm": 3.08,
+   "F_punch_through_N": 640,
+   "punch_vs_screw_tensile": 5.2
   },
   {
-   "screw": "M2.5 x 6",
-   "use": "Pi 5 (1.6 mm board)",
-   "pilot_mm": 2.2,
-   "engaged_mm": 4.4,
-   "K": 0.42,
-   "T_snug_Nm": 0.1,
-   "Fi_snug_N": 95,
-   "strip_area_mm2": 30.2,
-   "F_strip_N": 453,
-   "strip_margin_at_snug": 4.8,
-   "T_strip_Nm": 0.48
+   "size": "M2.5",
+   "joint": "Pi Zero: M2.5 x 12 from the front into F-F standoffs",
+   "engaged_mm": 2.5,
+   "F_strip_N": 427,
+   "strip_margin_at_T_tighten": 7.0,
+   "head_on_PLA_MPa": 4.7
   },
   {
-   "screw": "M2.5 x 6",
-   "use": "HQ Camera (1.4 mm board)",
-   "pilot_mm": 2.2,
-   "engaged_mm": 4.6,
-   "K": 0.42,
-   "T_snug_Nm": 0.1,
-   "Fi_snug_N": 95,
-   "strip_area_mm2": 31.6,
-   "F_strip_N": 474,
-   "strip_margin_at_snug": 5.0,
-   "T_strip_Nm": 0.5
+   "size": "M2.5",
+   "joint": "Pi Zero back cover: M2.5 x 6 into the same standoffs",
+   "engaged_mm": 3.0,
+   "F_strip_N": 512,
+   "strip_margin_at_T_tighten": 8.4,
+   "head_on_PLA_MPa": 4.7
   },
   {
-   "screw": "M2.5 x 6",
-   "use": "covers, carrier, nose (1.5-2.5 mm under the head)",
-   "pilot_mm": 2.2,
-   "engaged_mm": 3.5,
-   "K": 0.42,
-   "T_snug_Nm": 0.1,
-   "Fi_snug_N": 95,
-   "strip_area_mm2": 24.0,
-   "F_strip_N": 361,
-   "strip_margin_at_snug": 3.8,
-   "T_strip_Nm": 0.38
+   "size": "M2.5",
+   "joint": "HQ Camera: M2.5 x 12 from the tub's front, nuts on the board",
+   "engaged_mm": 2.0,
+   "F_strip_N": 342,
+   "strip_margin_at_T_tighten": 5.6,
+   "head_on_PLA_MPa": 4.7
   },
   {
-   "screw": "M2 x 6",
-   "use": "Camera Module 3 / Wide (1.12 mm board)",
-   "pilot_mm": 1.7,
-   "engaged_mm": 4.88,
-   "K": 0.424,
-   "T_snug_Nm": 0.05,
-   "Fi_snug_N": 59,
-   "strip_area_mm2": 26.8,
-   "F_strip_N": 403,
-   "strip_margin_at_snug": 6.8,
-   "T_strip_Nm": 0.34
+   "size": "M2.5",
+   "joint": "Pi 5: M2.5 x 6 into nuts in the carrier posts' slots",
+   "engaged_mm": 2.0,
+   "F_strip_N": 342,
+   "strip_margin_at_T_tighten": 5.6,
+   "nut_on_PLA_MPa": 4.0,
+   "PLA_over_nut_mm": 1.4,
+   "F_punch_through_N": 364,
+   "punch_vs_screw_tensile": 1.8
+  },
+  {
+   "size": "M2.5",
+   "joint": "carrier: M2.5 x 8 into nuts in the cheeks' slots",
+   "engaged_mm": 2.0,
+   "F_strip_N": 342,
+   "strip_margin_at_T_tighten": 5.6,
+   "nut_on_PLA_MPa": 4.0,
+   "PLA_over_nut_mm": 2.5,
+   "F_punch_through_N": 650,
+   "punch_vs_screw_tensile": 3.2
+  },
+  {
+   "size": "M2.5",
+   "joint": "Wide nose: M2.5 x 8 into nuts in the nose's slots",
+   "engaged_mm": 2.0,
+   "F_strip_N": 342,
+   "strip_margin_at_T_tighten": 5.6,
+   "nut_on_PLA_MPa": 4.0,
+   "PLA_over_nut_mm": 3.0,
+   "F_punch_through_N": 779,
+   "punch_vs_screw_tensile": 3.8
+  },
+  {
+   "size": "M2",
+   "joint": "Wide: M2 x 8 into nuts in the nose's front face",
+   "engaged_mm": 1.6,
+   "F_strip_N": 213,
+   "strip_margin_at_T_tighten": 6.0,
+   "nut_on_PLA_MPa": 3.8,
+   "PLA_over_nut_mm": 5.08,
+   "F_punch_through_N": 1056,
+   "punch_vs_screw_tensile": 8.5
   }
  ],
  "hq_camera_screws": {
@@ -292,19 +369,22 @@
   "tension_per_upper_screw_N": 1.49,
   "tension_at_shock_N": 14.9,
   "shock_g": 10.0,
-  "separation_margin_at_shock": 6.4,
-  "strip_margin_at_shock": 4.3
+  "separation_margin_static_relaxed": 20.4,
+  "separation_margin_at_shock": 4.1,
+  "separation_margin_at_shock_relaxed": 2.0,
+  "tensile_margin_at_shock": 2.7
  },
  "mujoco": {
   "zero": {
-   "head_mass_g": 58.5,
+   "head_mass_g": 55.2,
+   "nylon_hardware_on_head_g": 1.47,
    "head_com_mm": [
     -3.1,
-    0.6,
-    -3.5
+    1.0,
+    -3.8
    ],
-   "yoke_and_nut_mass_g": 50.3,
-   "tilt_axis_depth_mm": 48,
+   "yoke_and_nut_mass_g": 50.5,
+   "tilt_axis_depth_mm": 49,
    "gravity_torque_tilt_Nm": 0.002,
    "preload_for_gravity_N": 0.3,
    "knob_torque_for_gravity_Nm": 0.001,
@@ -315,25 +395,25 @@
      "T_hold_tilt_Nm": 0.258,
      "T_hold_pan_Nm": 0.34,
      "gravity_drift_deg_1s": {
-      "0": 0.0001,
-      "45": 0.0007,
+      "0": 0.0002,
+      "45": 0.0008,
       "90": 0.0009
      },
      "bumps_at_45deg": {
       "tilt (push across the view, in the tilt plane)": {
        "threshold_peak_force_N": 22.9,
-       "stud_P_N": 46.9,
-       "stud_separation_margin": 15.8,
-       "stud_strip_margin": 15.7,
-       "screw_P_N": 3.2,
+       "stud_P_N": 47.5,
+       "stud_separation_margin": 15.6,
+       "stud_strip_margin": 15.6,
+       "screw_P_N": 3.1,
        "screw_load_N": 34.6,
        "screw_z_break_margin": 13.7
       },
       "pan (push sideways, along the tilt axis)": {
        "threshold_peak_force_N": 39.3,
-       "stud_P_N": 95.1,
-       "stud_separation_margin": 7.8,
-       "stud_strip_margin": 11.3,
+       "stud_P_N": 96.8,
+       "stud_separation_margin": 7.7,
+       "stud_strip_margin": 11.2,
        "screw_P_N": 43.9,
        "screw_load_N": 42.9,
        "screw_z_break_margin": 11.1
@@ -346,24 +426,24 @@
      "T_hold_tilt_Nm": 0.692,
      "T_hold_pan_Nm": 0.902,
      "gravity_drift_deg_1s": {
-      "0": 0.0001,
-      "45": 0.0007,
+      "0": 0.0002,
+      "45": 0.0008,
       "90": 0.0009
      },
      "bumps_at_45deg": {
       "tilt (push across the view, in the tilt plane)": {
        "threshold_peak_force_N": 61.1,
-       "stud_P_N": 123.9,
-       "stud_separation_margin": 15.9,
+       "stud_P_N": 125.5,
+       "stud_separation_margin": 15.7,
        "stud_strip_margin": 5.9,
-       "screw_P_N": 8.5,
+       "screw_P_N": 8.2,
        "screw_load_N": 92.7,
        "screw_z_break_margin": 5.1
       },
       "pan (push sideways, along the tilt axis)": {
        "threshold_peak_force_N": 102.1,
-       "stud_P_N": 245.5,
-       "stud_separation_margin": 8.0,
+       "stud_P_N": 250.0,
+       "stud_separation_margin": 7.9,
        "stud_strip_margin": 4.3,
        "screw_P_N": 114.2,
        "screw_load_N": 114.3,
@@ -377,24 +457,24 @@
      "T_hold_tilt_Nm": 1.391,
      "T_hold_pan_Nm": 1.691,
      "gravity_drift_deg_1s": {
-      "0": 0.0001,
-      "45": 0.0007,
+      "0": 0.0002,
+      "45": 0.0008,
       "90": 0.0009
      },
      "bumps_at_45deg": {
       "tilt (push across the view, in the tilt plane)": {
        "threshold_peak_force_N": 122.9,
-       "stud_P_N": 247.9,
-       "stud_separation_margin": 14.9,
+       "stud_P_N": 251.2,
+       "stud_separation_margin": 14.7,
        "stud_strip_margin": 3.1,
-       "screw_P_N": 17.1,
-       "screw_load_N": 186.5,
+       "screw_P_N": 16.5,
+       "screw_load_N": 186.4,
        "screw_z_break_margin": 2.6
       },
       "pan (push sideways, along the tilt axis)": {
        "threshold_peak_force_N": 189.8,
-       "stud_P_N": 455.3,
-       "stud_separation_margin": 8.1,
+       "stud_P_N": 463.5,
+       "stud_separation_margin": 8.0,
        "stud_strip_margin": 2.3,
        "screw_P_N": 212.2,
        "screw_load_N": 226.3,
@@ -408,25 +488,25 @@
      "T_hold_tilt_Nm": 0.16,
      "T_hold_pan_Nm": 0.212,
      "gravity_drift_deg_1s": {
-      "0": 0.0001,
-      "45": 0.0007,
+      "0": 0.0002,
+      "45": 0.0008,
       "90": 0.0009
      },
      "bumps_at_45deg": {
       "tilt (push across the view, in the tilt plane)": {
        "threshold_peak_force_N": 14.1,
-       "stud_P_N": 29.3,
-       "stud_separation_margin": 15.8,
-       "stud_strip_margin": 25.1,
+       "stud_P_N": 29.7,
+       "stud_separation_margin": 15.6,
+       "stud_strip_margin": 25.0,
        "screw_P_N": 1.9,
        "screw_load_N": 21.4,
-       "screw_z_break_margin": 22.2
+       "screw_z_break_margin": 22.3
       },
       "pan (push sideways, along the tilt axis)": {
        "threshold_peak_force_N": 24.8,
-       "stud_P_N": 60.5,
-       "stud_separation_margin": 7.6,
-       "stud_strip_margin": 17.9,
+       "stud_P_N": 61.6,
+       "stud_separation_margin": 7.5,
+       "stud_strip_margin": 17.7,
        "screw_P_N": 27.7,
        "screw_load_N": 26.7,
        "screw_z_break_margin": 17.9
@@ -436,17 +516,18 @@
    }
   },
   "hq": {
-   "head_mass_g": 354.8,
+   "head_mass_g": 359.1,
+   "nylon_hardware_on_head_g": 2.23,
    "head_com_mm": [
-    -6.5,
-    -24.8,
-    -1.0
+    -5.9,
+    -26.1,
+    -1.4
    ],
    "yoke_and_nut_mass_g": 59.8,
    "tilt_axis_depth_mm": 73,
-   "gravity_torque_tilt_Nm": 0.086,
-   "preload_for_gravity_N": 10.8,
-   "knob_torque_for_gravity_Nm": 0.047,
+   "gravity_torque_tilt_Nm": 0.092,
+   "preload_for_gravity_N": 11.5,
+   "knob_torque_for_gravity_Nm": 0.05,
    "levels": {
     "snug": {
      "Fi_tilt_N": 34,
@@ -461,20 +542,20 @@
      "bumps_at_45deg": {
       "tilt (push across the view, in the tilt plane)": {
        "threshold_peak_force_N": 3.9,
-       "stud_P_N": 23.9,
-       "stud_separation_margin": 31.0,
+       "stud_P_N": 24.1,
+       "stud_separation_margin": 30.8,
        "stud_strip_margin": 19.3,
        "screw_P_N": 0.4,
        "screw_load_N": 34.1,
        "screw_z_break_margin": 14.0
       },
       "pan (push sideways, along the tilt axis)": {
-       "threshold_peak_force_N": 5.9,
-       "stud_P_N": 38.5,
-       "stud_separation_margin": 19.3,
-       "stud_strip_margin": 16.8,
-       "screw_P_N": 10.1,
-       "screw_load_N": 36.1,
+       "threshold_peak_force_N": 5.7,
+       "stud_P_N": 37.8,
+       "stud_separation_margin": 19.6,
+       "stud_strip_margin": 16.9,
+       "screw_P_N": 9.9,
+       "screw_load_N": 36.0,
        "screw_z_break_margin": 13.2
       }
      }
@@ -491,21 +572,21 @@
      },
      "bumps_at_45deg": {
       "tilt (push across the view, in the tilt plane)": {
-       "threshold_peak_force_N": 9.2,
-       "stud_P_N": 54.7,
-       "stud_separation_margin": 36.0,
+       "threshold_peak_force_N": 9.0,
+       "stud_P_N": 54.8,
+       "stud_separation_margin": 35.9,
        "stud_strip_margin": 7.5,
        "screw_P_N": 1.0,
        "screw_load_N": 91.2,
        "screw_z_break_margin": 5.2
       },
       "pan (push sideways, along the tilt axis)": {
-       "threshold_peak_force_N": 14.8,
-       "stud_P_N": 91.4,
-       "stud_separation_margin": 21.5,
+       "threshold_peak_force_N": 14.6,
+       "stud_P_N": 90.6,
+       "stud_separation_margin": 21.7,
        "stud_strip_margin": 6.6,
-       "screw_P_N": 25.9,
-       "screw_load_N": 96.3,
+       "screw_P_N": 25.7,
+       "screw_load_N": 96.2,
        "screw_z_break_margin": 4.9
       }
      }
@@ -523,20 +604,20 @@
      "bumps_at_45deg": {
       "tilt (push across the view, in the tilt plane)": {
        "threshold_peak_force_N": 17.2,
-       "stud_P_N": 104.3,
-       "stud_separation_margin": 35.4,
+       "stud_P_N": 104.4,
+       "stud_separation_margin": 35.3,
        "stud_strip_margin": 4.0,
        "screw_P_N": 2.1,
        "screw_load_N": 183.4,
        "screw_z_break_margin": 2.6
       },
       "pan (push sideways, along the tilt axis)": {
-       "threshold_peak_force_N": 27.1,
-       "stud_P_N": 164.7,
-       "stud_separation_margin": 22.4,
+       "threshold_peak_force_N": 27.0,
+       "stud_P_N": 163.9,
+       "stud_separation_margin": 22.5,
        "stud_strip_margin": 3.6,
-       "screw_P_N": 47.9,
-       "screw_load_N": 192.8,
+       "screw_P_N": 47.7,
+       "screw_load_N": 192.7,
        "screw_z_break_margin": 2.5
       }
      }
@@ -554,21 +635,21 @@
      "bumps_at_45deg": {
       "tilt (push across the view, in the tilt plane)": {
        "threshold_peak_force_N": 2.7,
-       "stud_P_N": 16.9,
-       "stud_separation_margin": 27.3,
-       "stud_strip_margin": 30.0,
-       "screw_P_N": 0.2,
+       "stud_P_N": 17.0,
+       "stud_separation_margin": 27.1,
+       "stud_strip_margin": 29.9,
+       "screw_P_N": 0.3,
        "screw_load_N": 21.1,
        "screw_z_break_margin": 22.6
       },
       "pan (push sideways, along the tilt axis)": {
        "threshold_peak_force_N": 3.7,
-       "stud_P_N": 26.2,
-       "stud_separation_margin": 17.6,
+       "stud_P_N": 26.1,
+       "stud_separation_margin": 17.7,
        "stud_strip_margin": 26.2,
-       "screw_P_N": 6.4,
+       "screw_P_N": 6.3,
        "screw_load_N": 22.3,
-       "screw_z_break_margin": 21.3
+       "screw_z_break_margin": 21.4
       }
      }
     }

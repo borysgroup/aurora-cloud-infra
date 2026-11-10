@@ -32,17 +32,17 @@
     {
       "stl": "../kit/stl/head_hq_tub.stl",
       "copies": 1,
-      "sha256": "b9a9aef45cad64710b5ffb952e2e1f24bb0e160a991af3364bcb8d18f052e6ae"
+      "sha256": "3b70a74b661b0aa1b8110e4a5ee3161b1dd9c5d846da70036b5e9895a1962823"
     },
     {
       "stl": "../kit/stl/head_hq_carrier.stl",
       "copies": 1,
-      "sha256": "06ffa31500fb51d5fcbb7cf9df9537d4a0ab9173d5d0047c6fba3d1c2a76f722"
+      "sha256": "69e790706e73d4db576223c4347eab06c7d1232711ec5d9e248fbace706567d1"
     },
     {
       "stl": "../kit/stl/head_hq_wide_nose.stl",
       "copies": 1,
-      "sha256": "53ccb7c440192d8b02bbbd1e04c1da2a16445a01b2d6c0982349137406ffa555"
+      "sha256": "8e006c3ac80d350051e97140acc7f6487a4fb717474e723adb45779b1010cee6"
     }
   ],
   "command": [
@@ -50,7 +50,7 @@
     "--debug",
     "3",
     "--datadir",
-    "/tmp/bambu-kit_mount_hq-5yfe0nmf/datadir",
+    "/tmp/bambu-kit_mount_hq-6p9s_mzl/datadir",
     "--load-settings",
     "/home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/print/profiles/Bambu Lab H2D 0.4 nozzle.json;/home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/print/profiles/0.20mm Standard @BBL H2D.json",
     "--load-filaments",
@@ -75,7 +75,7 @@
     "--slice",
     "0",
     "--outputdir",
-    "/tmp/bambu-kit_mount_hq-5yfe0nmf/out",
+    "/tmp/bambu-kit_mount_hq-6p9s_mzl/out",
     "--export-3mf",
     "kit_mount_hq.gcode.3mf",
     "/home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/kit/stl/yoke_hq.stl",
@@ -83,7 +83,7 @@
     "/home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/kit/stl/head_hq_carrier.stl",
     "/home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/kit/stl/head_hq_wide_nose.stl"
   ],
-  "command_line": "/tmp/bambu/app/bin/bambu-studio --debug 3 --datadir /tmp/bambu-kit_mount_hq-5yfe0nmf/datadir --load-settings '/home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/print/profiles/Bambu Lab H2D 0.4 nozzle.json;/home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/print/profiles/0.20mm Standard @BBL H2D.json' --load-filaments '/home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/print/profiles/Bambu PLA Basic @BBL H2D.json' --clone-objects 1,1,1,1 --layer-height=0.16 --wall-loops=6 --top-shell-layers=6 --bottom-shell-layers=5 --sparse-infill-density=40% --sparse-infill-pattern=gyroid '--curr-bed-type=Textured PEI Plate' --nozzle-volume-type=Standard,Standard --filament-map-mode=Manual --filament-map=1 --enable-support=0 --arrange 1 --orient 0 --slice 0 --outputdir /tmp/bambu-kit_mount_hq-5yfe0nmf/out --export-3mf kit_mount_hq.gcode.3mf /home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/kit/stl/yoke_hq.stl /home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/kit/stl/head_hq_tub.stl /home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/kit/stl/head_hq_carrier.stl /home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/kit/stl/head_hq_wide_nose.stl",
+  "command_line": "/tmp/bambu/app/bin/bambu-studio --debug 3 --datadir /tmp/bambu-kit_mount_hq-6p9s_mzl/datadir --load-settings '/home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/print/profiles/Bambu Lab H2D 0.4 nozzle.json;/home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/print/profiles/0.20mm Standard @BBL H2D.json' --load-filaments '/home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/print/profiles/Bambu PLA Basic @BBL H2D.json' --clone-objects 1,1,1,1 --layer-height=0.16 --wall-loops=6 --top-shell-layers=6 --bottom-shell-layers=5 --sparse-infill-density=40% --sparse-infill-pattern=gyroid '--curr-bed-type=Textured PEI Plate' --nozzle-volume-type=Standard,Standard --filament-map-mode=Manual --filament-map=1 --enable-support=0 --arrange 1 --orient 0 --slice 0 --outputdir /tmp/bambu-kit_mount_hq-6p9s_mzl/out --export-3mf kit_mount_hq.gcode.3mf /home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/kit/stl/yoke_hq.stl /home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/kit/stl/head_hq_tub.stl /home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/kit/stl/head_hq_carrier.stl /home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/kit/stl/head_hq_wide_nose.stl",
   "warnings": [],
   "allowed_warning_patterns": [],
   "unexpected_log_errors": [
@@ -195,19 +195,19 @@
     "firmware_extruder_name": "Left Nozzle"
   },
   "results": {
-    "print_time_s": 19226,
-    "print_time": "5h 20m 26s",
-    "model_printing_time": "5h 15m 8s",
-    "filament_g": 134.76,
-    "filament_m": 44.46,
+    "print_time_s": 20626,
+    "print_time": "5h 43m 46s",
+    "model_printing_time": "5h 38m 28s",
+    "filament_g": 139.84,
+    "filament_m": 46.14,
     "filament_used": [
       {
         "id": "1",
         "tray_info_idx": "GFA00",
         "type": "PLA",
         "color": "#00AE42",
-        "used_m": "44.46",
-        "used_g": "134.76",
+        "used_m": "46.14",
+        "used_g": "139.84",
         "group_id": "0",
         "nozzle_diameter": "0.40",
         "volume_type": "Standard",
@@ -238,9 +238,9 @@
         "name": "head_hq_wide_nose.stl",
         "bbox": {
           "depth": 31.999998092651367,
-          "height": 79.0,
-          "width": 38.000003814697266,
-          "x": 175.50132751464844,
+          "height": 80.0,
+          "width": 41.000003814697266,
+          "x": 174.0041046142578,
           "y": 156.4989013671875,
           "z": 0.0
         }
@@ -269,35 +269,35 @@
       }
     ],
     "feature_type_times_s": {
-      "Bottom surface": 405,
-      "Bridge": 500,
+      "Bottom surface": 395,
+      "Bridge": 495,
       "Custom": 297,
       "Flush": 26,
-      "Gap infill": 263,
-      "Inner wall": 5849,
-      "Internal solid infill": 1900,
-      "Outer wall": 2118,
-      "Overhang wall": 24,
-      "Sparse infill": 5157,
-      "Top surface": 288,
-      "Travel": 2404,
-      "Undefined": 2398
+      "Gap infill": 306,
+      "Inner wall": 6180,
+      "Internal solid infill": 1874,
+      "Outer wall": 2217,
+      "Overhang wall": 88,
+      "Sparse infill": 5816,
+      "Top surface": 306,
+      "Travel": 2633,
+      "Undefined": 2627
     },
     "thumbnail_in_3mf": false,
     "gcode_header": {
-      "model_printing_time": "5h 15m 8s",
-      "total_estimated_time": "5h 20m 26s",
+      "model_printing_time": "5h 38m 28s",
+      "total_estimated_time": "5h 43m 46s",
       "total_layers": 525,
-      "filament_length_mm": 44464.27,
-      "filament_weight_g": 134.76,
+      "filament_length_mm": 46140.27,
+      "filament_weight_g": 139.84,
       "max_z_height_mm": 84.04,
       "bambu_studio_version": "02.09.01.70"
     }
   },
   "outputs": {
     "gcode_3mf": "/home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/kit/sliced/kit_mount_hq.gcode.3mf",
-    "sha256": "b8c7bf32c59ee82274402a4cd91c89a85b1b1d0a0c65069d5bc1cedb6b8b8a92",
-    "size_bytes": 8774536,
+    "sha256": "369139cdc9e37fe0dd513e0fe0319bcf29e1486bc5db785420e72a470b059d2c",
+    "size_bytes": 9438753,
     "log": "/home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/kit/sliced/kit_mount_hq.slicer.log"
   },
   "failures": []

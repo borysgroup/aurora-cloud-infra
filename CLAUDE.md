@@ -89,7 +89,12 @@ to find or generate. The Pi is a **Raspberry Pi Zero 2 W** on the borysgroup tai
 (one of the borysgroup/streamingLambda stream cameras, slot `_0` there). Its login username,
 hostname, and sudo password are in `RPI_ZERO_2W_USERNAME`, `RPI_ZERO_2W_HOSTNAME`, and
 `RPI_ZERO_2W_PASSWORD`, and `TAILNET_ID` completes the address:
-`ssh -o ConnectTimeout=20 "$RPI_ZERO_2W_USERNAME@$RPI_ZERO_2W_HOSTNAME.$TAILNET_ID.ts.net"`.
+`ssh -o ConnectTimeout=20 -o LogLevel=ERROR "$RPI_ZERO_2W_USERNAME@$RPI_ZERO_2W_HOSTNAME.$TAILNET_ID.ts.net"`.
+`LogLevel=ERROR` matters: without it, OpenSSH's "Permanently added ... to the list of known
+hosts" warning prints the full MagicDNS name, which the masked step log hides but the
+execution-log artifact does not. For the same reason, never paste `tailscale status` output
+(it lists other tailnet members) into anything that reaches the transcript; use
+`tailscale status --json` with `jq` to pull out only the field you need.
 Always reference them as `"$VAR"` and never print the hostname, the tailnet name, IP
 addresses, or any credential in comments, commits, or logs (this repo is public). If SSH is refused (`tailnet policy does not permit you to SSH
 to this node`), the fix is an ACL/tag change only the tailnet admin can make — report it

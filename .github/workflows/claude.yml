@@ -82,6 +82,11 @@ jobs:
       RPI_ZERO_2W_HOSTNAME: ${{ secrets.RPI_ZERO_2W_HOSTNAME }}
       RPI_ZERO_2W_USERNAME: ${{ secrets.RPI_ZERO_2W_USERNAME }}
       RPI_ZERO_2W_PASSWORD: ${{ secrets.RPI_ZERO_2W_PASSWORD }}
+      # One Pi 5 + HQ Camera on the same tailnet and tag (the cataloging stage
+      # overhead cam, picam-2wp0; streamingLambda's slot _6). Same SSH rules.
+      RPI_5_STREAM_CAM_HOSTNAME: ${{ secrets.RPI_5_STREAM_CAM_HOSTNAME }}
+      RPI_5_STREAM_CAM_USERNAME: ${{ secrets.RPI_5_STREAM_CAM_USERNAME }}
+      RPI_5_STREAM_CAM_PASSWORD: ${{ secrets.RPI_5_STREAM_CAM_PASSWORD }}
       TAILNET_ID: ${{ secrets.TAILNET_ID }}
 
       # Allow long-blocking foreground commands (e.g., Edison polling)

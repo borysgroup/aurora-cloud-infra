@@ -77,8 +77,8 @@ jobs:
       ONSHAPE_ACCESS_KEY: ${{ secrets.ONSHAPE_ACCESS_KEY }}
       ONSHAPE_SECRET_KEY: ${{ secrets.ONSHAPE_SECRET_KEY }}
       # One Pi Zero 2 W on the borysgroup tailnet (streamingLambda's stream-cam
-      # slot _0), reached over Tailscale SSH; see CLAUDE.md. TS_OAUTH_* are left
-      # out on purpose: only the Connect to Tailscale step needs them.
+      # slot _0, rpi-zero2w-stream-cam-4yz0), reached over Tailscale SSH; see
+      # CLAUDE.md. TS_OAUTH_CLIENT_ID/TS_AUDIENCE stay with the join step only.
       RPI_ZERO_2W_HOSTNAME: ${{ secrets.RPI_ZERO_2W_HOSTNAME }}
       RPI_ZERO_2W_USERNAME: ${{ secrets.RPI_ZERO_2W_USERNAME }}
       RPI_ZERO_2W_PASSWORD: ${{ secrets.RPI_ZERO_2W_PASSWORD }}
@@ -95,15 +95,18 @@ jobs:
           fetch-depth: 0        # all history, all branches
           filter: blob:none     # ...without historical blobs (i.e., low total size)
 
-      # Same OAuth client and tag as borysgroup/streamingLambda, whose tailnet
-      # policy already lets tag:stream-cam-test SSH to the stream-cam Pis. A
-      # failed join should cost only Pi access, so it does not fail the job.
+      # Workload identity federation: the borysgroup tailnet trusts this repo's
+      # GitHub OIDC token (trust credential "aurora cloud infra claude runner",
+      # subject repo:borysgroup@137197543/aurora-cloud-infra@1059010184:*,
+      # auth_keys write for tag:stream-cam-test only), so there is no long-lived
+      # Tailscale secret. tag:stream-cam-test is the tag streamingLambda's runner
+      # uses to reach the stream-cam Pis. A failed join costs only Pi access.
       - name: Connect to Tailscale
         continue-on-error: true
         uses: tailscale/github-action@v4
         with:
           oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
-          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          audience: ${{ secrets.TS_AUDIENCE }}
           tags: tag:stream-cam-test
 
       # Copilot-style model selector: @claude+<model>[:<effort>]

@@ -76,6 +76,13 @@ jobs:
       YOUTUBE_UPLOAD_TOKEN_PICKLE_B64: ${{ secrets.YOUTUBE_UPLOAD_TOKEN_PICKLE_B64 }}
       ONSHAPE_ACCESS_KEY: ${{ secrets.ONSHAPE_ACCESS_KEY }}
       ONSHAPE_SECRET_KEY: ${{ secrets.ONSHAPE_SECRET_KEY }}
+      # One Pi Zero 2 W on the borysgroup tailnet (streamingLambda's stream-cam
+      # slot _0), reached over Tailscale SSH; see CLAUDE.md. TS_OAUTH_* are left
+      # out on purpose: only the Connect to Tailscale step needs them.
+      RPI_ZERO_2W_HOSTNAME: ${{ secrets.RPI_ZERO_2W_HOSTNAME }}
+      RPI_ZERO_2W_USERNAME: ${{ secrets.RPI_ZERO_2W_USERNAME }}
+      RPI_ZERO_2W_PASSWORD: ${{ secrets.RPI_ZERO_2W_PASSWORD }}
+      TAILNET_ID: ${{ secrets.TAILNET_ID }}
 
       # Allow long-blocking foreground commands (e.g., Edison polling)
       BASH_DEFAULT_TIMEOUT_MS: "900000" # 15 min default per Bash call
@@ -87,6 +94,17 @@ jobs:
         with:
           fetch-depth: 0        # all history, all branches
           filter: blob:none     # ...without historical blobs (i.e., low total size)
+
+      # Same OAuth client and tag as borysgroup/streamingLambda, whose tailnet
+      # policy already lets tag:stream-cam-test SSH to the stream-cam Pis. A
+      # failed join should cost only Pi access, so it does not fail the job.
+      - name: Connect to Tailscale
+        continue-on-error: true
+        uses: tailscale/github-action@v4
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:stream-cam-test
 
       # Copilot-style model selector: @claude+<model>[:<effort>]
       # Examples: @claude, @claude+opus-5, @claude+opus-4.8:max, @claude:high
@@ -187,10 +205,10 @@ jobs:
           trigger_phrase: ${{ steps.select.outputs.phrase }}
 
           # Optional (riskier): Print the full turn-by-turn JSON execution log in the step output
-          show_full_output: true
+          # show_full_output: true  # off: public repo, and the job can reach a Pi
 
           # Optional (riskier): Render a human-readable "Claude Code Report" in the job's Step Summary
-          display_report: true
+          # display_report: true  # off: public repo, and the job can reach a Pi
 
           # This is an optional setting that allows Claude to read CI results on PRs
           additional_permissions: |
@@ -366,8 +384,8 @@ jobs:
           # placements have now failed live once each; see
           # docs/claude-yml-model-fallback.md.
           track_progress: true
-          show_full_output: true
-          display_report: true
+          # show_full_output: true  # off: public repo, and the job can reach a Pi
+          # display_report: true  # off: public repo, and the job can reach a Pi
           additional_permissions: |
             actions: read
           # The two attempts share one workspace, and the generated branch name
@@ -390,19 +408,20 @@ jobs:
 
       # Optional, recommended if you set show_full_output=True. Artifact names
       # have to differ, so the two attempts upload separately.
-      - name: Upload Claude execution log
-        if: always() && steps.claude.outputs.execution_file != ''
-        uses: actions/upload-artifact@v4
-        with:
-          name: claude-execution-log
-          path: ${{ steps.claude.outputs.execution_file }}
+      # Off: artifacts of a public repo are downloadable by anyone signed in.
+      # - name: Upload Claude execution log
+      #   if: always() && steps.claude.outputs.execution_file != ''
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: claude-execution-log
+      #     path: ${{ steps.claude.outputs.execution_file }}
 
-      - name: Upload fallback execution log
-        if: always() && steps.fallback.outputs.execution_file != ''
-        uses: actions/upload-artifact@v4
-        with:
-          name: claude-execution-log-fallback
-          path: ${{ steps.fallback.outputs.execution_file }}
+      # - name: Upload fallback execution log
+      #   if: always() && steps.fallback.outputs.execution_file != ''
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: claude-execution-log-fallback
+      #     path: ${{ steps.fallback.outputs.execution_file }}
 
       # continue-on-error above hides the first attempt's failure from the job
       # status, so put it back when nothing succeeded.

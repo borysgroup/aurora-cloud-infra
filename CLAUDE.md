@@ -104,7 +104,10 @@ as `***-cloud-infra` throughout the logs (byu-vcl does the same):
 | `_6` | Raspberry Pi 5 + HQ Camera (IMX477), 8–50 mm zoom | `picam-2wp0` / `Cataloging stage overhead` |
 
 `TAILNET_ID` completes any slot's address, e.g. for slot `_0`:
-`ssh -o ConnectTimeout=20 -o LogLevel=ERROR "$RPI_STREAM_CAM_USERNAME_0@$RPI_STREAM_CAM_HOSTNAME_0.$TAILNET_ID.ts.net"`.
+`ssh -o ConnectTimeout=20 -o LogLevel=ERROR -o StrictHostKeyChecking=accept-new -o BatchMode=yes "$RPI_STREAM_CAM_USERNAME_0@$RPI_STREAM_CAM_HOSTNAME_0.$TAILNET_ID.ts.net"`.
+A fresh runner has no `known_hosts` and no tty, so without `StrictHostKeyChecking=accept-new`
+the command exits 255 with "Host key verification failed." `BatchMode=yes` makes it fail fast
+instead of waiting on a prompt (found in the 2026-11-10 connectivity test on PR 32).
 `LogLevel=ERROR` matters: without it, OpenSSH's "Permanently added ... to the list of known
 hosts" warning prints the full MagicDNS name, which the masked step log hides but the
 execution-log artifact does not. For the same reason, never paste `tailscale status` output

@@ -1,0 +1,338 @@
+{
+  "plate": "printed_mount_hq",
+  "status": "ok",
+  "bambu_studio_version": "02.09.01.70",
+  "bbl_profile_version": "02.09.00.74",
+  "profiles": {
+    "machine": {
+      "name": "Bambu Lab H2D 0.4 nozzle",
+      "file": "profiles/Bambu Lab H2D 0.4 nozzle.json",
+      "sha256": "bcde4b4cad04153386952914e61792967e80a407b2c42af19f95d35144daa8dc"
+    },
+    "process": {
+      "name": "0.20mm Standard @BBL H2D",
+      "file": "profiles/0.20mm Standard @BBL H2D.json",
+      "sha256": "61dfd2774dd1f2d57ddc1c69bf6e63d39d410fed8aa8a7c4728002ed987c6ec8"
+    },
+    "filament": {
+      "name": "Bambu PLA Basic @BBL H2D",
+      "file": "profiles/Bambu PLA Basic @BBL H2D.json",
+      "sha256": "9fe6fd632644bed756e13eff874688de759a640d4190b0595a0c57115ad0cf88"
+    }
+  },
+  "bed_type": "Textured PEI Plate",
+  "supports": false,
+  "auto_orient": false,
+  "parts": [
+    {
+      "stl": "../printed/stl/yoke_hq.stl",
+      "copies": 1,
+      "sha256": "ba115189f89fe048529858342af869d46dc77c1109cb4b631ea10ad9c7235a76"
+    },
+    {
+      "stl": "../printed/stl/head_hq_tub.stl",
+      "copies": 1,
+      "sha256": "77a82c1202d953bbde95766b475bd7076a324c1519b8f7c6ed9cd48bbe0b531f"
+    },
+    {
+      "stl": "../printed/stl/head_hq_retainer.stl",
+      "copies": 1,
+      "sha256": "8dd506720cb8990f532a45d1068253614e3a32093cbedb7b8ce4a50866a1d64b"
+    },
+    {
+      "stl": "../printed/stl/head_hq_carrier.stl",
+      "copies": 1,
+      "sha256": "39b45846519d0861679166c7616f2a1ab66b54a8a95c1e70ff866805036bd427"
+    },
+    {
+      "stl": "../printed/stl/head_hq_pi5_retainer.stl",
+      "copies": 1,
+      "sha256": "d51aa96edfe994b0803732a5d416a8999c46a666ea7f6bb1ba9d5b1194975a27"
+    },
+    {
+      "stl": "../printed/stl/head_hq_wide_nose.stl",
+      "copies": 1,
+      "sha256": "47311c264bb939c6293b9f2232b2bd790afa0e2f281d4838f7caaef4846e727a"
+    }
+  ],
+  "command": [
+    "/tmp/bambu/app/bin/bambu-studio",
+    "--debug",
+    "3",
+    "--datadir",
+    "/tmp/bambu-printed_mount_hq-hv2yawd6/datadir",
+    "--load-settings",
+    "/home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/print/profiles/Bambu Lab H2D 0.4 nozzle.json;/home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/print/profiles/0.20mm Standard @BBL H2D.json",
+    "--load-filaments",
+    "/home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/print/profiles/Bambu PLA Basic @BBL H2D.json",
+    "--clone-objects",
+    "1,1,1,1,1,1",
+    "--layer-height=0.16",
+    "--wall-loops=6",
+    "--top-shell-layers=6",
+    "--bottom-shell-layers=5",
+    "--sparse-infill-density=40%",
+    "--sparse-infill-pattern=gyroid",
+    "--curr-bed-type=Textured PEI Plate",
+    "--nozzle-volume-type=Standard,Standard",
+    "--filament-map-mode=Manual",
+    "--filament-map=1",
+    "--enable-support=0",
+    "--arrange",
+    "1",
+    "--orient",
+    "0",
+    "--slice",
+    "0",
+    "--outputdir",
+    "/tmp/bambu-printed_mount_hq-hv2yawd6/out",
+    "--export-3mf",
+    "printed_mount_hq.gcode.3mf",
+    "/home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/printed/stl/yoke_hq.stl",
+    "/home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/printed/stl/head_hq_tub.stl",
+    "/home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/printed/stl/head_hq_retainer.stl",
+    "/home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/printed/stl/head_hq_carrier.stl",
+    "/home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/printed/stl/head_hq_pi5_retainer.stl",
+    "/home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/printed/stl/head_hq_wide_nose.stl"
+  ],
+  "command_line": "/tmp/bambu/app/bin/bambu-studio --debug 3 --datadir /tmp/bambu-printed_mount_hq-hv2yawd6/datadir --load-settings '/home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/print/profiles/Bambu Lab H2D 0.4 nozzle.json;/home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/print/profiles/0.20mm Standard @BBL H2D.json' --load-filaments '/home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/print/profiles/Bambu PLA Basic @BBL H2D.json' --clone-objects 1,1,1,1,1,1 --layer-height=0.16 --wall-loops=6 --top-shell-layers=6 --bottom-shell-layers=5 --sparse-infill-density=40% --sparse-infill-pattern=gyroid '--curr-bed-type=Textured PEI Plate' --nozzle-volume-type=Standard,Standard --filament-map-mode=Manual --filament-map=1 --enable-support=0 --arrange 1 --orient 0 --slice 0 --outputdir /tmp/bambu-printed_mount_hq-hv2yawd6/out --export-3mf printed_mount_hq.gcode.3mf /home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/printed/stl/yoke_hq.stl /home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/printed/stl/head_hq_tub.stl /home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/printed/stl/head_hq_retainer.stl /home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/printed/stl/head_hq_carrier.stl /home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/printed/stl/head_hq_pi5_retainer.stl /home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/printed/stl/head_hq_wide_nose.stl",
+  "warnings": [],
+  "allowed_warning_patterns": [],
+  "unexpected_log_errors": [
+    "[FillFloatingConcentric.cpp:433 operator()] ZFiller: both point in subject : 1, 2, 1, 0",
+    "[FillFloatingConcentric.cpp:433 operator()] ZFiller: both point in subject : 1, 2, 1, 0"
+  ],
+  "settings": {
+    "layer_height": {
+      "requested": "0.16",
+      "passed": "0.16",
+      "project_settings.config": "0.16",
+      "gcode_config_block": "0.16",
+      "ok": true
+    },
+    "wall_loops": {
+      "requested": "6",
+      "passed": "6",
+      "project_settings.config": "6",
+      "gcode_config_block": "6",
+      "ok": true
+    },
+    "top_shell_layers": {
+      "requested": "6",
+      "passed": "6",
+      "project_settings.config": "6",
+      "gcode_config_block": "6",
+      "ok": true
+    },
+    "bottom_shell_layers": {
+      "requested": "5",
+      "passed": "5",
+      "project_settings.config": "5",
+      "gcode_config_block": "5",
+      "ok": true
+    },
+    "sparse_infill_density": {
+      "requested": "40%",
+      "passed": "40%",
+      "project_settings.config": "40%",
+      "gcode_config_block": "40%",
+      "ok": true
+    },
+    "sparse_infill_pattern": {
+      "requested": "gyroid",
+      "passed": "gyroid",
+      "project_settings.config": "gyroid",
+      "gcode_config_block": "gyroid",
+      "ok": true
+    },
+    "curr_bed_type": {
+      "requested": "Textured PEI Plate",
+      "passed": "Textured PEI Plate",
+      "project_settings.config": "Textured PEI Plate",
+      "gcode_config_block": "Textured PEI Plate",
+      "ok": true
+    },
+    "nozzle_volume_type": {
+      "requested": "Standard,Standard",
+      "passed": "Standard,Standard",
+      "project_settings.config": [
+        "Standard",
+        "Standard"
+      ],
+      "gcode_config_block": "Standard,Standard",
+      "ok": true
+    },
+    "filament_map_mode": {
+      "requested": "Manual",
+      "passed": "Manual",
+      "project_settings.config": "Manual",
+      "gcode_config_block": "Manual",
+      "ok": true
+    },
+    "filament_map": {
+      "requested": "1",
+      "passed": "1",
+      "project_settings.config": [
+        "1"
+      ],
+      "gcode_config_block": "1",
+      "ok": true
+    },
+    "enable_support": {
+      "requested": "0",
+      "passed": "0",
+      "project_settings.config": "0",
+      "gcode_config_block": "0",
+      "ok": true
+    }
+  },
+  "nozzle": {
+    "requested": "left",
+    "filament_map (logical, 1=left 2=right)": 1,
+    "slice_info filament_maps": "1",
+    "slice_info nozzle": [
+      {
+        "id": "0",
+        "extruder_id": "1",
+        "nozzle_diameter": "0.4",
+        "volume_type": "Standard"
+      }
+    ],
+    "physical_extruder_map": [
+      1,
+      0
+    ],
+    "firmware_extruder_expected": 1,
+    "firmware_extruder_in_start_gcode": 1,
+    "firmware_extruder_name": "Left Nozzle"
+  },
+  "results": {
+    "print_time_s": 20030,
+    "print_time": "5h 33m 50s",
+    "model_printing_time": "5h 28m 32s",
+    "filament_g": 148.64,
+    "filament_m": 49.05,
+    "filament_used": [
+      {
+        "id": "1",
+        "tray_info_idx": "GFA00",
+        "type": "PLA",
+        "color": "#00AE42",
+        "used_m": "49.05",
+        "used_g": "148.64",
+        "group_id": "0",
+        "nozzle_diameter": "0.40",
+        "volume_type": "Standard",
+        "used_for_object": "true",
+        "used_for_support": "false",
+        "directly_used": "true",
+        "total_load_time": "26.00",
+        "total_unload_time": "0.00"
+      }
+    ],
+    "total_layers": 556,
+    "max_z_height_mm": 89.0,
+    "support_used": "false",
+    "printer_model_id": "O1D",
+    "objects": [
+      {
+        "name": "yoke_hq.stl",
+        "bbox": {
+          "depth": 45.9857063293457,
+          "height": 88.99658203125,
+          "width": 129.60000610351562,
+          "x": 141.19998168945312,
+          "y": 209.50711059570312,
+          "z": 0.0
+        }
+      },
+      {
+        "name": "head_hq_wide_nose.stl",
+        "bbox": {
+          "depth": 31.999998092651367,
+          "height": 79.0,
+          "width": 35.99999237060547,
+          "x": 194.94764709472656,
+          "y": 175.50714111328125,
+          "z": 0.0
+        }
+      },
+      {
+        "name": "head_hq_pi5_retainer.stl",
+        "bbox": {
+          "depth": 55.0,
+          "height": 50.599998474121094,
+          "width": 119.0,
+          "x": 151.79998779296875,
+          "y": 118.50717163085938,
+          "z": 0.0
+        }
+      },
+      {
+        "name": "head_hq_carrier.stl",
+        "bbox": {
+          "depth": 96.0,
+          "height": 12.399999618530273,
+          "width": 60.000003814697266,
+          "x": 79.19999694824219,
+          "y": 159.49281311035156,
+          "z": 0.0
+        }
+      },
+      {
+        "name": "head_hq_tub.stl",
+        "bbox": {
+          "depth": 52.0,
+          "height": 27.0,
+          "width": 114.0,
+          "x": 156.79998779296875,
+          "y": 64.5071792602539,
+          "z": 0.0
+        }
+      },
+      {
+        "name": "head_hq_retainer.stl",
+        "bbox": {
+          "depth": 38.00000762939453,
+          "height": 13.800000190734863,
+          "width": 38.00000762939453,
+          "x": 148.02853393554688,
+          "y": 173.09811401367188,
+          "z": 0.0
+        }
+      }
+    ],
+    "feature_type_times_s": {
+      "Bottom surface": 503,
+      "Bridge": 633,
+      "Custom": 297,
+      "Flush": 26,
+      "Gap infill": 145,
+      "Inner wall": 5971,
+      "Internal solid infill": 1910,
+      "Outer wall": 2506,
+      "Overhang wall": 29,
+      "Sparse infill": 5473,
+      "Top surface": 331,
+      "Travel": 2204,
+      "Undefined": 2199
+    },
+    "thumbnail_in_3mf": false,
+    "gcode_header": {
+      "model_printing_time": "5h 28m 32s",
+      "total_estimated_time": "5h 33m 50s",
+      "total_layers": 556,
+      "filament_length_mm": 49046.27,
+      "filament_weight_g": 148.64,
+      "max_z_height_mm": 89.0,
+      "bambu_studio_version": "02.09.01.70"
+    }
+  },
+  "outputs": {
+    "gcode_3mf": "/home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/printed/sliced/printed_mount_hq.gcode.3mf",
+    "sha256": "02b14cebd4257cf97fe714ed7d9167d6da877bcbf898816d389ff0021144f854",
+    "size_bytes": 8512830,
+    "log": "/home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/printed/sliced/printed_mount_hq.slicer.log"
+  },
+  "failures": []
+}

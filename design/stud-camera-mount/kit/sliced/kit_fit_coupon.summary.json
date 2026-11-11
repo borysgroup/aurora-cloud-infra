@@ -1,0 +1,248 @@
+{
+  "plate": "kit_fit_coupon",
+  "status": "ok",
+  "bambu_studio_version": "02.09.01.70",
+  "bbl_profile_version": "02.09.00.74",
+  "profiles": {
+    "machine": {
+      "name": "Bambu Lab H2D 0.4 nozzle",
+      "file": "profiles/Bambu Lab H2D 0.4 nozzle.json",
+      "sha256": "bcde4b4cad04153386952914e61792967e80a407b2c42af19f95d35144daa8dc"
+    },
+    "process": {
+      "name": "0.20mm Standard @BBL H2D",
+      "file": "profiles/0.20mm Standard @BBL H2D.json",
+      "sha256": "61dfd2774dd1f2d57ddc1c69bf6e63d39d410fed8aa8a7c4728002ed987c6ec8"
+    },
+    "filament": {
+      "name": "Bambu PLA Basic @BBL H2D",
+      "file": "profiles/Bambu PLA Basic @BBL H2D.json",
+      "sha256": "9fe6fd632644bed756e13eff874688de759a640d4190b0595a0c57115ad0cf88"
+    }
+  },
+  "bed_type": "Textured PEI Plate",
+  "supports": false,
+  "auto_orient": false,
+  "parts": [
+    {
+      "stl": "../kit/stl/fit_coupon.stl",
+      "copies": 1,
+      "sha256": "4ada6fe1308f9407599c8f6e7e3c1d68ae020d784260ce6abf0ea86916d47ebb"
+    }
+  ],
+  "command": [
+    "/tmp/bambu/app/bin/bambu-studio",
+    "--debug",
+    "3",
+    "--datadir",
+    "/tmp/bambu-kit_fit_coupon-fxtb5bwp/datadir",
+    "--load-settings",
+    "/home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/print/profiles/Bambu Lab H2D 0.4 nozzle.json;/home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/print/profiles/0.20mm Standard @BBL H2D.json",
+    "--load-filaments",
+    "/home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/print/profiles/Bambu PLA Basic @BBL H2D.json",
+    "--clone-objects",
+    "1",
+    "--layer-height=0.16",
+    "--wall-loops=6",
+    "--top-shell-layers=6",
+    "--bottom-shell-layers=5",
+    "--sparse-infill-density=100%",
+    "--sparse-infill-pattern=zig-zag",
+    "--curr-bed-type=Textured PEI Plate",
+    "--nozzle-volume-type=Standard,Standard",
+    "--filament-map-mode=Manual",
+    "--filament-map=1",
+    "--enable-support=0",
+    "--arrange",
+    "1",
+    "--orient",
+    "0",
+    "--slice",
+    "0",
+    "--outputdir",
+    "/tmp/bambu-kit_fit_coupon-fxtb5bwp/out",
+    "--export-3mf",
+    "kit_fit_coupon.gcode.3mf",
+    "/home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/kit/stl/fit_coupon.stl"
+  ],
+  "command_line": "/tmp/bambu/app/bin/bambu-studio --debug 3 --datadir /tmp/bambu-kit_fit_coupon-fxtb5bwp/datadir --load-settings '/home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/print/profiles/Bambu Lab H2D 0.4 nozzle.json;/home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/print/profiles/0.20mm Standard @BBL H2D.json' --load-filaments '/home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/print/profiles/Bambu PLA Basic @BBL H2D.json' --clone-objects 1 --layer-height=0.16 --wall-loops=6 --top-shell-layers=6 --bottom-shell-layers=5 --sparse-infill-density=100% --sparse-infill-pattern=zig-zag '--curr-bed-type=Textured PEI Plate' --nozzle-volume-type=Standard,Standard --filament-map-mode=Manual --filament-map=1 --enable-support=0 --arrange 1 --orient 0 --slice 0 --outputdir /tmp/bambu-kit_fit_coupon-fxtb5bwp/out --export-3mf kit_fit_coupon.gcode.3mf /home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/kit/stl/fit_coupon.stl",
+  "warnings": [],
+  "allowed_warning_patterns": [],
+  "unexpected_log_errors": [],
+  "settings": {
+    "layer_height": {
+      "requested": "0.16",
+      "passed": "0.16",
+      "project_settings.config": "0.16",
+      "gcode_config_block": "0.16",
+      "ok": true
+    },
+    "wall_loops": {
+      "requested": "6",
+      "passed": "6",
+      "project_settings.config": "6",
+      "gcode_config_block": "6",
+      "ok": true
+    },
+    "top_shell_layers": {
+      "requested": "6",
+      "passed": "6",
+      "project_settings.config": "6",
+      "gcode_config_block": "6",
+      "ok": true
+    },
+    "bottom_shell_layers": {
+      "requested": "5",
+      "passed": "5",
+      "project_settings.config": "5",
+      "gcode_config_block": "5",
+      "ok": true
+    },
+    "sparse_infill_density": {
+      "requested": "100%",
+      "passed": "100%",
+      "project_settings.config": "100%",
+      "gcode_config_block": "100%",
+      "ok": true
+    },
+    "sparse_infill_pattern": {
+      "requested": "zig-zag",
+      "passed": "zig-zag",
+      "project_settings.config": "zig-zag",
+      "gcode_config_block": "zig-zag",
+      "ok": true
+    },
+    "curr_bed_type": {
+      "requested": "Textured PEI Plate",
+      "passed": "Textured PEI Plate",
+      "project_settings.config": "Textured PEI Plate",
+      "gcode_config_block": "Textured PEI Plate",
+      "ok": true
+    },
+    "nozzle_volume_type": {
+      "requested": "Standard,Standard",
+      "passed": "Standard,Standard",
+      "project_settings.config": [
+        "Standard",
+        "Standard"
+      ],
+      "gcode_config_block": "Standard,Standard",
+      "ok": true
+    },
+    "filament_map_mode": {
+      "requested": "Manual",
+      "passed": "Manual",
+      "project_settings.config": "Manual",
+      "gcode_config_block": "Manual",
+      "ok": true
+    },
+    "filament_map": {
+      "requested": "1",
+      "passed": "1",
+      "project_settings.config": [
+        "1"
+      ],
+      "gcode_config_block": "1",
+      "ok": true
+    },
+    "enable_support": {
+      "requested": "0",
+      "passed": "0",
+      "project_settings.config": "0",
+      "gcode_config_block": "0",
+      "ok": true
+    }
+  },
+  "nozzle": {
+    "requested": "left",
+    "filament_map (logical, 1=left 2=right)": 1,
+    "slice_info filament_maps": "1",
+    "slice_info nozzle": [
+      {
+        "id": "0",
+        "extruder_id": "1",
+        "nozzle_diameter": "0.4",
+        "volume_type": "Standard"
+      }
+    ],
+    "physical_extruder_map": [
+      1,
+      0
+    ],
+    "firmware_extruder_expected": 1,
+    "firmware_extruder_in_start_gcode": 1,
+    "firmware_extruder_name": "Left Nozzle"
+  },
+  "results": {
+    "print_time_s": 1138,
+    "print_time": "0h 18m 58s",
+    "model_printing_time": "13m 41s",
+    "filament_g": 3.29,
+    "filament_m": 1.09,
+    "filament_used": [
+      {
+        "id": "1",
+        "tray_info_idx": "GFA00",
+        "type": "PLA",
+        "color": "#00AE42",
+        "used_m": "1.09",
+        "used_g": "3.29",
+        "group_id": "0",
+        "nozzle_diameter": "0.40",
+        "volume_type": "Standard",
+        "used_for_object": "true",
+        "used_for_support": "false",
+        "directly_used": "true",
+        "total_load_time": "26.00",
+        "total_unload_time": "0.00"
+      }
+    ],
+    "total_layers": 47,
+    "max_z_height_mm": 7.56,
+    "support_used": "false",
+    "printer_model_id": "O1D",
+    "objects": [
+      {
+        "name": "fit_coupon.stl",
+        "bbox": {
+          "depth": 25.5,
+          "height": 7.5,
+          "width": 42.0,
+          "x": 154.0,
+          "y": 147.25,
+          "z": 0.0
+        }
+      }
+    ],
+    "feature_type_times_s": {
+      "Bottom surface": 0,
+      "Custom": 301,
+      "Flush": 26,
+      "Gap infill": 43,
+      "Inner wall": 341,
+      "Internal solid infill": 21,
+      "Outer wall": 111,
+      "Overhang wall": 16,
+      "Top surface": 25,
+      "Travel": 264,
+      "Undefined": 254
+    },
+    "thumbnail_in_3mf": false,
+    "gcode_header": {
+      "model_printing_time": "13m 41s",
+      "total_estimated_time": "18m 58s",
+      "total_layers": 47,
+      "filament_length_mm": 1086.07,
+      "filament_weight_g": 3.29,
+      "max_z_height_mm": 7.56,
+      "bambu_studio_version": "02.09.01.70"
+    }
+  },
+  "outputs": {
+    "gcode_3mf": "/home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/kit/sliced/kit_fit_coupon.gcode.3mf",
+    "sha256": "541a57aad67fa6d2610eb80b4f5b0e84721ea33815fe77183743740e74bdcb57",
+    "size_bytes": 300298,
+    "log": "/home/runner/work/aurora-cloud-infra/aurora-cloud-infra/design/stud-camera-mount/kit/sliced/kit_fit_coupon.slicer.log"
+  },
+  "failures": []
+}

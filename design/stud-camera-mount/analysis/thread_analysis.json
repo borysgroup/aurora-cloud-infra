@@ -1,0 +1,290 @@
+{
+ "assumptions": {
+  "f_thread": 0.15,
+  "f_collar_steel": 0.15,
+  "mu_pla_steel": 0.3,
+  "mu_pla_pla": 0.3,
+  "E_pla": 3500.0,
+  "E_steel": 200000.0,
+  "tau_pla": 15.0,
+  "sigma_bearing_pla": 40.0,
+  "sigma_creep_pla": 15.0,
+  "E_creep_ratio": 0.6,
+  "tau_brass": 200.0,
+  "tau_steel_8_8": 480.0,
+  "Sp_A2_70": 450.0,
+  "Sp_8_8": 580.0
+ },
+ "hand_torque_Nm": {
+  "stud": {
+   "snug": 0.3,
+   "firm": 0.8,
+   "hard": 1.5
+  },
+  "tilt": {
+   "snug": 0.15,
+   "firm": 0.4,
+   "hard": 0.8
+  }
+ },
+ "stud": {
+  "thread": "M6x1",
+  "K": 0.2,
+  "kb_kN_mm": 418.8,
+  "km_kN_mm": 58.8,
+  "C": 0.877,
+  "preload_left_after_creep": 0.63,
+  "grip_mm": 9.6,
+  "min_stud_length_mm": 13.6,
+  "pan_hold_Nmm_per_N": 4.93,
+  "nut_breakaway_loosen_Nmm_per_N": 0.87,
+  "nut_tighten_Nmm_per_N": 1.2,
+  "washer_face_drag_Nmm_per_N": 1.98,
+  "strip_area_nut_mm2": 63.4,
+  "strip_area_stud_mm2": 45.0,
+  "rows": [
+   {
+    "level": "snug",
+    "T_Nm": 0.3,
+    "Fi_N": 249,
+    "stud_vm_MPa": 17.8,
+    "n_stud_proof": 25.3,
+    "n_strip_nut": 122.0,
+    "n_strip_stud": 75.7,
+    "washer_on_pad_MPa": 1.1,
+    "pad_on_ceiling_MPa": 0.17,
+    "T_pan_hold_Nm": 1.23,
+    "Fi_after_creep_N": 158
+   },
+   {
+    "level": "firm",
+    "T_Nm": 0.8,
+    "Fi_N": 665,
+    "stud_vm_MPa": 47.4,
+    "n_stud_proof": 9.5,
+    "n_strip_nut": 45.7,
+    "n_strip_stud": 28.4,
+    "washer_on_pad_MPa": 3.0,
+    "pad_on_ceiling_MPa": 0.44,
+    "T_pan_hold_Nm": 3.28,
+    "Fi_after_creep_N": 421
+   },
+   {
+    "level": "hard",
+    "T_Nm": 1.5,
+    "Fi_N": 1247,
+    "stud_vm_MPa": 88.9,
+    "n_stud_proof": 5.1,
+    "n_strip_nut": 24.4,
+    "n_strip_stud": 15.1,
+    "washer_on_pad_MPa": 5.7,
+    "pad_on_ceiling_MPa": 0.83,
+    "T_pan_hold_Nm": 6.14,
+    "Fi_after_creep_N": 790
+   }
+  ]
+ },
+ "tilt": {
+  "zero": {
+   "kind": "zero",
+   "thread": "M4x0.7",
+   "K": 0.201,
+   "grip_mm": 10.9,
+   "engagement_mm": 5.1,
+   "insert_hole_depth_mm": 9.1,
+   "kb_kN_mm": 161.1,
+   "km_kN_mm": 16.8,
+   "C": 0.905,
+   "preload_left_after_creep": 0.62,
+   "insert_pullout_N": 2138,
+   "insert_torqueout_Nm": 5.99,
+   "hold_knobs_turn_Nmm_per_N": 7.55,
+   "hold_bolts_turn_Nmm_per_N": 4.01,
+   "bolt_loosen_Nmm_per_N": 0.193,
+   "knob_face_drag_Nmm_per_N": 2.08,
+   "strip_area_insert_mm2": 39.6,
+   "strip_area_bolt_mm2": 27.9,
+   "rows": [
+    {
+     "level": "snug",
+     "T_Nm": 0.15,
+     "Fi_N": 186,
+     "bolt_vm_MPa": 30.9,
+     "n_bolt_proof": 18.8,
+     "n_strip_insert": 42.5,
+     "n_strip_bolt": 71.9,
+     "n_insert_pullout": 11.5,
+     "n_insert_torqueout": 75.9,
+     "washer_on_knob_MPa": 3.9,
+     "head_on_PLA_no_washer_MPa": 15.6,
+     "knob_on_arm_MPa": 0.6,
+     "arm_on_boss_MPa": 1.1,
+     "T_tilt_hold_Nm": 0.75,
+     "Fi_after_creep_N": 116
+    },
+    {
+     "level": "firm",
+     "T_Nm": 0.4,
+     "Fi_N": 497,
+     "bolt_vm_MPa": 82.4,
+     "n_bolt_proof": 7.0,
+     "n_strip_insert": 15.9,
+     "n_strip_bolt": 27.0,
+     "n_insert_pullout": 4.3,
+     "n_insert_torqueout": 28.5,
+     "washer_on_knob_MPa": 10.3,
+     "head_on_PLA_no_washer_MPa": 41.6,
+     "knob_on_arm_MPa": 1.7,
+     "arm_on_boss_MPa": 2.8,
+     "T_tilt_hold_Nm": 1.99,
+     "Fi_after_creep_N": 310
+    },
+    {
+     "level": "hard",
+     "T_Nm": 0.8,
+     "Fi_N": 994,
+     "bolt_vm_MPa": 164.8,
+     "n_bolt_proof": 3.5,
+     "n_strip_insert": 8.0,
+     "n_strip_bolt": 13.5,
+     "n_insert_pullout": 2.2,
+     "n_insert_torqueout": 14.2,
+     "washer_on_knob_MPa": 20.5,
+     "head_on_PLA_no_washer_MPa": 83.2,
+     "knob_on_arm_MPa": 3.3,
+     "arm_on_boss_MPa": 5.6,
+     "T_tilt_hold_Nm": 3.98,
+     "Fi_after_creep_N": 621
+    }
+   ]
+  },
+  "hq": {
+   "kind": "hq",
+   "thread": "M4x0.7",
+   "K": 0.201,
+   "grip_mm": 10.9,
+   "engagement_mm": 5.1,
+   "insert_hole_depth_mm": 9.1,
+   "kb_kN_mm": 161.1,
+   "km_kN_mm": 16.8,
+   "C": 0.905,
+   "preload_left_after_creep": 0.62,
+   "insert_pullout_N": 2138,
+   "insert_torqueout_Nm": 5.99,
+   "hold_knobs_turn_Nmm_per_N": 7.93,
+   "hold_bolts_turn_Nmm_per_N": 4.39,
+   "bolt_loosen_Nmm_per_N": 0.193,
+   "knob_face_drag_Nmm_per_N": 2.08,
+   "strip_area_insert_mm2": 39.6,
+   "strip_area_bolt_mm2": 27.9,
+   "rows": [
+    {
+     "level": "snug",
+     "T_Nm": 0.15,
+     "Fi_N": 186,
+     "bolt_vm_MPa": 30.9,
+     "n_bolt_proof": 18.8,
+     "n_strip_insert": 42.5,
+     "n_strip_bolt": 71.9,
+     "n_insert_pullout": 11.5,
+     "n_insert_torqueout": 75.9,
+     "washer_on_knob_MPa": 3.9,
+     "head_on_PLA_no_washer_MPa": 15.6,
+     "knob_on_arm_MPa": 0.6,
+     "arm_on_boss_MPa": 0.8,
+     "T_tilt_hold_Nm": 0.82,
+     "Fi_after_creep_N": 116
+    },
+    {
+     "level": "firm",
+     "T_Nm": 0.4,
+     "Fi_N": 497,
+     "bolt_vm_MPa": 82.4,
+     "n_bolt_proof": 7.0,
+     "n_strip_insert": 15.9,
+     "n_strip_bolt": 27.0,
+     "n_insert_pullout": 4.3,
+     "n_insert_torqueout": 28.5,
+     "washer_on_knob_MPa": 10.3,
+     "head_on_PLA_no_washer_MPa": 41.6,
+     "knob_on_arm_MPa": 1.7,
+     "arm_on_boss_MPa": 2.2,
+     "T_tilt_hold_Nm": 2.18,
+     "Fi_after_creep_N": 310
+    },
+    {
+     "level": "hard",
+     "T_Nm": 0.8,
+     "Fi_N": 994,
+     "bolt_vm_MPa": 164.8,
+     "n_bolt_proof": 3.5,
+     "n_strip_insert": 8.0,
+     "n_strip_bolt": 13.5,
+     "n_insert_pullout": 2.2,
+     "n_insert_torqueout": 14.2,
+     "washer_on_knob_MPa": 20.5,
+     "head_on_PLA_no_washer_MPa": 83.2,
+     "knob_on_arm_MPa": 3.3,
+     "arm_on_boss_MPa": 4.3,
+     "T_tilt_hold_Nm": 4.36,
+     "Fi_after_creep_N": 621
+    }
+   ]
+  }
+ },
+ "small_screws": [
+  {
+   "thread": "M2.5",
+   "use": "Pi / HQ standoff screws, pan head",
+   "T_Nm": 0.1,
+   "K": 0.299,
+   "Fi_N": 134,
+   "head_on_PLA_MPa": 9.6,
+   "screw_MPa": 39.5
+  },
+  {
+   "thread": "M2",
+   "use": "Camera Module 3 screws, into M2 nuts",
+   "T_Nm": 0.05,
+   "K": 0.296,
+   "Fi_N": 84,
+   "head_on_PLA_MPa": 11.2,
+   "screw_MPa": 40.8
+  }
+ ],
+ "nut_pocket": {
+  "nominal_clearance_mm": 0.15,
+  "rows": [
+   {
+    "diametral_interference_mm": 0.0,
+    "pressure_MPa": 0.0,
+    "hoop_at_bore_MPa": 0.0,
+    "hoop_x_Kt2_at_corners_MPa": 0.0
+   },
+   {
+    "diametral_interference_mm": 0.05,
+    "pressure_MPa": 10.8,
+    "hoop_at_bore_MPa": 13.5,
+    "hoop_x_Kt2_at_corners_MPa": 26.9
+   },
+   {
+    "diametral_interference_mm": 0.1,
+    "pressure_MPa": 21.7,
+    "hoop_at_bore_MPa": 26.9,
+    "hoop_x_Kt2_at_corners_MPa": 53.9
+   },
+   {
+    "diametral_interference_mm": 0.15,
+    "pressure_MPa": 32.5,
+    "hoop_at_bore_MPa": 40.4,
+    "hoop_x_Kt2_at_corners_MPa": 80.8
+   },
+   {
+    "diametral_interference_mm": 0.2,
+    "pressure_MPa": 43.3,
+    "hoop_at_bore_MPa": 53.9,
+    "hoop_x_Kt2_at_corners_MPa": 107.7
+   }
+  ]
+ }
+}

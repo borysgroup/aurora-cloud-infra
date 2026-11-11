@@ -1,0 +1,10 @@
+{"name": "stud_mount_hq",
+ "parts": [{"stl": "../stl/yoke_hq.stl", "copies": 1},
+           {"stl": "../stl/head_hq_camera_plate.stl", "copies": 1},
+           {"stl": "../stl/head_hq_pi_carrier.stl", "copies": 1},
+           {"stl": "../stl/head_hq_wide_nose.stl", "copies": 1},
+           {"stl": "../stl/head_hq_cheek_left.stl", "copies": 1},
+           {"stl": "../stl/head_hq_cheek_right.stl", "copies": 1},
+           {"stl": "../stl/stud_thumb_nut.stl", "copies": 1},
+           {"stl": "../stl/tilt_knob.stl", "copies": 2}],
+ "supports": false, "outdir": "../sliced"}

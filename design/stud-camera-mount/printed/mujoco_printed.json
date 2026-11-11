@@ -1,0 +1,280 @@
+{
+ "zero": {
+  "head_mass_g": 55.2,
+  "head_com_mm": [
+   -3.2,
+   0.5,
+   -3.8
+  ],
+  "yoke_and_nut_mass_g": 51.3,
+  "tilt_axis_depth_mm": 48,
+  "gravity_torque_tilt_Nm": 0.002,
+  "preload_for_gravity_N": 0.3,
+  "knob_torque_for_gravity_Nm": 0.001,
+  "levels": {
+   "snug": {
+    "Fi_tilt_N": 34,
+    "Fi_stud_N": 69,
+    "T_hold_tilt_Nm": 0.258,
+    "T_hold_pan_Nm": 0.34,
+    "gravity_drift_deg_1s": {
+     "0": 0.0001,
+     "45": 0.0007,
+     "90": 0.0009
+    },
+    "bumps_at_45deg": {
+     "tilt (push across the view, in the tilt plane)": {
+      "threshold_peak_force_N": 21.1,
+      "stud_P_N": 44.3,
+      "stud_separation_margin": 16.8,
+      "stud_strip_margin": 16.0,
+      "screw_P_N": 2.9,
+      "screw_load_N": 34.5,
+      "screw_z_break_margin": 13.8
+     },
+     "pan (push sideways, along the tilt axis)": {
+      "threshold_peak_force_N": 36.5,
+      "stud_P_N": 89.7,
+      "stud_separation_margin": 8.3,
+      "stud_strip_margin": 11.6,
+      "screw_P_N": 41.0,
+      "screw_load_N": 41.8,
+      "screw_z_break_margin": 11.4
+     }
+    }
+   },
+   "firm": {
+    "Fi_tilt_N": 91,
+    "Fi_stud_N": 183,
+    "T_hold_tilt_Nm": 0.692,
+    "T_hold_pan_Nm": 0.902,
+    "gravity_drift_deg_1s": {
+     "0": 0.0001,
+     "45": 0.0007,
+     "90": 0.0009
+    },
+    "bumps_at_45deg": {
+     "tilt (push across the view, in the tilt plane)": {
+      "threshold_peak_force_N": 56.2,
+      "stud_P_N": 116.5,
+      "stud_separation_margin": 16.9,
+      "stud_strip_margin": 6.1,
+      "screw_P_N": 7.7,
+      "screw_load_N": 92.5,
+      "screw_z_break_margin": 5.1
+     },
+     "pan (push sideways, along the tilt axis)": {
+      "threshold_peak_force_N": 94.9,
+      "stud_P_N": 231.1,
+      "stud_separation_margin": 8.5,
+      "stud_strip_margin": 4.5,
+      "screw_P_N": 106.5,
+      "screw_load_N": 111.2,
+      "screw_z_break_margin": 4.3
+     }
+    }
+   },
+   "hard": {
+    "Fi_tilt_N": 183,
+    "Fi_stud_N": 343,
+    "T_hold_tilt_Nm": 1.391,
+    "T_hold_pan_Nm": 1.691,
+    "gravity_drift_deg_1s": {
+     "0": 0.0001,
+     "45": 0.0007,
+     "90": 0.0009
+    },
+    "bumps_at_45deg": {
+     "tilt (push across the view, in the tilt plane)": {
+      "threshold_peak_force_N": 112.9,
+      "stud_P_N": 233.0,
+      "stud_separation_margin": 15.8,
+      "stud_strip_margin": 3.2,
+      "screw_P_N": 15.5,
+      "screw_load_N": 185.9,
+      "screw_z_break_margin": 2.6
+     },
+     "pan (push sideways, along the tilt axis)": {
+      "threshold_peak_force_N": 176.4,
+      "stud_P_N": 428.5,
+      "stud_separation_margin": 8.6,
+      "stud_strip_margin": 2.4,
+      "screw_P_N": 197.8,
+      "screw_load_N": 220.6,
+      "screw_z_break_margin": 2.2
+     }
+    }
+   },
+   "snug, after creep": {
+    "Fi_tilt_N": 21,
+    "Fi_stud_N": 43,
+    "T_hold_tilt_Nm": 0.16,
+    "T_hold_pan_Nm": 0.212,
+    "gravity_drift_deg_1s": {
+     "0": 0.0001,
+     "45": 0.0007,
+     "90": 0.0009
+    },
+    "bumps_at_45deg": {
+     "tilt (push across the view, in the tilt plane)": {
+      "threshold_peak_force_N": 12.9,
+      "stud_P_N": 27.6,
+      "stud_separation_margin": 16.8,
+      "stud_strip_margin": 25.7,
+      "screw_P_N": 1.8,
+      "screw_load_N": 21.3,
+      "screw_z_break_margin": 22.3
+     },
+     "pan (push sideways, along the tilt axis)": {
+      "threshold_peak_force_N": 23.0,
+      "stud_P_N": 57.0,
+      "stud_separation_margin": 8.1,
+      "stud_strip_margin": 18.5,
+      "screw_P_N": 25.8,
+      "screw_load_N": 25.9,
+      "screw_z_break_margin": 18.4
+     }
+    }
+   }
+  }
+ },
+ "hq": {
+  "head_mass_g": 357.7,
+  "head_com_mm": [
+   -6.9,
+   -22.7,
+   -0.3
+  ],
+  "yoke_and_nut_mass_g": 62.0,
+  "tilt_axis_depth_mm": 78,
+  "gravity_torque_tilt_Nm": 0.08,
+  "preload_for_gravity_N": 10.0,
+  "knob_torque_for_gravity_Nm": 0.044,
+  "levels": {
+   "snug": {
+    "Fi_tilt_N": 34,
+    "Fi_stud_N": 69,
+    "T_hold_tilt_Nm": 0.27,
+    "T_hold_pan_Nm": 0.34,
+    "gravity_drift_deg_1s": {
+     "0": 0.0006,
+     "45": 0.0004,
+     "90": 0.0
+    },
+    "bumps_at_45deg": {
+     "tilt (push across the view, in the tilt plane)": {
+      "threshold_peak_force_N": 3.9,
+      "stud_P_N": 24.3,
+      "stud_separation_margin": 30.5,
+      "stud_strip_margin": 19.2,
+      "screw_P_N": 0.4,
+      "screw_load_N": 34.1,
+      "screw_z_break_margin": 14.0
+     },
+     "pan (push sideways, along the tilt axis)": {
+      "threshold_peak_force_N": 5.9,
+      "stud_P_N": 40.0,
+      "stud_separation_margin": 18.6,
+      "stud_strip_margin": 16.6,
+      "screw_P_N": 9.9,
+      "screw_load_N": 35.9,
+      "screw_z_break_margin": 13.3
+     }
+    }
+   },
+   "firm": {
+    "Fi_tilt_N": 91,
+    "Fi_stud_N": 183,
+    "T_hold_tilt_Nm": 0.723,
+    "T_hold_pan_Nm": 0.902,
+    "gravity_drift_deg_1s": {
+     "0": 0.0006,
+     "45": 0.0004,
+     "90": 0.0
+    },
+    "bumps_at_45deg": {
+     "tilt (push across the view, in the tilt plane)": {
+      "threshold_peak_force_N": 9.0,
+      "stud_P_N": 55.8,
+      "stud_separation_margin": 35.3,
+      "stud_strip_margin": 7.5,
+      "screw_P_N": 1.0,
+      "screw_load_N": 91.2,
+      "screw_z_break_margin": 5.2
+     },
+     "pan (push sideways, along the tilt axis)": {
+      "threshold_peak_force_N": 14.8,
+      "stud_P_N": 94.9,
+      "stud_separation_margin": 20.7,
+      "stud_strip_margin": 6.5,
+      "screw_P_N": 25.5,
+      "screw_load_N": 95.8,
+      "screw_z_break_margin": 5.0
+     }
+    }
+   },
+   "hard": {
+    "Fi_tilt_N": 183,
+    "Fi_stud_N": 343,
+    "T_hold_tilt_Nm": 1.455,
+    "T_hold_pan_Nm": 1.691,
+    "gravity_drift_deg_1s": {
+     "0": 0.0006,
+     "45": 0.0004,
+     "90": 0.0
+    },
+    "bumps_at_45deg": {
+     "tilt (push across the view, in the tilt plane)": {
+      "threshold_peak_force_N": 17.2,
+      "stud_P_N": 106.7,
+      "stud_separation_margin": 34.6,
+      "stud_strip_margin": 4.0,
+      "screw_P_N": 2.0,
+      "screw_load_N": 183.4,
+      "screw_z_break_margin": 2.6
+     },
+     "pan (push sideways, along the tilt axis)": {
+      "threshold_peak_force_N": 27.3,
+      "stud_P_N": 171.5,
+      "stud_separation_margin": 21.5,
+      "stud_strip_margin": 3.5,
+      "screw_P_N": 47.3,
+      "screw_load_N": 192.0,
+      "screw_z_break_margin": 2.5
+     }
+    }
+   },
+   "snug, after creep": {
+    "Fi_tilt_N": 21,
+    "Fi_stud_N": 43,
+    "T_hold_tilt_Nm": 0.167,
+    "T_hold_pan_Nm": 0.212,
+    "gravity_drift_deg_1s": {
+     "0": 0.0006,
+     "45": 0.0004,
+     "90": 0.0
+    },
+    "bumps_at_45deg": {
+     "tilt (push across the view, in the tilt plane)": {
+      "threshold_peak_force_N": 2.7,
+      "stud_P_N": 17.1,
+      "stud_separation_margin": 27.0,
+      "stud_strip_margin": 29.9,
+      "screw_P_N": 0.2,
+      "screw_load_N": 21.0,
+      "screw_z_break_margin": 22.6
+     },
+     "pan (push sideways, along the tilt axis)": {
+      "threshold_peak_force_N": 3.7,
+      "stud_P_N": 27.2,
+      "stud_separation_margin": 17.0,
+      "stud_strip_margin": 25.9,
+      "screw_P_N": 6.3,
+      "screw_load_N": 22.2,
+      "screw_z_break_margin": 21.4
+     }
+    }
+   }
+  }
+ }
+}

@@ -1,0 +1,376 @@
+{
+ "zero": {
+  "head_mass_g": 56.0,
+  "head_com_mm": [
+   -3.2,
+   0.3,
+   -3.8
+  ],
+  "yoke_mass_g": 51.3,
+  "tilt_axis_depth_mm": 48,
+  "gravity_torque_tilt_Nm": 0.002,
+  "preload_for_gravity_N": 0.5,
+  "knob_torque_for_gravity_Nm": 0.0,
+  "levels": {
+   "snug": {
+    "Fi_tilt_N": 186,
+    "Fi_stud_N": 249,
+    "T_hold_tilt_Nm": 0.746,
+    "T_hold_pan_Nm": 1.228,
+    "gravity_drift_deg_1s": {
+     "0": 0.0001,
+     "45": 0.0007,
+     "90": 0.0009
+    },
+    "bumps_at_45deg": {
+     "tilt (push across the view, in the tilt plane)": {
+      "threshold_peak_force_N": 60.5,
+      "stud_P_N": 125.5,
+      "stud_bolt_load_N": 359.0,
+      "stud_separation_margin": 16.1,
+      "bolt_P_N": 9.6,
+      "tilt_bolt_load_N": 194.7,
+      "tilt_separation_margin": 204.0,
+      "insert_pullout_margin": 11.0
+     },
+     "pan (push sideways, along the tilt axis)": {
+      "threshold_peak_force_N": 128.1,
+      "stud_P_N": 311.6,
+      "stud_bolt_load_N": 522.3,
+      "stud_separation_margin": 6.5,
+      "bolt_P_N": 146.2,
+      "tilt_bolt_load_N": 318.3,
+      "tilt_separation_margin": 13.4,
+      "insert_pullout_margin": 6.7
+     },
+     "axial (push on the lens front, back along the view)": {
+      "threshold_peak_force_N": 127.3,
+      "stud_P_N": 188.7,
+      "stud_bolt_load_N": 414.5,
+      "stud_separation_margin": 10.7,
+      "bolt_P_N": 20.1,
+      "tilt_bolt_load_N": 204.2,
+      "tilt_separation_margin": 97.3,
+      "insert_pullout_margin": 10.5
+     }
+    }
+   },
+   "firm": {
+    "Fi_tilt_N": 497,
+    "Fi_stud_N": 665,
+    "T_hold_tilt_Nm": 1.993,
+    "T_hold_pan_Nm": 3.278,
+    "gravity_drift_deg_1s": {
+     "0": 0.0001,
+     "45": 0.0007,
+     "90": 0.0009
+    },
+    "bumps_at_45deg": {
+     "tilt (push across the view, in the tilt plane)": {
+      "threshold_peak_force_N": 161.5,
+      "stud_P_N": 333.1,
+      "stud_bolt_load_N": 957.1,
+      "stud_separation_margin": 16.2,
+      "bolt_P_N": 25.6,
+      "tilt_bolt_load_N": 520.2,
+      "tilt_separation_margin": 204.1,
+      "insert_pullout_margin": 4.1
+     },
+     "pan (push sideways, along the tilt axis)": {
+      "threshold_peak_force_N": 199.8,
+      "stud_P_N": 485.1,
+      "stud_bolt_load_N": 1090.4,
+      "stud_separation_margin": 11.1,
+      "bolt_P_N": 228.1,
+      "tilt_bolt_load_N": 703.4,
+      "tilt_separation_margin": 22.9,
+      "insert_pullout_margin": 3.0
+     },
+     "axial (push on the lens front, back along the view)": {
+      "threshold_peak_force_N": 199.8,
+      "stud_P_N": 295.6,
+      "stud_bolt_load_N": 924.3,
+      "stud_separation_margin": 18.3,
+      "bolt_P_N": 31.7,
+      "tilt_bolt_load_N": 525.7,
+      "tilt_separation_margin": 165.0,
+      "insert_pullout_margin": 4.1
+     }
+    }
+   },
+   "hard": {
+    "Fi_tilt_N": 994,
+    "Fi_stud_N": 1247,
+    "T_hold_tilt_Nm": 3.986,
+    "T_hold_pan_Nm": 6.148,
+    "gravity_drift_deg_1s": {
+     "0": 0.0001,
+     "45": 0.0007,
+     "90": 0.0009
+    },
+    "bumps_at_45deg": {
+     "tilt (push across the view, in the tilt plane)": {
+      "threshold_peak_force_N": 199.8,
+      "stud_P_N": 412.7,
+      "stud_bolt_load_N": 1608.9,
+      "stud_separation_margin": 24.6,
+      "bolt_P_N": 31.7,
+      "tilt_bolt_load_N": 1022.7,
+      "tilt_separation_margin": 330.1,
+      "insert_pullout_margin": 2.1
+     },
+     "pan (push sideways, along the tilt axis)": {
+      "threshold_peak_force_N": 199.8,
+      "stud_P_N": 485.1,
+      "stud_bolt_load_N": 1672.4,
+      "stud_separation_margin": 20.9,
+      "bolt_P_N": 228.1,
+      "tilt_bolt_load_N": 1200.4,
+      "tilt_separation_margin": 45.9,
+      "insert_pullout_margin": 1.8
+     },
+     "axial (push on the lens front, back along the view)": {
+      "threshold_peak_force_N": 199.8,
+      "stud_P_N": 295.6,
+      "stud_bolt_load_N": 1506.3,
+      "stud_separation_margin": 34.3,
+      "bolt_P_N": 31.7,
+      "tilt_bolt_load_N": 1022.7,
+      "tilt_separation_margin": 330.1,
+      "insert_pullout_margin": 2.1
+     }
+    }
+   },
+   "snug, after creep": {
+    "Fi_tilt_N": 116,
+    "Fi_stud_N": 158,
+    "T_hold_tilt_Nm": 0.465,
+    "T_hold_pan_Nm": 0.779,
+    "gravity_drift_deg_1s": {
+     "0": 0.0001,
+     "45": 0.0007,
+     "90": 0.0009
+    },
+    "bumps_at_45deg": {
+     "tilt (push across the view, in the tilt plane)": {
+      "threshold_peak_force_N": 37.9,
+      "stud_P_N": 78.8,
+      "stud_bolt_load_N": 227.1,
+      "stud_separation_margin": 16.3,
+      "bolt_P_N": 6.0,
+      "tilt_bolt_load_N": 121.4,
+      "tilt_separation_margin": 203.4,
+      "insert_pullout_margin": 17.6
+     },
+     "pan (push sideways, along the tilt axis)": {
+      "threshold_peak_force_N": 81.8,
+      "stud_P_N": 199.5,
+      "stud_bolt_load_N": 332.9,
+      "stud_separation_margin": 6.4,
+      "bolt_P_N": 93.3,
+      "tilt_bolt_load_N": 200.5,
+      "tilt_separation_margin": 13.1,
+      "insert_pullout_margin": 10.7
+     },
+     "axial (push on the lens front, back along the view)": {
+      "threshold_peak_force_N": 81.2,
+      "stud_P_N": 120.7,
+      "stud_bolt_load_N": 263.9,
+      "stud_separation_margin": 10.6,
+      "bolt_P_N": 12.8,
+      "tilt_bolt_load_N": 127.6,
+      "tilt_separation_margin": 95.2,
+      "insert_pullout_margin": 16.8
+     }
+    }
+   }
+  }
+ },
+ "hq": {
+  "head_mass_g": 343.7,
+  "head_com_mm": [
+   -7.2,
+   -24.4,
+   -0.7
+  ],
+  "yoke_mass_g": 61.1,
+  "tilt_axis_depth_mm": 73,
+  "gravity_torque_tilt_Nm": 0.082,
+  "preload_for_gravity_N": 18.7,
+  "knob_torque_for_gravity_Nm": 0.015,
+  "levels": {
+   "snug": {
+    "Fi_tilt_N": 186,
+    "Fi_stud_N": 249,
+    "T_hold_tilt_Nm": 0.817,
+    "T_hold_pan_Nm": 1.228,
+    "gravity_drift_deg_1s": {
+     "0": 0.0006,
+     "45": 0.0004,
+     "90": 0.0
+    },
+    "bumps_at_45deg": {
+     "tilt (push across the view, in the tilt plane)": {
+      "threshold_peak_force_N": 10.2,
+      "stud_P_N": 60.8,
+      "stud_bolt_load_N": 302.3,
+      "stud_separation_margin": 33.3,
+      "bolt_P_N": 1.2,
+      "tilt_bolt_load_N": 187.1,
+      "tilt_separation_margin": 1620.3,
+      "insert_pullout_margin": 11.4
+     },
+     "pan (push sideways, along the tilt axis)": {
+      "threshold_peak_force_N": 19.9,
+      "stud_P_N": 121.6,
+      "stud_bolt_load_N": 355.6,
+      "stud_separation_margin": 16.7,
+      "bolt_P_N": 35.8,
+      "tilt_bolt_load_N": 218.4,
+      "tilt_separation_margin": 54.6,
+      "insert_pullout_margin": 9.8
+     },
+     "axial (push on the lens front, back along the view)": {
+      "threshold_peak_force_N": 123.4,
+      "stud_P_N": 287.2,
+      "stud_bolt_load_N": 500.9,
+      "stud_separation_margin": 7.0,
+      "bolt_P_N": 17.8,
+      "tilt_bolt_load_N": 202.1,
+      "tilt_separation_margin": 109.8,
+      "insert_pullout_margin": 10.6
+     }
+    }
+   },
+   "firm": {
+    "Fi_tilt_N": 497,
+    "Fi_stud_N": 665,
+    "T_hold_tilt_Nm": 2.182,
+    "T_hold_pan_Nm": 3.278,
+    "gravity_drift_deg_1s": {
+     "0": 0.0006,
+     "45": 0.0004,
+     "90": 0.0
+    },
+    "bumps_at_45deg": {
+     "tilt (push across the view, in the tilt plane)": {
+      "threshold_peak_force_N": 25.2,
+      "stud_P_N": 153.4,
+      "stud_bolt_load_N": 799.5,
+      "stud_separation_margin": 35.2,
+      "bolt_P_N": 3.3,
+      "tilt_bolt_load_N": 500.0,
+      "tilt_separation_margin": 1602.4,
+      "insert_pullout_margin": 4.3
+     },
+     "pan (push sideways, along the tilt axis)": {
+      "threshold_peak_force_N": 52.0,
+      "stud_P_N": 312.3,
+      "stud_bolt_load_N": 938.9,
+      "stud_separation_margin": 17.3,
+      "bolt_P_N": 94.5,
+      "tilt_bolt_load_N": 582.5,
+      "tilt_separation_margin": 55.4,
+      "insert_pullout_margin": 3.7
+     },
+     "axial (push on the lens front, back along the view)": {
+      "threshold_peak_force_N": 199.8,
+      "stud_P_N": 464.0,
+      "stud_bolt_load_N": 1071.9,
+      "stud_separation_margin": 11.7,
+      "bolt_P_N": 27.5,
+      "tilt_bolt_load_N": 521.9,
+      "tilt_separation_margin": 190.0,
+      "insert_pullout_margin": 4.1
+     }
+    }
+   },
+   "hard": {
+    "Fi_tilt_N": 994,
+    "Fi_stud_N": 1247,
+    "T_hold_tilt_Nm": 4.364,
+    "T_hold_pan_Nm": 6.148,
+    "gravity_drift_deg_1s": {
+     "0": 0.0006,
+     "45": 0.0004,
+     "90": 0.0
+    },
+    "bumps_at_45deg": {
+     "tilt (push across the view, in the tilt plane)": {
+      "threshold_peak_force_N": 49.2,
+      "stud_P_N": 301.4,
+      "stud_bolt_load_N": 1511.3,
+      "stud_separation_margin": 33.6,
+      "bolt_P_N": 6.6,
+      "tilt_bolt_load_N": 999.9,
+      "tilt_separation_margin": 1595.2,
+      "insert_pullout_margin": 2.1
+     },
+     "pan (push sideways, along the tilt axis)": {
+      "threshold_peak_force_N": 96.5,
+      "stud_P_N": 578.3,
+      "stud_bolt_load_N": 1754.2,
+      "stud_separation_margin": 17.5,
+      "bolt_P_N": 176.3,
+      "tilt_bolt_load_N": 1153.6,
+      "tilt_separation_margin": 59.3,
+      "insert_pullout_margin": 1.9
+     },
+     "axial (push on the lens front, back along the view)": {
+      "threshold_peak_force_N": 199.8,
+      "stud_P_N": 464.0,
+      "stud_bolt_load_N": 1653.9,
+      "stud_separation_margin": 21.9,
+      "bolt_P_N": 27.5,
+      "tilt_bolt_load_N": 1018.9,
+      "tilt_separation_margin": 379.9,
+      "insert_pullout_margin": 2.1
+     }
+    }
+   },
+   "snug, after creep": {
+    "Fi_tilt_N": 116,
+    "Fi_stud_N": 158,
+    "T_hold_tilt_Nm": 0.509,
+    "T_hold_pan_Nm": 0.779,
+    "gravity_drift_deg_1s": {
+     "0": 0.0006,
+     "45": 0.0004,
+     "90": 0.0
+    },
+    "bumps_at_45deg": {
+     "tilt (push across the view, in the tilt plane)": {
+      "threshold_peak_force_N": 6.6,
+      "stud_P_N": 40.0,
+      "stud_bolt_load_N": 193.0,
+      "stud_separation_margin": 32.1,
+      "bolt_P_N": 0.7,
+      "tilt_bolt_load_N": 116.7,
+      "tilt_separation_margin": 1646.4,
+      "insert_pullout_margin": 18.3
+     },
+     "pan (push sideways, along the tilt axis)": {
+      "threshold_peak_force_N": 12.9,
+      "stud_P_N": 79.8,
+      "stud_bolt_load_N": 228.0,
+      "stud_separation_margin": 16.1,
+      "bolt_P_N": 23.0,
+      "tilt_bolt_load_N": 136.8,
+      "tilt_separation_margin": 53.1,
+      "insert_pullout_margin": 15.6
+     },
+     "axial (push on the lens front, back along the view)": {
+      "threshold_peak_force_N": 79.7,
+      "stud_P_N": 187.3,
+      "stud_bolt_load_N": 322.3,
+      "stud_separation_margin": 6.9,
+      "bolt_P_N": 11.6,
+      "tilt_bolt_load_N": 126.5,
+      "tilt_separation_margin": 104.8,
+      "insert_pullout_margin": 16.9
+     }
+    }
+   }
+  }
+ }
+}

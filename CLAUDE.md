@@ -85,16 +85,26 @@ install Tailscale, mint auth keys via the API, or run `tailscale up` unless stat
 genuinely shows you disconnected. Access to the Pi is
 [Tailscale SSH](https://tailscale.com/kb/1193/tailscale-ssh), authorized by
 [tailnet ACLs](https://tailscale.com/kb/1018/acls) rather than SSH keys — there is no key
-to find or generate. Two Pis on the borysgroup tailnet are reachable, both tagged
-`tag:stream-cam-test` and both borysgroup/streamingLambda stream cameras:
+to find or generate. The seven borysgroup/streamingLambda stream cameras are reachable,
+all tagged `tag:stream-cam-test`. Each has a numbered slot of
+`RPI_STREAM_CAM_{HOSTNAME,USERNAME,PASSWORD}_<n>`, with the same names and numbering as
+streamingLambda (there is no unsuffixed `RPI_STREAM_CAM_HOSTNAME`). Hostnames and passwords
+are secrets; usernames are repo **variables**, since GitHub masks a secret wherever it
+appears as a substring and the values (`aurora`, `vcl`) would rewrite `aurora-cloud-infra`
+as `***-cloud-infra` throughout the logs (byu-vcl does the same):
 
-| Pi | streamingLambda slot | YouTube `CAM_NAME` / `WORKFLOW_NAME` | Env vars (`_HOSTNAME`, `_USERNAME`, `_PASSWORD`) |
-| --- | --- | --- | --- |
-| Raspberry Pi Zero 2 W + Camera Module 3 | `_0` | `picam-4yz0` / `aurora-4yz0` | `RPI_ZERO_2W_*` |
-| Raspberry Pi 5 + HQ Camera (IMX477), 8–50 mm zoom | `_6` | `picam-2wp0` / `Cataloging stage overhead` | `RPI_5_STREAM_CAM_*` |
+| Slot | Hardware | YouTube `CAM_NAME` / `WORKFLOW_NAME` |
+| --- | --- | --- |
+| `_0` | Raspberry Pi Zero 2 W + Camera Module 3 | `picam-4yz0` / `aurora-4yz0` |
+| `_1` | Raspberry Pi Zero 2 W + Camera Module 3 | `picam-7yvn` / `aurora-7yvn` |
+| `_2` | Raspberry Pi Zero 2 W + Camera Module 3 | `picam-ca3u` / `aurora-ca3u` |
+| `_3` | Raspberry Pi Zero 2 W + Camera Module 3 | `picam-syyd` / `aurora-syyd` |
+| `_4` | Raspberry Pi Zero 2 W + Camera Module 3 | `picam-y5hk` / `aurora-y5hk` |
+| `_5` | Raspberry Pi Zero 2 W + Camera Module 3 | `picam-yubw` / `aurora-yubw` |
+| `_6` | Raspberry Pi 5 + HQ Camera (IMX477), 8–50 mm zoom | `picam-2wp0` / `Cataloging stage overhead` |
 
-`TAILNET_ID` completes either address, e.g.
-`ssh -o ConnectTimeout=20 -o LogLevel=ERROR "$RPI_ZERO_2W_USERNAME@$RPI_ZERO_2W_HOSTNAME.$TAILNET_ID.ts.net"`.
+`TAILNET_ID` completes any slot's address, e.g. for slot `_0`:
+`ssh -o ConnectTimeout=20 -o LogLevel=ERROR "$RPI_STREAM_CAM_USERNAME_0@$RPI_STREAM_CAM_HOSTNAME_0.$TAILNET_ID.ts.net"`.
 `LogLevel=ERROR` matters: without it, OpenSSH's "Permanently added ... to the list of known
 hosts" warning prints the full MagicDNS name, which the masked step log hides but the
 execution-log artifact does not. For the same reason, never paste `tailscale status` output
@@ -107,7 +117,7 @@ and stop rather than working around it.
 
 **sudo on the Pi is password-gated** — no passwordless sudo, and polkit rejects
 non-interactive `systemctl`. Feed the password over stdin so it never appears in a process
-list or shell history: `ssh … "sudo -S -p '' <cmd>" <<< "$RPI_ZERO_2W_PASSWORD"`.
+list or shell history: `ssh … "sudo -S -p '' <cmd>" <<< "$RPI_STREAM_CAM_PASSWORD_<n>"`.
 
 **You have two machines — use the right one.** Your runner terminal and the Pi are
 separate environments: Use the Pi only for what

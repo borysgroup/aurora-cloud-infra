@@ -76,17 +76,35 @@ jobs:
       YOUTUBE_UPLOAD_TOKEN_PICKLE_B64: ${{ secrets.YOUTUBE_UPLOAD_TOKEN_PICKLE_B64 }}
       ONSHAPE_ACCESS_KEY: ${{ secrets.ONSHAPE_ACCESS_KEY }}
       ONSHAPE_SECRET_KEY: ${{ secrets.ONSHAPE_SECRET_KEY }}
-      # One Pi Zero 2 W on the borysgroup tailnet (streamingLambda's stream-cam
-      # slot _0, rpi-zero2w-stream-cam-4yz0), reached over Tailscale SSH; see
-      # CLAUDE.md. TS_OAUTH_CLIENT_ID/TS_AUDIENCE stay with the join step only.
-      RPI_ZERO_2W_HOSTNAME: ${{ secrets.RPI_ZERO_2W_HOSTNAME }}
-      RPI_ZERO_2W_USERNAME: ${{ secrets.RPI_ZERO_2W_USERNAME }}
-      RPI_ZERO_2W_PASSWORD: ${{ secrets.RPI_ZERO_2W_PASSWORD }}
-      # One Pi 5 + HQ Camera on the same tailnet and tag (the cataloging stage
-      # overhead cam, picam-2wp0; streamingLambda's slot _6). Same SSH rules.
-      RPI_5_STREAM_CAM_HOSTNAME: ${{ secrets.RPI_5_STREAM_CAM_HOSTNAME }}
-      RPI_5_STREAM_CAM_USERNAME: ${{ secrets.RPI_5_STREAM_CAM_USERNAME }}
-      RPI_5_STREAM_CAM_PASSWORD: ${{ secrets.RPI_5_STREAM_CAM_PASSWORD }}
+      # The seven borysgroup/streamingLambda stream-cam Pis on the borysgroup
+      # tailnet, reached over Tailscale SSH; same slot names and numbering as
+      # streamingLambda (see CLAUDE.md). _0-_5 are Pi Zero 2 Ws, _6 is the Pi 5
+      # cataloging stage overhead cam. TS_OAUTH_CLIENT_ID/TS_AUDIENCE stay with
+      # the join step only.
+      RPI_STREAM_CAM_HOSTNAME_0: ${{ secrets.RPI_STREAM_CAM_HOSTNAME_0 }}
+      RPI_STREAM_CAM_HOSTNAME_1: ${{ secrets.RPI_STREAM_CAM_HOSTNAME_1 }}
+      RPI_STREAM_CAM_HOSTNAME_2: ${{ secrets.RPI_STREAM_CAM_HOSTNAME_2 }}
+      RPI_STREAM_CAM_HOSTNAME_3: ${{ secrets.RPI_STREAM_CAM_HOSTNAME_3 }}
+      RPI_STREAM_CAM_HOSTNAME_4: ${{ secrets.RPI_STREAM_CAM_HOSTNAME_4 }}
+      RPI_STREAM_CAM_HOSTNAME_5: ${{ secrets.RPI_STREAM_CAM_HOSTNAME_5 }}
+      RPI_STREAM_CAM_HOSTNAME_6: ${{ secrets.RPI_STREAM_CAM_HOSTNAME_6 }}
+      RPI_STREAM_CAM_PASSWORD_0: ${{ secrets.RPI_STREAM_CAM_PASSWORD_0 }}
+      RPI_STREAM_CAM_PASSWORD_1: ${{ secrets.RPI_STREAM_CAM_PASSWORD_1 }}
+      RPI_STREAM_CAM_PASSWORD_2: ${{ secrets.RPI_STREAM_CAM_PASSWORD_2 }}
+      RPI_STREAM_CAM_PASSWORD_3: ${{ secrets.RPI_STREAM_CAM_PASSWORD_3 }}
+      RPI_STREAM_CAM_PASSWORD_4: ${{ secrets.RPI_STREAM_CAM_PASSWORD_4 }}
+      RPI_STREAM_CAM_PASSWORD_5: ${{ secrets.RPI_STREAM_CAM_PASSWORD_5 }}
+      RPI_STREAM_CAM_PASSWORD_6: ${{ secrets.RPI_STREAM_CAM_PASSWORD_6 }}
+      # Usernames are repo *variables*, not secrets (as in byu-vcl): GitHub masks
+      # a secret wherever it appears as a substring, and the values ("aurora",
+      # "vcl") would rewrite aurora-cloud-infra as ***-cloud-infra in the logs.
+      RPI_STREAM_CAM_USERNAME_0: ${{ vars.RPI_STREAM_CAM_USERNAME_0 }}
+      RPI_STREAM_CAM_USERNAME_1: ${{ vars.RPI_STREAM_CAM_USERNAME_1 }}
+      RPI_STREAM_CAM_USERNAME_2: ${{ vars.RPI_STREAM_CAM_USERNAME_2 }}
+      RPI_STREAM_CAM_USERNAME_3: ${{ vars.RPI_STREAM_CAM_USERNAME_3 }}
+      RPI_STREAM_CAM_USERNAME_4: ${{ vars.RPI_STREAM_CAM_USERNAME_4 }}
+      RPI_STREAM_CAM_USERNAME_5: ${{ vars.RPI_STREAM_CAM_USERNAME_5 }}
+      RPI_STREAM_CAM_USERNAME_6: ${{ vars.RPI_STREAM_CAM_USERNAME_6 }}
       TAILNET_ID: ${{ secrets.TAILNET_ID }}
 
       # Allow long-blocking foreground commands (e.g., Edison polling)

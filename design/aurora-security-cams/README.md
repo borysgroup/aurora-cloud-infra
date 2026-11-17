@@ -88,7 +88,17 @@ and (next step) relay them to YouTube from the Pi 5, please provide:
 1. **RTSP credentials for each camera** (`192.168.3.150` and `192.168.3.151`) —
    username + password. A dedicated least-privilege **viewer/ONVIF-media**
    account per camera is preferable to the admin login. This is the one hard
-   blocker.
+   blocker. `claude.yml` already passes these through; add them under
+   *Settings → Secrets and variables → Actions*:
+
+   | Camera | Repo variable | Repo secret |
+   |---|---|---|
+   | `192.168.3.150` | `AMCREST_CAM_USERNAME_0` | `AMCREST_CAM_PASSWORD_0` |
+   | `192.168.3.151` | `AMCREST_CAM_USERNAME_1` | `AMCREST_CAM_PASSWORD_1` |
+
+   Usernames are variables, not secrets, for the same reason as the
+   `RPI_STREAM_CAM_USERNAME_<n>` slots: GitHub masks a secret everywhere it
+   appears as a substring, so a short value like `admin` would garble the logs.
 2. **Which physical camera is which** (`.150` vs `.151`, and what each is aimed
    at), so the YouTube titles/descriptions are right.
 3. **How these should appear on YouTube** — new broadcast(s) per camera, and the

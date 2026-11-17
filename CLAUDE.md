@@ -159,7 +159,13 @@ segment and are reachable only from that Pi (slot `_6`); see
 `_0` = `192.168.3.150` and `_1` = `192.168.3.151`. These are the one exception to the rule
 above: they may be sent to the Pi 5 and stored there (in a mode-600 file, like
 `my_secrets.py`), but only over stdin, never in a remote command line or an RTSP URL
-typed on one. Never print or commit an RTSP URL with credentials in it. Keep `eth0`
+typed on one. Never print or commit an RTSP URL with credentials in it.
+The cameras' admin logins are separate: `AMCREST_CAM_ADMIN_USERNAME_<n>` (variable) and
+`AMCREST_CAM_ADMIN_PASSWORD_<n>` (secret), same numbering. Use them only for the web UI or
+camera configuration (model, encoder settings, creating the viewer account), send them to
+the Pi 5 over stdin only, and don't store them there; the relay uses the viewer logins.
+Read the current camera settings before changing any, and record every change in the
+README. Keep `eth0`
 gateway-less and `ip_forward=0` so the cameras stay off the internet.
 
 **Treat the Pi as a live production device.** Inspect read-only first (`systemctl status`,

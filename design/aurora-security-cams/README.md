@@ -109,7 +109,12 @@ and (next step) relay them to YouTube from the Pi 5, please provide:
    silent audio. Say if the camera mic should be streamed.
 5. **Optional but useful:** the camera web-UI login, so I can confirm/force
    H.264 + CBR + a 2 s keyframe interval (clean RTMP to YouTube) and read the
-   exact model.
+   exact model. These admin logins are plumbed separately from the RTSP ones:
+
+   | Camera | Repo variable | Repo secret |
+   |---|---|---|
+   | `192.168.3.150` | `AMCREST_CAM_ADMIN_USERNAME_0` | `AMCREST_CAM_ADMIN_PASSWORD_0` |
+   | `192.168.3.151` | `AMCREST_CAM_ADMIN_USERNAME_1` | `AMCREST_CAM_ADMIN_PASSWORD_1` |
 6. **Confirm** a reserved static IP for the Pi on `eth0` is OK (I used `.199`
    only temporarily) and that the dead `.1` gateway is intentional.
 

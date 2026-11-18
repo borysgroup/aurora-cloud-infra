@@ -67,9 +67,11 @@ Both responded identically:
 - **Latency / bandwidth:** round-trip Pi→camera ≈ **0.3 ms** on the gigabit
   link; `ffmpeg` and `ffprobe` are present on the Pi. A copy-mode relay (no
   re-encode) is comfortably within budget.
-- **Model:** not read — the exact model needs the web-UI *Information* page, the
-  sticker, or an authenticated `getDeviceType`. The `AMC108…` RTSP realm points
-  to an 8MP-class Amcrest, consistent with the turret in the issue photos.
+- **Model:** both are **Amcrest IP5M-T1179EW-AI-V3** (5 MP turret), firmware
+  `2.880.00AC003.0.R`, build 2025-03-19 (read with the admin login via
+  `magicBox.cgi?action=getDeviceType` / `getSoftwareVersion`).
+- **Main stream (`subtype=0`):** H.264, 20 fps, video only (no audio track in
+  the SDP), so a `-c:v copy` relay needs a silent audio track added for YouTube.
 
 ### RTSP URL (once credentials exist)
 
@@ -80,15 +82,40 @@ rtsp://<user>:<pass>@192.168.3.150:554/cam/realmonitor?channel=1&subtype=0   # m
 rtsp://<user>:<pass>@192.168.3.150:554/cam/realmonitor?channel=1&subtype=1   # substream
 ```
 
+## Viewer accounts (2026-11-18)
+
+Using the admin login, a non-admin `relay` account was created on each camera
+for the YouTube relay. Only the RTSP viewer login is meant to be used from here
+on; the admin login is for camera configuration.
+
+- **What was changed on the cameras:** one new user per camera, `relay`, group
+  `user`, `Sharable=true` (concurrent sessions allowed), memo `youtube-relay`,
+  created with `userManager.cgi?action=addUser`. The request asked for
+  `Monitor_01` (live view) only, but the firmware applied the group's full rights,
+  so the account holds `Monitor_01` + `Replay_01` (live view and playback of
+  recordings). It has no configuration, user-management or network rights: the
+  user-management API answers it with `403`. No other camera setting was changed;
+  the `admin` account is untouched.
+- **Verified:** `relay` gets `RTSP/1.0 200 OK` on `DESCRIBE` of the main stream
+  on both cameras.
+- **Where the credentials live:** repo variables `AMCREST_CAM_USERNAME_<n>` and
+  secrets `AMCREST_CAM_PASSWORD_<n>` (`_0` = `.150`, `_1` = `.151`), and on the
+  Pi 5 in `~/.config/aurora-security-cams/cams.env` (directory `700`, file `600`,
+  owner `vcl`), which holds `AMCREST_CAM_{HOST,USERNAME,PASSWORD}_<n>` for both
+  cameras. The admin logins are not stored on the Pi.
+- **To undo:** `userManager.cgi?action=deleteUser&name=relay` with the admin
+  login on each camera, and delete the `cams.env` directory on the Pi 5.
+- **Pi 5 state afterwards:** the temporary `cam-probe` NetworkManager profile
+  was deleted again, `eth0` is back to no IPv4 address, `ip_forward=0`, and
+  `device.service` was untouched (0 restarts).
+
 ## What I need from you to go further
 
 Attempting the stream now stops at the camera login. To actually pull the feeds
 and (next step) relay them to YouTube from the Pi 5, please provide:
 
-1. **RTSP credentials for each camera** (`192.168.3.150` and `192.168.3.151`) —
-   username + password. A dedicated least-privilege **viewer/ONVIF-media**
-   account per camera is preferable to the admin login. This is the one hard
-   blocker. `claude.yml` already passes these through; add them under
+1. ~~**RTSP credentials for each camera**~~ Done: the `relay` viewer account
+   above. `claude.yml` passes these through from
    *Settings → Secrets and variables → Actions*:
 
    | Camera | Repo variable | Repo secret |
@@ -107,9 +134,10 @@ and (next step) relay them to YouTube from the Pi 5, please provide:
    `device.py`-style instance with its own Lambda-provisioned stream key.
 4. **Audio or silence** — the cameras have mics; the picam path currently sends
    silent audio. Say if the camera mic should be streamed.
-5. **Optional but useful:** the camera web-UI login, so I can confirm/force
-   H.264 + CBR + a 2 s keyframe interval (clean RTMP to YouTube) and read the
-   exact model. These admin logins are plumbed separately from the RTSP ones:
+5. ~~**The camera web-UI login**~~ Provided; used to read the model and create
+   the viewer account. Still to do with it: confirm H.264 + CBR + a 2 s
+   keyframe interval (at 20 fps, a GOP of 40) for clean RTMP to YouTube. The
+   admin logins are plumbed separately from the RTSP ones:
 
    | Camera | Repo variable | Repo secret |
    |---|---|---|
@@ -118,7 +146,7 @@ and (next step) relay them to YouTube from the Pi 5, please provide:
 6. **Confirm** a reserved static IP for the Pi on `eth0` is OK (I used `.199`
    only temporarily) and that the dead `.1` gateway is intentional.
 
-## Planned streaming path (next step, once credentials arrive)
+## Planned streaming path (next step)
 
 Reuse the RTSP-relay approach from the 2026-11-06 comment (the `start_rtsp_relay`
 patch to `ac-training-lab`'s `picam/device.py`): the Pi 5's `ffmpeg` pulls the
@@ -142,8 +170,8 @@ hands out — the same broadcast lifecycle the picam stream already uses.
 
 ## Not done
 
-- No credentials were tried or guessed; no camera configuration was changed.
-- The exact camera model was not read (needs auth or the label).
-- Nothing was streamed yet — that is the next step, gated on credentials.
+- No credentials were guessed. The only camera change is the `relay` account
+  above; encoder settings were not read or changed yet.
+- Nothing was streamed yet — that is the next step.
 - The other ~7 hosts on the segment were only identified by vendor OUI, not
   probed.

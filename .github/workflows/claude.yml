@@ -106,6 +106,20 @@ jobs:
       RPI_STREAM_CAM_USERNAME_5: ${{ vars.RPI_STREAM_CAM_USERNAME_5 }}
       RPI_STREAM_CAM_USERNAME_6: ${{ vars.RPI_STREAM_CAM_USERNAME_6 }}
       TAILNET_ID: ${{ secrets.TAILNET_ID }}
+      # RTSP logins for the two Amcrest security cameras on the Pi 5's eth0
+      # segment (see design/aurora-security-cams/README.md): _0 is
+      # 192.168.3.150, _1 is 192.168.3.151. Reachable only through slot _6.
+      # Usernames are variables for the same masking reason as above.
+      AMCREST_CAM_PASSWORD_0: ${{ secrets.AMCREST_CAM_PASSWORD_0 }}
+      AMCREST_CAM_PASSWORD_1: ${{ secrets.AMCREST_CAM_PASSWORD_1 }}
+      AMCREST_CAM_USERNAME_0: ${{ vars.AMCREST_CAM_USERNAME_0 }}
+      AMCREST_CAM_USERNAME_1: ${{ vars.AMCREST_CAM_USERNAME_1 }}
+      # Admin (web UI / camera config) logins for the same two cameras, kept
+      # separate from the RTSP viewer logins above.
+      AMCREST_CAM_ADMIN_PASSWORD_0: ${{ secrets.AMCREST_CAM_ADMIN_PASSWORD_0 }}
+      AMCREST_CAM_ADMIN_PASSWORD_1: ${{ secrets.AMCREST_CAM_ADMIN_PASSWORD_1 }}
+      AMCREST_CAM_ADMIN_USERNAME_0: ${{ vars.AMCREST_CAM_ADMIN_USERNAME_0 }}
+      AMCREST_CAM_ADMIN_USERNAME_1: ${{ vars.AMCREST_CAM_ADMIN_USERNAME_1 }}
 
       # Allow long-blocking foreground commands (e.g., Edison polling)
       BASH_DEFAULT_TIMEOUT_MS: "900000" # 15 min default per Bash call

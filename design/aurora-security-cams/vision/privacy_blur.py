@@ -4,8 +4,10 @@ The rule is "sharp only where we know it is the glovebox interior"; anything els
 
 1. Static interior: masks/inside_camN.png, built once per camera view by build_inside_mask.py
    from hand-drawn polygons and SAM 2.1 outlines of the fixed equipment (inside_masks.json).
-2. The Epson, wherever it is: SAM 2.1 runs on every frame with point prompts only on parts of the
-   robot that never move (base, riser, controller box), and returns the robot in its current pose.
+2. The Epson, wherever it is: SAM 2.1 runs on every frame with point prompts on the robot's base,
+   riser and controller box, which are all fixed to the base (Epson's T-B drawing), and returns the
+   robot in its current pose. A prompt whose patch no longer matches the reference (the arm passing
+   in front of it, say) is dropped.
    Only the part inside the camera's robot_zone, and only pixels the reference also had as robot or
    that have changed since, are kept. If the segmentation misses part of the arm, that part is
    blurred, never the room.
@@ -79,15 +81,29 @@ def static_inside(cam, shape):
 
 
 def robot_mask(img, cam, ref_robot=None, ref=None):
-    """The Epson in this frame. Prompts sit only on parts that never move (base, riser, controller box),
-    so they stay on the robot whatever the arm does. Pixels are kept only inside robot_zone, and only
-    where the reference frame also had the robot or where the frame has changed, so a mask that spills
-    onto the unchanged room behind the robot is cut back."""
+    """The Epson in this frame. Prompts sit on the base, riser and controller box, and each is used only
+    while the image under it matches the reference (the last two prompts, base and riser, are kept
+    regardless). Pixels are kept only inside robot_zone, and only where the reference frame also had
+    the robot or where the frame has changed, so a mask that spills onto the unchanged room behind
+    the robot is cut back."""
     s = spec(cam)
     if "robot" not in s:
         return np.zeros(img.shape[:2], np.uint8)
     zone = poly_mask(img.shape, [s["robot_zone"]])
-    pos, neg = s["robot"]["pos"], s["robot"].get("neg", ())
+    pos, neg = list(s["robot"]["pos"]), s["robot"].get("neg", ())
+    if ref is not None:
+        # a prompt counts only while the robot surface under it looks as it did in the reference, so a
+        # prompt covered by the arm (or anything else) is dropped; base and riser are the fallback
+        if ref.shape != img.shape:
+            ref = cv2.resize(ref, (img.shape[1], img.shape[0]))
+        sx, sy = img.shape[1] / 1920.0, img.shape[0] / 1080.0
+
+        def same(x, y, h=10):
+            x, y = int(x * sx), int(y * sy)
+            a = img[max(0, y - h):y + h, max(0, x - h):x + h].astype(np.int16)
+            b = ref[max(0, y - h):y + h, max(0, x - h):x + h].astype(np.int16)
+            return np.abs(a - b).mean() < 18
+        pos = [q for q in pos if same(*q)] or pos[-2:]
     r = cv2.bitwise_and(sam_mask(img, pos, neg), zone)
     if ref_robot is not None and ref is not None:
         if ref.shape != img.shape:

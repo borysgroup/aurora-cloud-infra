@@ -40,7 +40,7 @@ faces (see [Privacy blur](#privacy-blur)). No one was in either frame.
 | Exfoliation Overhead 1 (`192.168.3.150`) | Exfoliation Overhead 2 (`192.168.3.151`) |
 |---|---|
 | ![Exfoliation Overhead 1](captures/2026-11-19_1822Z_cam0_192.168.3.150.jpg) | ![Exfoliation Overhead 2](captures/2026-11-19_1822Z_cam1_192.168.3.151.jpg) |
-| Wide view: the Epson SCARA, the microscope, the exfoliator and the chip tray | Close view: the XY gantry with the chip tray and the antechamber-end wall; an out-of-focus black box close to the camera (the microscope camera or a tool on the Epson) blocks the lower right |
+| Wide view: the Epson SCARA, the microscope, the exfoliator and the chip tray | Close view: the XY gantry with the chip tray and the antechamber-end wall; the Epson's arm 2 passes just under the camera, out of focus at the lower right, and is blurred |
 
 The earlier stills in `captures/` (00:23 and 16:38 UTC) are re-blurred the
 same way.
@@ -319,8 +319,11 @@ seen through them, and it is blurred:
    of a window to the pixel. The robot's moving parts are not in this mask.
 2. **The Epson, wherever it is:** SAM 2.1 runs again on every frame. Its
    prompts sit only on parts of the robot that never move: the base, the riser
-   and the controller box. Negative prompts sit on the room next to it. SAM
-   returns the robot in its current pose, arm included.
+   and the controller box, which Epson's T-B drawing shows fixed to the base.
+   Negative prompts sit on the room next to it. SAM returns the robot in its
+   current pose, arm included.
+   - A prompt whose patch no longer matches the reference is dropped, for
+     example when the arm passes in front of it.
    - Only the part inside the camera's `robot_zone` is kept.
    - Only pixels that the reference frame also had as robot, or that have
      changed since, are kept. A mask that spills onto the unchanged room
@@ -328,8 +331,9 @@ seen through them, and it is blurred:
    - If the segmentation misses part of the arm, that part is blurred, never
      the room. On the reference frame, the upper part of arm 2's housing is
      blurred for this reason.
-   - Overhead 2 sees no fixed part of the Epson, only the side of arm 2 and
-     its cable duct at the right edge, so there the housing is simply blurred.
+   - Overhead 2 sees no fixed part of the Epson, only arm 2, which passes
+     just under the camera: its housing at the right edge and a black unit on
+     it, out of focus at the lower right. Both are simply blurred.
    - About 3 s per frame on 4 CPU cores.
 3. **Change guard:** interior pixels that differ from
    [`vision/masks/reference_camN.jpg`](vision/masks) (the blurred frame the
@@ -344,9 +348,8 @@ seen through them, and it is blurred:
    dark outline are copied back, so no patch of a bright background behind
    the clock comes through.
 
-On the 18:22 UTC frames this keeps 61.2 % of Overhead 1 and 79.5 % of
-Overhead 2 sharp. Overhead 2's lower right is an out-of-focus black box close
-to the camera. The robot's segmentation has only been seen in its parked
+On the 18:22 UTC frames this keeps 61.3 % of Overhead 1 and 62.5 % of
+Overhead 2 sharp. The robot's segmentation has only been seen in its parked
 pose; the arm did not move during this work.
 
 Re-run `build_inside_mask.py --cam N FRAME.jpg` after re-aiming a camera or
@@ -517,24 +520,44 @@ pixel for pixel with the photos.
 - **Two views:** the chip tray (its lattice in both views, with every chip
   drawn in its pocket from `chip_tray.json`: 3 empty, 1 rotated) and the two
   tape reels (ray intersections).
-- **Silhouette fit, two views:** the Epson T6-B602S. Its outline is from
-  Epson's T6-B drawing: arm lengths 325 + 275 mm, arm 1 and arm 2 heights and
-  widths, the controller box above J1, shaft and stroke. J1's position, the
-  base's facing and height, the riser height and the two arm angles are
-  fitted to the robot's SAM 2.1 masks in both frames
-  ([`reconstruction/silhouette.py`](reconstruction/silhouette.py)).
-  Overlap: IoU 0.64 in Overhead 1 and 0.20 in Overhead 2, where only the
-  side of arm 2 and the duct are in view. The fit puts the base's underside at
-  177 mm, matching the chamber model's 180 mm riser reading. Arm 2's tip is held
-  inside the box; left free, the fit pushes it 30 mm past the modelled far end.
+- **Silhouette fit, two views:** the Epson T6-B602S. Its shape is from
+  Epson's dimensioned T-B drawing (T-B manual Rev.13, pp. 43, 45, 52 and 162):
+  - base flange and sloped column
+  - controller box (226 x 130 x 193 mm, underside at 272 mm), fixed to the
+    base on a rear column, with its top-rear chamfer
+  - arm 1, 103 mm wide, from 60 mm behind J1 to 51 mm past J2
+  - arm 2, 135.5 mm wide, its top falling towards the tip
+  - the ø20 J3 shaft (410 mm long, 200 mm stroke)
+  - the 32 mm corrugated duct between fittings over J1 and J2, flattened to
+    stay under the ceiling
+
+  J1's position, the base's facing and height, the riser height and both arm
+  angles are fitted to the robot's SAM 2.1 masks in both frames
+  ([`reconstruction/silhouette.py`](reconstruction/silhouette.py)), within
+  J1 ±132° and J2 ±150°. Overlap: IoU 0.64 in Overhead 1 and 0.82 in
+  Overhead 2. The fit puts the base's underside at 161 mm (the chamber model
+  reads 150 to 180) and parks J3 63 mm from the microscope objective.
+  - **The black object in Overhead 2:** this fit identifies the out-of-focus
+    black object at its lower right. The model alone matches Overhead 2's
+    white housing plus that object at IoU 0.77, so the object rides on
+    arm 2. It is modelled as a black unit on arm 2; its make is not known.
+- **Datasheet modules:**
+  - the microscope is Olympus/Evident BX3 modules on a custom plate: a
+    BX3-URA illuminator (drum 180 mm, body 402.5 mm long with the lamp port),
+    a U-DP dual port (88 x 151 x 57 mm) and a U-TLU tube (ø60 x 57.6 mm)
+  - a 20x objective (green ring)
+  - the stage is probably an ASI OE-1250 (228.6 x 215.9 x 45.1 mm)
+  - the large black THORLABS box has no connectors, so it is drawn as a
+    breadboard platform rather than a controller
 - **One view, onto a known plane:** the breadboards (edges back-projected at
   their heights), the gantry's posts, plate, screws and motors (Overhead 2),
-  the exfoliator housing, stage and motors, the microscope and its elevated
-  breadboard, the Thorlabs stage box and the two black docking fixtures
+  the exfoliator housing, stage and motors, the microscope's elevated
+  breadboard, the Thorlabs platform and the two black docking fixtures
   (Overhead 1), and the tape measure on the deck.
-- **Standard sizes:** M6 holes on a 25 mm grid on 12.7 mm breadboards; NEMA 23
-  (56.4 mm) and NEMA 17 (42.3 mm) steppers; 16 mm ball screws; 40 x 60 mm
-  slotted duct.
+- **Standard sizes:** M6 holes on a 25 mm grid (12.5 mm from the edge) on
+  12.7 mm Thorlabs breadboards; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm)
+  steppers; 16 mm ball screws; Panduit Type G 1 x 2 in slotted duct
+  (32 x 54 mm).
 - **The shell** is the chamber model's: 1200 x 1120 x 790 mm, sloped long
   windows. The far end is drawn as a window frame, because the room shows
   through it in Overhead 1.
@@ -543,7 +566,7 @@ pixel for pixel with the photos.
 
 - **Parts placed from both views** reproject closely in both frames. The tray
   is within 0.4 px, and the two reels within 2 and 9 px.
-- **The Epson** overlaps its masks at the IoU above.
+- **The Epson** overlaps its masks at the IoU above (0.64 and 0.82).
 - **Parts placed from one view** sit right in that view, but their depth along
   the ray rests on an assumed height. In the other view they can be off by 20
   to 50 mm.
@@ -551,7 +574,7 @@ pixel for pixel with the photos.
   the far end, and the backs of parts.
 - **Not modelled:** cables, tubing and wiring.
 
-**Files:** `out/glovebox.glb` (all 114 parts, coloured, one node per part; opens
+**Files:** `out/glovebox.glb` (all 124 parts, coloured, one node per part; opens
 in any glTF viewer), `out/stl/<group>.stl` (one per group: glovebox, ducts,
 breadboards, epson, gantry, exfoliator, microscope, deck), the renders above,
 an orbit (`out/turntable.gif`) and `out/parts.json`. Rebuild with
@@ -633,12 +656,12 @@ for the YouTube relay.
 6. **Scale and the chamber model:** two tape readings would pin the scale to
    about 1 %. One is the chip tray's long side (the fit gives a 9.5 mm pocket
    pitch, about 95 mm for 10 pockets). The other is the glovebox's inside
-   length (1200 mm in the model, which the Epson fit would rather see longer).
+   length (1200 mm in the model).
    The chamber model's landmarks disagree with each other by 9 to 38 px once
    the cameras are tied (see [Camera poses](#camera-poses)). Its QR sign also
    conflicts with the door.
-7. **The out-of-focus black box** close to Overhead 2 (lower right of its view)
-   is not identified: the microscope camera or a tool on the Epson.
+7. **The black unit on the Epson's arm 2**, out of focus at Overhead 2's
+   lower right, is placed by the robot fit but not identified.
 8. **CAD fidelity:** the parts are primitives at the right size, place and
    colour. Vendor STEP files (Epson T6-B, Thorlabs breadboards and stages, the
    ASI stage) could replace them part by part in `reconstruction/scene.py`.

@@ -1,5 +1,5 @@
 {
-  "_doc": "What each fixed Amcrest view shows of the glovebox interior. Pixel x, y at 1920x1080. build_inside_mask.py turns 'polygons' (hand-drawn, inside the glovebox) and 'sam_static' (SAM 2.1 point prompts on fixed equipment, for exact outlines where it stands in front of a window) into masks/inside_camN.png. Everything outside that mask is blurred. 'robot' prompts sit only on parts of the Epson that never move (base, riser, controller box); privacy_blur.py segments the robot from them on every frame and keeps the result only inside 'robot_zone'. Overhead 2 (cam1) sees no fixed part of the Epson, only the side of arm 2 at its right edge, so it has no 'robot' entry and that housing is blurred. Redraw after re-aiming a camera or moving equipment that stands in front of a window.",
+  "_doc": "What each fixed Amcrest view shows of the glovebox interior. Pixel x, y at 1920x1080. build_inside_mask.py turns 'polygons' (hand-drawn, inside the glovebox) and 'sam_static' (SAM 2.1 point prompts on fixed equipment, for exact outlines where it stands in front of a window) into masks/inside_camN.png. Everything outside that mask is blurred. 'robot' prompts sit only on parts of the Epson that never move (base, riser, controller box); privacy_blur.py segments the robot from them on every frame and keeps the result only inside 'robot_zone'. Overhead 2 (cam1) sees no fixed part of the Epson, only arm 2 (its housing and the black unit riding on it, out of focus at the lower right), so it has no 'robot' entry and both are blurred. Redraw after re-aiming a camera or moving equipment that stands in front of a window.",
   "cam0": {
     "polygons": {
       "deck_and_left_duct": [[305, 555], [262, 650], [215, 750], [178, 830], [140, 900], [100, 1000], [62, 1080], [720, 1080], [720, 640], [560, 640], [560, 520], [340, 520]],
@@ -33,7 +33,7 @@
       }
     },
     "robot": {
-      "pos": [[380, 150], [300, 60], [430, 420], [450, 580]],
+      "pos": [[380, 150], [330, 120], [430, 420], [450, 580]],
       "neg": [[150, 450], [640, 120], [230, 700], [100, 300], [200, 200], [1250, 50]]
     },
     "robot_zone": [[0, 0], [1350, 0], [1350, 330], [900, 330], [700, 700], [0, 700]]
@@ -51,9 +51,6 @@
     "sam_static": {
       "blue_tube": {
         "pos": [[1400, 60], [1700, 140], [1850, 300], [1200, 10]]
-      },
-      "near_black_box": {
-        "pos": [[1500, 800], [1700, 600], [1300, 1000], [1850, 900]]
       },
       "breadboard": {
         "pos": [[1000, 850], [1100, 800], [1050, 950]]

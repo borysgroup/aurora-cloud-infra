@@ -72,9 +72,9 @@ def shell():
 
 
 def ducts():
-    """Slotted grey wiring duct (40 x 60 mm, slots every 12.7 mm) along the deck edges."""
+    """Slotted grey wiring duct along the deck edges: Panduit Type G 1 x 2 in (32 x 54 mm), slots every 12.7 mm."""
     out = []
-    w, h = 40.0, 60.0
+    w, h = 32.0, 54.0
 
     def run(p0, p1, name):
         p0, p1 = np.asarray(p0, float), np.asarray(p1, float)
@@ -93,7 +93,7 @@ def ducts():
 
     run((60, GB_D - 28, 0), (GB_W - 40, GB_D - 28, 0), "duct, far window")
     run((24, 300, 0), (24, GB_D - 50, 0), "duct, antechamber wall")
-    src("ducts", "estimate", "40 x 60 mm slotted duct (a common Panduit size), along the edges seen in both views")
+    src("ducts", "standard", "Panduit Type G 1 x 2 in slotted duct (32 x 54 mm), along the edges seen in both views")
     return out
 
 
@@ -128,60 +128,94 @@ def tray_and_gantry(cal):
 
 
 # ---- Epson T6-B602S SCARA on its riser --------------------------------------------------------------
-# Heights above the base's underside, from Epson's T6-B outline drawing (T-B manual, 2.3.2):
-T6 = dict(L1=325.0, L2=275.0, arm1=(209.5, 259.5), arm2=(272.5, 465.3), box=(289.2, 465.3), shaft_top=590.5,
-          stroke=200.0, arm1_w=90.0, arm2_w=135.5, arm2_end=58.5, shaft_r=10.0, base_w=150.0, base_front=35.0,
-          base_back=160.0)
+# Epson's dimensioned T-B drawing (T-B manual Rev.13, pp. 43, 45, 52, 162). Local frame: origin on the J1
+# axis at the base's underside, X towards J2 with the arm straight (the base's front), Y to its left, Z up.
+T6 = dict(L1=325.0, L2=275.0, arm1=(209.5, 259.5), arm1_w=103.0, arm1_x=(-60.0, 376.0), arm2=(272.5, 465.3),
+          arm2_w=135.5, arm2_tip=58.5, arm2_top=((-67.75, 465.3), (125.0, 465.3), (175.0, 451.0), (245.0, 414.0),
+                                                  (333.5, 340.0)),
+          flange=((-160.0, 35.0), 84.5, 8.0), column_w=129.0,
+          column=((-160.0, 8.0), (30.0, 8.0), (66.0, 150.0), (66.0, 200.0), (-160.0, 200.0)),
+          rear_column=(-160.0, -100.0), box=((65.5, 272.0), (65.5, 465.0), (-70.0, 465.0), (-151.0, 421.0),
+                                              (-160.8, 421.0), (-160.8, 272.0)), box_w=130.0,
+          shaft_top=590.5, shaft_len=410.0, stroke=200.0, shaft_r=10.0, duct_od=32.0, duct_fitting=(23.0, 33.0),
+          j1_range=132.0, j2_range=150.0)
 
 
-def epson(j1, base_underside_z, back_dir, th1_deg, th2_deg, z_down=0.0, riser=None):
-    """Parts of the T6 for joint angles th1 (arm 1 from +x) and th2 (arm 2 relative to arm 1), shaft lowered
-    by z_down from fully up. back_dir: unit xy vector from J1 to the back of the base (cable outlet)."""
+def _hull(pts):
+    return trimesh.convex.convex_hull(np.asarray(pts, float))
+
+
+def epson(j1, base_underside_z, back_dir, th1_deg, th2_deg, z_down=0.0):
+    """Parts of the T6 for joint angles th1 (arm 1, from world +x) and th2 (arm 2 relative to arm 1), the
+    shaft lowered by z_down from fully up. back_dir: unit xy vector from J1 to the back of the base."""
     out = []
     j1 = np.asarray(j1, float)
     z0 = base_underside_z
     b = np.asarray(back_dir, float) / np.linalg.norm(back_dir)
-    yaw_b = np.degrees(np.arctan2(b[1], b[0]))
-    # base column (J1 sits near its front)
-    depth = T6["base_front"] + T6["base_back"]
-    cb = j1 + b * (T6["base_back"] - depth / 2)
-    out.append(Part("Epson base", rounded_box((cb[0], cb[1], z0 + 100), (depth, T6["base_w"], 200), 18, yaw_b),
-                    EPSON_WHITE, "epson"))
-    out.append(Part("Epson J1 bearing", cyl((j1[0], j1[1], z0 + 200), (j1[0], j1[1], z0 + 209.5), 72), EPSON_GREY,
+    fx = -b                                   # the base's front (local +X)
+    fy = np.array([-fx[1], fx[0]])            # local +Y
+
+    def base_pts(profile_xz, half_w):
+        P = []
+        for X, Zl in profile_xz:
+            for Y in (-half_w, half_w):
+                q = j1 + X * fx + Y * fy
+                P.append((q[0], q[1], z0 + Zl))
+        return P
+
+    (fx0, fx1), fyh, ft = T6["flange"]
+    out.append(Part("Epson base flange", _hull(base_pts([(fx0, 0), (fx1, 0), (fx1, ft), (fx0, ft)], fyh)),
+                    EPSON_GREY, "epson"))
+    out.append(Part("Epson base", _hull(base_pts(T6["column"], T6["column_w"] / 2)), EPSON_WHITE, "epson"))
+    out.append(Part("Epson J1 bearing", cyl((j1[0], j1[1], z0 + 200), (j1[0], j1[1], z0 + 209.5), 60), EPSON_GREY,
                     "epson"))
-    # the base rises behind J1 (outside J1's +/-132 deg range) to carry the controller box above arm 1
-    cu = j1 + b * 110
-    out.append(Part("Epson base upright", rounded_box((cu[0], cu[1], z0 + (200 + T6["box"][0]) / 2),
-                                                      (100, T6["base_w"], T6["box"][0] - 200), 14, yaw_b),
-                    EPSON_WHITE, "epson"))
-    ccb = j1 + b * 45
-    out.append(Part("Epson controller box", rounded_box((ccb[0], ccb[1], (z0 + T6["box"][0] + z0 + T6["box"][1]) / 2),
-                                                        (240, 165, T6["box"][1] - T6["box"][0]), 14, yaw_b),
-                    EPSON_WHITE, "epson"))
+    r0, r1 = T6["rear_column"]
+    out.append(Part("Epson rear column", _hull(base_pts([(r0, 200), (r1, 200), (r1, 272), (r0, 272)],
+                                                         T6["column_w"] / 2)), EPSON_WHITE, "epson"))
+    out.append(Part("Epson controller box", _hull(base_pts(T6["box"], T6["box_w"] / 2)), EPSON_WHITE, "epson"))
+    led = j1 + (-39.0) * fx
+    out.append(Part("Epson LED dome", cyl((led[0], led[1], z0 + 465), (led[0], led[1], z0 + 474), 14), "#e8eaea",
+                    "epson"))
     t1 = np.radians(th1_deg)
-    j2 = j1 + T6["L1"] * np.array([np.cos(t1), np.sin(t1)])
+    u1 = np.array([np.cos(t1), np.sin(t1)])
+    j2 = j1 + T6["L1"] * u1
     t2 = t1 + np.radians(th2_deg)
-    j3 = j2 + T6["L2"] * np.array([np.cos(t2), np.sin(t2)])
+    u2 = np.array([np.cos(t2), np.sin(t2)])
+    j3 = j2 + T6["L2"] * u2
+    w1 = T6["arm1_w"]
     a1z = (z0 + T6["arm1"][0], z0 + T6["arm1"][1])
-    out.append(Part("Epson arm 1", slot(j1, j2, T6["arm1_w"], *a1z), EPSON_WHITE, "epson"))
-    a2z = (z0 + T6["arm2"][0], z0 + T6["arm2"][1])
-    out.append(Part("Epson arm 2", slot(j2, j3, T6["arm2_w"], *a2z), EPSON_WHITE, "epson"))
-    out.append(Part("Epson J2 cover", cyl((j2[0], j2[1], a1z[1]), (j2[0], j2[1], a2z[0]), 50), EPSON_GREY, "epson"))
+    out.append(Part("Epson arm 1", slot(j1 + (T6["arm1_x"][0] + w1 / 2) * u1, j1 + (T6["arm1_x"][1] - w1 / 2) * u1,
+                                        w1, *a1z), EPSON_WHITE, "epson"))
+    # arm 2: its side profile (top falls towards the tip) across its width, plus the rounded J2 end and tip
+    n2 = np.array([-u2[1], u2[0]])
+    P = []
+    for sx, zt in T6["arm2_top"]:
+        for sy in (-T6["arm2_w"] / 2, T6["arm2_w"] / 2):
+            q = j2 + sx * u2 + sy * n2
+            P += [(q[0], q[1], z0 + T6["arm2"][0]), (q[0], q[1], z0 + zt)]
+    out.append(Part("Epson arm 2", _hull(P), EPSON_WHITE, "epson"))
+    out.append(Part("Epson arm 2 J2 end", cyl((j2[0], j2[1], z0 + T6["arm2"][0]), (j2[0], j2[1], z0 + T6["arm2"][1]),
+                                              T6["arm2_w"] / 2, 40), EPSON_WHITE, "epson"))
+    out.append(Part("Epson arm 2 tip", cyl((j3[0], j3[1], z0 + T6["arm2"][0]), (j3[0], j3[1], z0 + 380),
+                                           T6["arm2_tip"], 40), EPSON_WHITE, "epson"))
     top = z0 + T6["shaft_top"] - z_down
-    out.append(Part("Epson J3 shaft", cyl((j3[0], j3[1], top - T6["stroke"] - 330), (j3[0], j3[1], top),
-                                         T6["shaft_r"], 24), "#c8ccce", "epson"))
-    out.append(Part("Epson shaft nut", cyl((j3[0], j3[1], top - 10), (j3[0], j3[1], top + 4), 19), "#9da3a6",
-                    "epson"))
-    # user duct: corrugated tube from the controller box top to arm 2, arching under the ceiling
-    p0 = np.r_[ccb, z0 + T6["box"][1]]
-    p2 = np.r_[j2 + (j3 - j2) * 0.35, a2z[1]]
-    mid = (p0 + p2) / 2
-    mid[2] = min(z0 + 700.0, GB_H - 25.0)
-    out.append(Part("Epson user duct", tube([p0, p0 + (0, 0, 60), mid, p2 + (0, 0, 60), p2], 24), EPSON_DUCT,
-                    "epson"))
-    if riser is not None:
-        lo, hi, zr0 = riser
-        out.append(Part("Epson riser block", box((lo[0], lo[1], zr0), (hi[0], hi[1], z0)), ALU, "epson"))
+    out.append(Part("Epson J3 shaft", cyl((j3[0], j3[1], top - T6["shaft_len"]), (j3[0], j3[1], top), T6["shaft_r"], 24),
+                    "#c8ccce", "epson"))
+    out.append(Part("Epson shaft top stop", cyl((j3[0], j3[1], top - 12), (j3[0], j3[1], top), 19), "#9da3a6", "epson"))
+    out.append(Part("Epson shaft lower stop", cyl((j3[0], j3[1], top - T6["shaft_len"]),
+                                                 (j3[0], j3[1], top - T6["shaft_len"] + 12), 20), "#9da3a6", "epson"))
+    # user duct: corrugated, OD 32, from the fitting on the box top over J1 to the fitting on arm 2 over J2;
+    # a semicircle of radius L1/2 in Epson's drawing, flattened here to stay under the ceiling
+    fr, fh = T6["duct_fitting"]
+    p0 = np.r_[j1, z0 + 465.0]
+    p1 = np.r_[j2, z0 + T6["arm2"][1]]
+    out.append(Part("Epson duct fitting (J1)", cyl(p0, p0 + (0, 0, fh), fr, 24), EPSON_DUCT, "epson"))
+    out.append(Part("Epson duct fitting (J2)", cyl(p1, p1 + (0, 0, fh), fr, 24), EPSON_DUCT, "epson"))
+    a0, a1 = p0 + (0, 0, fh), p1 + (0, 0, fh)
+    rise = min(T6["L1"] / 2, GB_H - 6 - T6["duct_od"] / 2 - max(a0[2], a1[2]))
+    arc = [a0 + (a1 - a0) * (0.5 - 0.5 * np.cos(q)) + np.array([0, 0, rise * np.sin(q)])
+           for q in np.linspace(0, np.pi, 13)]
+    out.append(Part("Epson user duct", tube(arc, T6["duct_od"] / 2, 16), EPSON_DUCT, "epson"))
     return out, dict(j2=j2, j3=j3)
 
 
@@ -203,7 +237,7 @@ def breadboard(name, x0, y0, sx, sy, z_top, t=12.7, pitch=25.0, edge=12.5, legs=
 def breadboards():
     out = []
     # under the Epson, the ASI stages and the microscope: front (-x) edge at x 835 seen from Overhead 1
-    out += breadboard("main breadboard", 838, 380, 362, 700, 69.3, legs=True)
+    out += breadboard("main breadboard", 838, 380, 362, 700, 75.7, legs=True)
     # exfoliator breadboard on 147 mm posts (post foot and top measured from Overhead 2)
     out += breadboard("exfoliator breadboard", 230, 240, 450, 420, 160.0, legs=True)
     # loose breadboard lying on the deck, seen at the bottom right of Overhead 2 (hole rows at 25 mm pitch)
@@ -239,8 +273,8 @@ def gantry(cal):
     # lower axis along y at x ~ 600, upper axis along x at y ~ 510, plate top 160 (post 147 + 12.7)
     out += ballscrew_axis("Y axis", (600, 262), (600, 492), 172.0)
     out += ballscrew_axis("X axis", (285, 505), (680, 520), 192.0)  # seen from both views
-    out.append(Part("Y axis motor", stepper((600, 520, 194), (0, -1, 0), 56.4, 76), BLACK, "gantry"))
-    out.append(Part("X axis motor", stepper((262, 504, 214), (1, 0, 0), 56.4, 76), BLACK, "gantry"))
+    out.append(Part("Y axis motor", stepper((600, 520, 194), (0, -1, 0), 57.2, 76), BLACK, "gantry"))
+    out.append(Part("X axis motor", stepper((262, 504, 214), (1, 0, 0), 57.2, 76), BLACK, "gantry"))
     # tray carriage: plate under the tray holder, on the X axis carriage
     out.append(Part("tray carriage", obox(c - (0, 0, 40), (110, 90, 40), t["yaw_deg"]), BLACK, "gantry"))
     # yellow printed carriage with two steppers, riding at the -x end of the X axis (Overhead 2, top at z ~ 320)
@@ -255,7 +289,7 @@ def gantry(cal):
     out.append(Part("drag chain 2", tube([(420, 560, 210), (480, 610, 260), (560, 610, 250), (620, 560, 215)], 14),
                     BLACK, "gantry"))
     src("gantry", "one-view", "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from "
-        "Overhead 2 at their heights; NEMA 23 (56.4 mm) and NEMA 17 (42.3 mm) flanges; SFU1605 screws")
+        "Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) flanges; SFU1605 screws (16 mm)")
     return out
 
 
@@ -273,7 +307,7 @@ def exfoliator():
         out.append(Part(name + " hub", ring(ctr, (1, 0, 0), 6, 22, 30), RED, "exfoliator"))
     # aluminium housing between the reels (top face back-projected from Overhead 1 at z 300)
     out.append(Part("exfoliator housing", box((700, 70, 160), (790, 270, 330)), ALU, "exfoliator"))
-    out.append(Part("press stepper", stepper((745, 230, 330), (0, 0, -1), 56.4, 80), BLACK, "exfoliator"))
+    out.append(Part("press stepper", stepper((745, 230, 330), (0, 0, -1), 57.2, 80), BLACK, "exfoliator"))
     out.append(Part("press stepper label", cyl((745, 230, 410), (745, 230, 412), 22), "#2a5bd0", "exfoliator"))
     # finned roller motor in front of the supply reel
     out.append(Part("roller motor", cyl((640, 300, 330), (640, 300, 250), 32, 32), "#c7cbcd", "exfoliator"))
@@ -288,51 +322,79 @@ def exfoliator():
 # ---- microscope, ASI stages, Thorlabs box ------------------------------------------------------------
 
 def microscope():
+    """Olympus/Evident BX3 modules on a custom plate (no stand), on an ASI XY stage. Module sizes from the
+    Evident components guide: BX3-URA illuminator 402.5 long (incl. a 40 mm lamp port), 84 tall, drum 180
+    wide reaching 141.5 ahead of the optical axis; U-DP dual port 88 x 151 x 57; U-TLU tube 60 x 57.6.
+    ASI OE-1250 XY stage 228.6 x 215.9 x 45.1 (best guess from its screw rows and size)."""
     out = []
-    ox, oy, oz = 1118.0, 379.0, 250.0           # objective tip, Overhead 1 ray at the chamber model's height
-    out.append(Part("ASI XY stage", box((ox - 150, oy - 110, 120), (ox + 60, oy + 110, 175)), BLACK, "microscope"))
-    out.append(Part("ASI stage riser", box((ox - 120, oy - 90, 55), (ox + 40, oy + 90, 120)), BLACK, "microscope"))
-    out.append(Part("sample insert", box((ox - 60, oy - 45, 175), (ox + 20, oy + 45, 185)), "#8d9397", "microscope"))
-    out.append(Part("objective", cyl((ox, oy, oz), (ox, oy, oz + 60), 16), "#202224", "microscope"))
-    out.append(Part("nosepiece", cyl((ox, oy, oz + 60), (ox, oy, oz + 80), 48), "#d9ddd9", "microscope"))
-    out.append(Part("microscope body", cyl((ox - 20, oy + 10, oz + 80), (ox - 20, oy + 10, oz + 150), 95),
+    ox, oy = 1118.0, 379.0                    # optical axis (objective, Overhead 1 ray at the model's height)
+    z_tip = 250.0                             # objective tip
+    z_mount = z_tip + 75                      # nosepiece mount = illuminator underside
+    # ASI stage on a riser, sample insert, objective and nosepiece
+    out.append(Part("ASI OE-1250 XY stage", box((ox - 160, oy - 108, 130), (ox + 69, oy + 108, 175)), BLACK,
+                    "microscope"))
+    out.append(Part("ASI stage riser", box((ox - 130, oy - 90, 75.7), (ox + 40, oy + 90, 130)), BLACK, "microscope"))
+    out.append(Part("sample insert", box((ox - 80, oy - 55, 175), (ox + 30, oy + 55, 182)), "#8d9397", "microscope"))
+    out.append(Part("20x objective", cyl((ox, oy, z_tip), (ox, oy, z_tip + 45), 13), "#202224", "microscope"))
+    out.append(Part("objective green ring", cyl((ox, oy, z_tip + 30), (ox, oy, z_tip + 34), 13.5), "#2f9a4a",
+                    "microscope"))
+    out.append(Part("nosepiece", cyl((ox, oy, z_tip + 45), (ox, oy, z_mount), 42), "#d9ddd9", "microscope"))
+    # BX3-URA: drum ahead of the axis (towards +y, the Epson side in Overhead 1), body and lamp port behind
+    out.append(Part("BX3-URA illuminator drum", cyl((ox, oy + 51.5, z_mount), (ox, oy + 51.5, z_mount + 84), 90),
                     MICRO_WHITE, "microscope"))
-    out.append(Part("microscope head", box((ox - 70, oy - 40, oz + 150), (ox + 30, oy + 60, oz + 230)), MICRO_WHITE,
+    out.append(Part("BX3-URA illuminator body", box((ox - 45, oy - 221, z_mount + 10), (ox + 45, oy + 20, z_mount + 84)),
+                    MICRO_WHITE, "microscope"))
+    out.append(Part("BX3-URA lamp port", cyl((ox, oy - 221, z_mount + 47), (ox, oy - 261, z_mount + 47), 22),
+                    "#c9ccc9", "microscope"))
+    zt = z_mount + 84
+    out.append(Part("U-DP dual port", box((ox - 44, oy - 100, zt), (ox + 44, oy + 51, zt + 57)), MICRO_WHITE,
                     "microscope"))
-    out.append(Part("camera tube", cyl((ox - 20, oy + 10, oz + 230), (ox - 20, oy + 10, oz + 330), 22), "#1b1b1c",
+    out.append(Part("U-TLU tube", cyl((ox, oy, zt + 57), (ox, oy, zt + 114.6), 30), "#1b1b1c", "microscope"))
+    out.append(Part("microscope camera", box((ox - 35, oy - 35, zt + 114.6), (ox + 35, oy + 35, zt + 180)), "#151515",
                     "microscope"))
-    out.append(Part("microscope camera", box((ox - 65, oy - 35, oz + 330), (ox + 25, oy + 55, oz + 390)), "#151515",
-                    "microscope"))
-    out.append(Part("microscope column", box((ox + 50, oy - 60, 55), (ox + 82, oy + 60, oz + 150)), "#c9ccc9",
-                    "microscope"))
+    # the custom plate the modules hang from, on the main breadboard
+    out.append(Part("microscope mounting plate", box((ox + 60, oy - 120, 75.7), (ox + 75, oy + 120, z_mount + 40)),
+                    "#c9ccc9", "microscope"))
     out += breadboard("microscope breadboard", 965, 150, 235, 195, 380.0)
-    out.append(Part("optics cylinder", cyl((1060, 150, 400), (1060, 90, 400), 38), "#151515", "microscope"))
-    out.append(Part("Thorlabs stage box", box((815, 371, 69), (990, 515, 200)), "#202124", "microscope"))
+    out.append(Part("light source", cyl((1060, 150, 400), (1060, 90, 400), 38), "#151515", "microscope"))
+    out.append(Part("Thorlabs platform", box((815, 371, 75.7), (990, 515, 200)), "#202124", "microscope"))
     # two black docking fixtures on the main breadboard between the Epson and the stages (Overhead 1:
     # feet back-projected at the board height, tops at z 280)
     for x0, x1, y0, y1 in ((885, 975, 645, 775), (1000, 1093, 625, 760)):
         for yy in (y0, y1 - 12):
-            out.append(Part("docking fixture side", box((x0, yy, 69), (x1, yy + 12, 270)), BLACK, "microscope"))
+            out.append(Part("docking fixture side", box((x0, yy, 75.7), (x1, yy + 12, 270)), BLACK, "microscope"))
         out.append(Part("docking fixture top", box((x0, y0, 270), (x1, y1, 282)), BLACK, "microscope"))
-    src("microscope", "one-view", "objective on the Overhead 1 ray at the chamber model's height (z 250); elevated "
-        "breadboard back-projected at z 380; Thorlabs box front edge at z 180-220")
+    src("microscope", "datasheet", "Olympus BX3-URA, U-DP and U-TLU sizes (Evident components guide); ASI "
+        "OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard "
+        "back-projected at z 380, Thorlabs platform front edge at z 180-220")
     return out
 
 
 def deck_items():
     out = []
     # Stanley-style 25 ft tape measure on the deck, footprint back-projected from Overhead 2
-    out.append(Part("tape measure", rounded_box((255, 865, 20), (78, 78, 40), 10, 30), YELLOW, "deck"))
+    out.append(Part("tape measure", rounded_box((255, 865, 25), (90, 90, 50), 12, 30), YELLOW, "deck"))
     out.append(Part("tape measure belt clip", box((215, 850, 10), (226, 880, 38)), "#202020", "deck"))
-    src("tape measure", "one-view", "back-projected onto the deck from Overhead 2; case size of a 25 ft tape")
+    src("tape measure", "one-view", "back-projected onto the deck from Overhead 2; case about 90 x 90 x 50 (FatMax-style, estimate)")
     return out
 
 
 # ---- assembled scene ---------------------------------------------------------------------------------
 
-# fitted to the SAM silhouettes in both views (silhouette.py), with arm 2's tip kept inside the box
-ROBOT = dict(j1=(925.3, 887.9), base_underside_z=176.6, back_yaw_deg=65.6, th1_deg=-81.6, th2_deg=28.2,
-             riser_h=107.3)
+# fitted to the SAM silhouettes in both views (silhouette.py; IoU 0.64 in Overhead 1, 0.82 in Overhead 2),
+# within J1 +/-132 and J2 +/-150 deg, with arm 2's tip kept inside the box
+ROBOT = dict(j1=(934.6, 879.4), base_underside_z=161.4, back_yaw_deg=73.5, th1_deg=-79.9, th2_deg=17.6,
+             riser_h=85.7)
+
+
+def riser_block(j1, back_dir, base_underside_z, h):
+    """Aluminium block under the Epson's base flange (flange footprint plus 10 mm all round)."""
+    b = np.asarray(back_dir, float) / np.linalg.norm(back_dir)
+    (x0, x1), yh, _ = T6["flange"]
+    c = np.asarray(j1, float) - b * (x0 + x1) / 2
+    yaw = np.degrees(np.arctan2(b[1], b[0]))
+    return Part("Epson riser block", obox((c[0], c[1], base_underside_z - h / 2), (x1 - x0 + 20, 2 * yh + 20, h), yaw),
+                ALU, "epson")
 
 
 def build(cal, robot=None):
@@ -347,17 +409,19 @@ def build(cal, robot=None):
     parts += microscope()
     parts += deck_items()
     b = np.array([np.cos(np.radians(r["back_yaw_deg"])), np.sin(np.radians(r["back_yaw_deg"]))])
-    depth = T6["base_front"] + T6["base_back"]
     j1 = np.array(r["j1"])
-    cb = j1 + b * (T6["base_back"] - depth / 2)
-    ep, _ = epson(j1, r["base_underside_z"], b, r["th1_deg"], r["th2_deg"])
-    z0 = r["base_underside_z"]
-    ep.append(Part("Epson riser block", obox((cb[0], cb[1], z0 - r["riser_h"] / 2),
-                                             (depth + 10, T6["base_w"] + 10, r["riser_h"]), r["back_yaw_deg"]),
-                   ALU, "epson"))
+    ep, jj = epson(j1, r["base_underside_z"], b, r["th1_deg"], r["th2_deg"])
+    ep.append(riser_block(j1, b, r["base_underside_z"], r["riser_h"]))
+    # Overhead 2's out-of-focus black object lies exactly on arm 2's silhouette (the model alone matches the
+    # white housing plus the black object at IoU 0.77), so it rides on arm 2; its make is not known
+    u2 = (jj["j3"] - jj["j2"]) / np.linalg.norm(jj["j3"] - jj["j2"])
+    c = jj["j2"] + 100 * u2
+    ep.append(Part("black unit on arm 2", obox((c[0], c[1], r["base_underside_z"] + 465.3 + 22.5), (120, 100, 45),
+                                               np.degrees(np.arctan2(u2[1], u2[0]))), "#151515", "epson"))
     parts += ep
-    src("Epson T6-B602S", "datasheet", "outline heights, arm lengths 325 + 275 mm and widths from Epson's T6-B "
-        "drawing; J1, base yaw, base height and arm angles fitted to the robot's SAM silhouettes in both views")
+    src("epson", "datasheet", "Epson T6-B602S outline from Epson's dimensioned T-B drawing (T-B manual Rev.13, pp. 43, "
+        "45, 52, 162); J1, base yaw and height, riser and both arm angles fitted to the robot's SAM silhouettes in "
+        "both views (IoU 0.64 and 0.82); the black unit on arm 2 is placed from Overhead 2, make unknown")
     return parts
 
 

@@ -356,13 +356,100 @@ Re-run `build_inside_mask.py --cam N FRAME.jpg` after re-aiming a camera or
 moving equipment that stands in front of a window, and check the reference it
 writes.
 
-This covers the published stills, not the live streams. Running it on the
-streams would mean decoding and re-encoding both 1080p feeds on the Pi 5,
-which has no hardware encoder and already software-encodes the picam, and SAM
-is far too slow there for 20 fps. A static mask (steps 1, 4 and 5 without the
-robot) could run in `ffmpeg` at reduced resolution; the cameras' own privacy
-masks are solid boxes and would also apply to any other viewer, such as a
-recorder.
+This covers the published stills, not the live streams. The cameras' own
+privacy masks are solid boxes and would also apply to any other viewer, such
+as a recorder.
+
+### Live blur on the Pi 5 (measured 2026-11-19)
+
+The stills pipeline can't run live: SAM 2.1 takes about 3 s per frame on the
+runner's four x86 cores, and the Pi 5 has no hardware video encoder. What the
+Pi can do was measured on the Pi itself with
+[`vision/live_bench.py`](vision/live_bench.py), at `nice 19` on two of its four
+cores while the picam and the Overhead 2 relay ran. The picam uses about
+0.5 core. Results are in
+[`vision/out/live_bench_pi5.json`](vision/out/live_bench_pi5.json).
+
+**Decode, blur and re-encode** per camera, on a 20 s copy of Overhead 2's main
+stream (1080p, 20 fps). One core at 20 fps is 50 ms per frame.
+
+| Output | CPU per frame | Cores at 20 fps |
+|---|---|---|
+| Decode only | 9.4 ms | 0.19 |
+| 1080p, x264 superfast, no blur | 39.8 ms | 0.80 |
+| 1080p, static-mask blur, x264 superfast | 66.0 ms | 1.32 |
+| 720p, x264 superfast, no blur | 27.0 ms | 0.54 |
+| 720p, static-mask blur, x264 superfast | 46.7 ms | 0.93 |
+| 720p, static-mask blur, x264 ultrafast | 41.7 ms | 0.83 |
+| 720p, static-mask blur, x264 veryfast | 52.5 ms | 1.05 |
+
+The blur is done in `ffmpeg`: the frame at 1/8 scale, Gaussian-blurred and
+scaled back, with the sharp frame laid over it through the mask. In this test
+`ffmpeg` decoded the mask PNG again for every frame. On a single thread the
+720p superfast run took 43.5 ms per frame, so one core keeps up with one camera
+(23 fps).
+
+**Segmentation models,** onnxruntime 1.32 on the Pi's CPU, median of 15 runs:
+
+| Model | Input | 1 thread | 2 threads |
+|---|---|---|---|
+| YOLO11n-seg | 640 x 640 | 518 ms | 293 ms |
+| YOLO11n-seg | 320 x 320 | 113 ms | 63 ms |
+| YOLO11n-seg | 256 x 256 | 73 ms | 40 ms |
+| EdgeSAM (point prompts, like SAM) | encoder 1024 x 1024, then decoder | 2.54 s + 0.28 s | 1.58 s + 0.19 s |
+
+YOLO11n-seg was timed with Ultralytics' COCO weights. A model trained only on
+the Epson has the same network and costs the same.
+
+**What fits.** Both cameras at 1080p would need 2.6 cores on top of the
+picam, which leaves too little. At 720p:
+
+| | Cores |
+|---|---|
+| Picam, as now | 0.5 |
+| Overhead 2: static mask, 720p | 0.9 |
+| Overhead 1: static mask, 720p | 0.9 |
+| Overhead 1: YOLO11n-seg on the robot zone, 5 times a second, one thread | 0.6 |
+| **Total, of 4** | **2.9** |
+
+How the Epson step would work live:
+
+- The model runs on Overhead 1's `robot_zone` (1350 x 700 px), fed at
+  448 x 224. That is about as many pixels as 320 x 320, so about 113 ms on one
+  thread.
+- Between runs, each frame reuses the last mask, cut back to the pixels that
+  have not changed since the frame it was computed on. A spot the arm leaves
+  changes from robot to room and is blurred at once. So a lagging mask can
+  blur part of the arm but never shows the room. During a fast move, the arm
+  is blurred where it crosses a window until it slows down.
+- Overhead 2 needs no robot step: its view of the arm is blurred anyway.
+- Faces: the static mask, the robot step and the change guard already keep
+  the room blurred. A face detector at 1 to 2 fps could act as a tripwire that
+  blurs the whole frame for a few seconds on a hit.
+
+What it needs first:
+
+- **Training data.** COCO has no class for a robot arm, so the model has to be
+  trained on this camera's view of the Epson. SAM 2.1, the slow pipeline used
+  for the stills, can label the frames offline. The arm has only been seen
+  parked so far, so a few minutes of it moving through its range are needed:
+  during normal runs or a jog, recorded on the Pi with
+  `pull_feed.py 0 record SECONDS OUT.mp4`.
+- **720p output** for both cameras.
+
+Alternatives:
+
+- **Joint angles instead of a model.** If the lab's software can publish the
+  Epson's joint angles, the calibrated CAD model (`reconstruction/scene.py`)
+  can draw the arm's mask for each frame directly. The current fit (IoU 0.64
+  in Overhead 1) is too loose for that unless the model is refined or the mask
+  shrunk.
+- **Hardware.** A Raspberry Pi AI HAT+ (Hailo) on the Pi 5's free PCIe
+  connector would take the model off the CPU, but the encoders are the larger
+  cost. A small x86 machine with Intel Quick Sync on the camera switch could
+  encode both feeds in hardware at 1080p.
+- **EdgeSAM** takes SAM 2.1's prompts and needs no training. At about 1.8 s
+  per frame on two cores, it could update the mask only every few seconds.
 
 ### Chip tray
 
@@ -652,7 +739,9 @@ for the YouTube relay.
 4. **Upload:** about 11 Mbit/s for both cameras over RTMPS, accepted. The
    watchdog change under [Why RTMPS](#why-rtmps-and-what-it-costs) would bring
    it to about 9 Mbit/s.
-5. **Blurring the live streams** (see [Privacy blur](#privacy-blur)), if wanted.
+5. **Blurring the live streams,** if wanted: feasible at 720p with a YOLO
+   model trained on the Epson, which needs a few minutes of footage of the arm
+   moving (see [Live blur on the Pi 5](#live-blur-on-the-pi-5-measured-2026-11-19)).
 6. **Scale and the chamber model:** two tape readings would pin the scale to
    about 1 %. One is the chip tray's long side (the fit gives a 9.5 mm pocket
    pitch, about 95 mm for 10 pockets). The other is the glovebox's inside
@@ -665,6 +754,14 @@ for the YouTube relay.
 8. **CAD fidelity:** the parts are primitives at the right size, place and
    colour. Vendor STEP files (Epson T6-B, Thorlabs breadboards and stages, the
    ASI stage) could replace them part by part in `reconstruction/scene.py`.
+9. **Relay restart limit:** a relay that can't reach its camera exits, and
+   systemd allows 3 starts an hour (`StartLimitBurst`), so a camera that is
+   off for more than about four minutes leaves its relay `failed` until the
+   next reboot, even after the camera is back. On 2026-11-19, `.150` stopped
+   answering at 21:54 UTC and its relay stayed down from 21:58. Restart by hand
+   with
+   `sudo systemctl reset-failed amcrest-relay@0 && sudo systemctl start amcrest-relay@0`.
+   A relay that waits for its camera, instead of exiting, would avoid it.
 
 ## Files
 
@@ -672,7 +769,7 @@ for the YouTube relay.
 - [`systemd/`](systemd/): the units and per-camera settings installed on the Pi 5.
 - [`pi5/aurora-cams.conf`](pi5/aurora-cams.conf): chrony's NTP service for the camera subnet.
 - [`camera_time.py`](camera_time.py): read or set the cameras' time zone, DST and NTP, with the admin login over stdin.
-- [`pull_feed.py`](pull_feed.py): probe a feed, measure it, or grab a still,
+- [`pull_feed.py`](pull_feed.py): probe a feed, measure it, grab a still or record a clip,
   with the viewer login from `cams.env`.
 - [`read_camera_config.py`](read_camera_config.py): read-only dump of the
   encoder, image and PTZ settings, with the admin login over stdin.
@@ -683,7 +780,8 @@ for the YouTube relay.
   `inside_masks.json`, `masks/`), chip tray, intrinsics (`plumbline.py`,
   `lensmodel.py`, `intrinsics.py`, `tray_focal.py`), the first per-camera
   registration (`register_chamber.py`) and the joint two-camera calibration
-  (`calibrate_two_view.py`), with results in `vision/out/`.
+  (`calibrate_two_view.py`), and the Pi 5 live-blur benchmark
+  (`live_bench.py`), with results in `vision/out/`.
 - [`reconstruction/`](reconstruction/): the CAD reconstruction of the glovebox
   interior, its exports and renders.
 - [`captures/`](captures/): the stills above, blurred.

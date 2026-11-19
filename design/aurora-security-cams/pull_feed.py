@@ -8,6 +8,7 @@ Runs on the Pi 5 as the owner of cams.env:
     python3 -I pull_feed.py N probe            # codec, size, frame rate
     python3 -I pull_feed.py N packets SECONDS  # measured fps, bitrate, keyframe gaps
     python3 -I pull_feed.py N still OUT.jpg    # one full-size frame
+    python3 -I pull_feed.py N record SECONDS OUT.mp4  # the main stream, copied (no re-encode)
 """
 import json, os, re, subprocess, sys, tempfile, urllib.parse
 
@@ -83,5 +84,11 @@ if __name__ == "__main__":
             rc, out, err = run(["ffmpeg", "-hide_banner", "-nostdin", "-loglevel", "error", "-y", *CONCAT_IN,
                                 "-i", path, "-frames:v", "1", "-q:v", "3", out_jpg])
             print("rc", rc, err.strip()[-400:], os.path.getsize(out_jpg) if os.path.exists(out_jpg) else "no file")
+        elif mode == "record":
+            secs, out_mp4 = float(sys.argv[3]), sys.argv[4]
+            rc, out, err = run(["ffmpeg", "-hide_banner", "-nostdin", "-loglevel", "error", "-y", *CONCAT_IN,
+                                "-i", path, "-t", str(secs), "-map", "0:v:0", "-c", "copy", out_mp4],
+                               timeout=secs + 40)
+            print("rc", rc, err.strip()[-400:], os.path.getsize(out_mp4) if os.path.exists(out_mp4) else "no file")
     finally:
         os.remove(path); os.rmdir(os.path.dirname(path))

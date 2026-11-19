@@ -1,0 +1,269 @@
+{
+ "_doc": "Live-blur cost on the Pi 5 (4 GB, active cooler), measured 2026-11-19 22:04-22:08 UTC with vision/live_bench.py at nice 19, pinned to cores 2-3, while the picam stream and the Exfoliation Overhead 2 relay ran. encode: a 20 s copy of Overhead 2's main stream (H.264 1080p, 401 frames), CPU time per frame from ffmpeg -benchmark (user + system); the blur uses vision/masks/inside_cam1.png, decoded from PNG for every frame. model: onnxruntime on random input, median of 15 after 3 warm-up runs. YOLO11n-seg is the COCO-pretrained Ultralytics model exported to ONNX (opset 17) at each size; a one-class model has the same backbone and costs the same. EdgeSAM is chongzhou/EdgeSAM's edge_sam_3x ONNX pair; its decoder was given five point prompts.",
+ "pi": {
+  "model": "Raspberry Pi 5 Model B Rev 1.1, 4 GB",
+  "ffmpeg": "7.1.5-0+deb13u1+rpt2",
+  "onnxruntime": "1.32.0",
+  "python": "3.13.5",
+  "picam_load_cores": 0.48,
+  "soc_temp_c": {
+   "before": 55.4,
+   "peak": 60.9
+  },
+  "throttled": "0x0"
+ },
+ "encode": [
+  {
+   "run": "decode only",
+   "frames": 401,
+   "threads": 2,
+   "cpu_ms_per_frame": 9.41,
+   "cores_at_20fps": 0.188,
+   "max_fps_with_these_threads": 170.5,
+   "wall_s": 2.5
+  },
+  {
+   "run": "1080p, x264 superfast, no blur",
+   "frames": 401,
+   "threads": 2,
+   "cpu_ms_per_frame": 39.82,
+   "cores_at_20fps": 0.796,
+   "max_fps_with_these_threads": 45.5,
+   "wall_s": 9.0
+  },
+  {
+   "run": "1080p, blur, x264 superfast",
+   "frames": 401,
+   "threads": 2,
+   "cpu_ms_per_frame": 66.03,
+   "cores_at_20fps": 1.321,
+   "max_fps_with_these_threads": 28.8,
+   "wall_s": 14.1
+  },
+  {
+   "run": "720p, blur, x264 superfast",
+   "frames": 401,
+   "threads": 2,
+   "cpu_ms_per_frame": 46.74,
+   "cores_at_20fps": 0.935,
+   "max_fps_with_these_threads": 40.1,
+   "wall_s": 10.2
+  },
+  {
+   "run": "720p, blur, x264 ultrafast",
+   "frames": 401,
+   "threads": 2,
+   "cpu_ms_per_frame": 41.68,
+   "cores_at_20fps": 0.834,
+   "max_fps_with_these_threads": 44.2,
+   "wall_s": 9.3
+  },
+  {
+   "run": "720p, blur, x264 veryfast",
+   "frames": 401,
+   "threads": 2,
+   "cpu_ms_per_frame": 52.54,
+   "cores_at_20fps": 1.051,
+   "max_fps_with_these_threads": 36.0,
+   "wall_s": 11.3
+  },
+  {
+   "run": "720p, x264 superfast, no blur",
+   "frames": 401,
+   "threads": 2,
+   "cpu_ms_per_frame": 27.01,
+   "cores_at_20fps": 0.54,
+   "max_fps_with_these_threads": 68.6,
+   "wall_s": 6.0
+  },
+  {
+   "run": "720p, blur, x264 superfast",
+   "frames": 401,
+   "threads": 1,
+   "cpu_ms_per_frame": 43.53,
+   "cores_at_20fps": 0.871,
+   "max_fps_with_these_threads": 23.0,
+   "wall_s": 17.6
+  }
+ ],
+ "model": [
+  {
+   "model": "yolo11n-seg_640.onnx",
+   "threads": 1,
+   "input": {
+    "images": [
+     1,
+     3,
+     640,
+     640
+    ]
+   },
+   "median_ms": 517.8,
+   "min_ms": 485.5,
+   "max_ms": 530.4,
+   "ort": "1.32.0"
+  },
+  {
+   "model": "yolo11n-seg_640.onnx",
+   "threads": 2,
+   "input": {
+    "images": [
+     1,
+     3,
+     640,
+     640
+    ]
+   },
+   "median_ms": 292.8,
+   "min_ms": 263.1,
+   "max_ms": 304.6,
+   "ort": "1.32.0"
+  },
+  {
+   "model": "yolo11n-seg_320.onnx",
+   "threads": 1,
+   "input": {
+    "images": [
+     1,
+     3,
+     320,
+     320
+    ]
+   },
+   "median_ms": 112.5,
+   "min_ms": 111.5,
+   "max_ms": 138.2,
+   "ort": "1.32.0"
+  },
+  {
+   "model": "yolo11n-seg_320.onnx",
+   "threads": 2,
+   "input": {
+    "images": [
+     1,
+     3,
+     320,
+     320
+    ]
+   },
+   "median_ms": 63.2,
+   "min_ms": 62.2,
+   "max_ms": 88.5,
+   "ort": "1.32.0"
+  },
+  {
+   "model": "yolo11n-seg_256.onnx",
+   "threads": 1,
+   "input": {
+    "images": [
+     1,
+     3,
+     256,
+     256
+    ]
+   },
+   "median_ms": 72.5,
+   "min_ms": 71.2,
+   "max_ms": 99.1,
+   "ort": "1.32.0"
+  },
+  {
+   "model": "yolo11n-seg_256.onnx",
+   "threads": 2,
+   "input": {
+    "images": [
+     1,
+     3,
+     256,
+     256
+    ]
+   },
+   "median_ms": 40.2,
+   "min_ms": 39.8,
+   "max_ms": 89.3,
+   "ort": "1.32.0"
+  },
+  {
+   "model": "edge_sam_3x_encoder.onnx",
+   "threads": 1,
+   "input": {
+    "image": [
+     1,
+     3,
+     1024,
+     1024
+    ]
+   },
+   "median_ms": 2538.2,
+   "min_ms": 2510.3,
+   "max_ms": 2568.5,
+   "ort": "1.32.0"
+  },
+  {
+   "model": "edge_sam_3x_encoder.onnx",
+   "threads": 2,
+   "input": {
+    "image": [
+     1,
+     3,
+     1024,
+     1024
+    ]
+   },
+   "median_ms": 1575.8,
+   "min_ms": 1539.1,
+   "max_ms": 1622.0,
+   "ort": "1.32.0"
+  },
+  {
+   "model": "edge_sam_3x_decoder.onnx",
+   "threads": 1,
+   "input": {
+    "image_embeddings": [
+     1,
+     256,
+     64,
+     64
+    ],
+    "point_coords": [
+     1,
+     "num_points",
+     2
+    ],
+    "point_labels": [
+     1,
+     "num_points"
+    ]
+   },
+   "median_ms": 275.9,
+   "min_ms": 252.8,
+   "max_ms": 284.4,
+   "ort": "1.32.0"
+  },
+  {
+   "model": "edge_sam_3x_decoder.onnx",
+   "threads": 2,
+   "input": {
+    "image_embeddings": [
+     1,
+     256,
+     64,
+     64
+    ],
+    "point_coords": [
+     1,
+     "num_points",
+     2
+    ],
+    "point_labels": [
+     1,
+     "num_points"
+    ]
+   },
+   "median_ms": 191.9,
+   "min_ms": 159.9,
+   "max_ms": 217.8,
+   "ort": "1.32.0"
+  }
+ ]
+}

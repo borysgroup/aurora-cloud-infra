@@ -1,0 +1,2446 @@
+{
+ "frame": "aurora_chamber scene frame, mm: x from the antechamber-end wall, y from the open side, z up from the deck",
+ "robot_pose": {
+  "j1": [
+   921.8,
+   888.2
+  ],
+  "base_underside_z": 178.5,
+  "back_yaw_deg": 64.3,
+  "th1_deg": -81.3,
+  "th2_deg": 28.3,
+  "riser_h": 112.7
+ },
+ "tray": {
+  "centre": [
+   556.7273619257637,
+   398.1090465789925,
+   290.2657918191649
+  ],
+  "yaw_deg": 92.70639092816828,
+  "pitch_mm": 9.451144248772245,
+  "pitch_sd_mm": 1.1186467975921117,
+  "mirror": -1.0,
+  "size_mm": [
+   56.70686549263347,
+   94.51144248772245
+  ]
+ },
+ "cameras": {
+  "cam0": {
+   "centre": [
+    347.9,
+    294.0,
+    699.9
+   ],
+   "view_dir": [
+    0.733,
+    0.208,
+    -0.647
+   ]
+  },
+  "cam1": {
+   "centre": [
+    1015.1,
+    338.2,
+    702.2
+   ],
+   "view_dir": [
+    -0.558,
+    0.411,
+    -0.721
+   ]
+  }
+ },
+ "sources": {
+  "glovebox": {
+   "source": "chamber",
+   "note": "1200 x 1120 x 790 mm interior, sloped long windows (57 and 60 mm lean)"
+  },
+  "antechamber door": {
+   "source": "one-view",
+   "note": "hub and rim back-projected onto the wall plane from Overhead 2: radius 180-190 mm, matching the 15-inch antechamber (datasheet 190 mm)"
+  },
+  "QR sign": {
+   "source": "one-view",
+   "note": "bottom edge back-projected onto the wall from Overhead 2; the top is out of view"
+  },
+  "ducts": {
+   "source": "estimate",
+   "note": "40 x 60 mm slotted duct (a common Panduit size), along the edges seen in both views"
+  },
+  "breadboards": {
+   "source": "one-view",
+   "note": "edges back-projected onto their planes; holes M6 on 25 mm (the hole rows measure 24.5-26.4 mm at these heights); sizes rounded to Thorlabs metric sizes where the edges are hidden"
+  },
+  "chip tray": {
+   "source": "two-view",
+   "note": "6 x 10 pockets fitted in both views; pitch 9.5 mm, centre and yaw from the joint calibration; chips placed per pocket from chip_tray.json (3 empty, 1 rotated)"
+  },
+  "gantry": {
+   "source": "one-view",
+   "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (56.4 mm) and NEMA 17 (42.3 mm) flanges; SFU1605 screws"
+  },
+  "exfoliator": {
+   "source": "two-view",
+   "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance"
+  },
+  "microscope": {
+   "source": "one-view",
+   "note": "objective on the Overhead 1 ray at the chamber model's height (z 250); elevated breadboard back-projected at z 380; Thorlabs box front edge at z 180-220"
+  },
+  "tape measure": {
+   "source": "one-view",
+   "note": "back-projected onto the deck from Overhead 2; case size of a 25 ft tape"
+  },
+  "Epson T6-B602S": {
+   "source": "datasheet",
+   "note": "outline heights, arm lengths 325 + 275 mm and widths from Epson's T6-B drawing; J1, base yaw, base height and arm angles fitted to the robot's SAM silhouettes in both views"
+  }
+ },
+ "parts": [
+  {
+   "name": "deck",
+   "group": "glovebox",
+   "colour": "#b5b0a3",
+   "bounds_mm": [
+    [
+     0.0,
+     0.0,
+     -6.0
+    ],
+    [
+     1200.0,
+     1120.0,
+     0.0
+    ]
+   ],
+   "source": {
+    "source": "chamber",
+    "note": "1200 x 1120 x 790 mm interior, sloped long windows (57 and 60 mm lean)"
+   }
+  },
+  {
+   "name": "antechamber-end wall",
+   "group": "glovebox",
+   "colour": "#bdb39c",
+   "bounds_mm": [
+    [
+     -6.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1120.0,
+     790.0
+    ]
+   ],
+   "source": {
+    "source": "chamber",
+    "note": "1200 x 1120 x 790 mm interior, sloped long windows (57 and 60 mm lean)"
+   }
+  },
+  {
+   "name": "far-end window frame",
+   "group": "glovebox",
+   "colour": "#bdb39c",
+   "bounds_mm": [
+    [
+     1200.0,
+     0.0,
+     0.0
+    ],
+    [
+     1206.0,
+     1120.0,
+     40.0
+    ]
+   ],
+   "source": {
+    "source": "chamber",
+    "note": "1200 x 1120 x 790 mm interior, sloped long windows (57 and 60 mm lean)"
+   }
+  },
+  {
+   "name": "far-end window frame",
+   "group": "glovebox",
+   "colour": "#bdb39c",
+   "bounds_mm": [
+    [
+     1200.0,
+     0.0,
+     765.0
+    ],
+    [
+     1206.0,
+     1120.0,
+     790.0
+    ]
+   ],
+   "source": {
+    "source": "chamber",
+    "note": "1200 x 1120 x 790 mm interior, sloped long windows (57 and 60 mm lean)"
+   }
+  },
+  {
+   "name": "far-end window frame",
+   "group": "glovebox",
+   "colour": "#bdb39c",
+   "bounds_mm": [
+    [
+     1200.0,
+     0.0,
+     0.0
+    ],
+    [
+     1206.0,
+     40.0,
+     790.0
+    ]
+   ],
+   "source": {
+    "source": "chamber",
+    "note": "1200 x 1120 x 790 mm interior, sloped long windows (57 and 60 mm lean)"
+   }
+  },
+  {
+   "name": "far-end window frame",
+   "group": "glovebox",
+   "colour": "#bdb39c",
+   "bounds_mm": [
+    [
+     1200.0,
+     1080.0,
+     0.0
+    ],
+    [
+     1206.0,
+     1120.0,
+     790.0
+    ]
+   ],
+   "source": {
+    "source": "chamber",
+    "note": "1200 x 1120 x 790 mm interior, sloped long windows (57 and 60 mm lean)"
+   }
+  },
+  {
+   "name": "ceiling",
+   "group": "glovebox",
+   "colour": "#bdb39c",
+   "bounds_mm": [
+    [
+     0.0,
+     57.0,
+     790.0
+    ],
+    [
+     1200.0,
+     1060.0,
+     796.0
+    ]
+   ],
+   "source": {
+    "source": "chamber",
+    "note": "1200 x 1120 x 790 mm interior, sloped long windows (57 and 60 mm lean)"
+   }
+  },
+  {
+   "name": "open side window frame",
+   "group": "glovebox",
+   "colour": "#bdb39c",
+   "bounds_mm": [
+    [
+     0.0,
+     -8.0,
+     0.0
+    ],
+    [
+     1200.0,
+     12.0,
+     55.0
+    ]
+   ],
+   "source": {
+    "source": "chamber",
+    "note": "1200 x 1120 x 790 mm interior, sloped long windows (57 and 60 mm lean)"
+   }
+  },
+  {
+   "name": "open side window frame",
+   "group": "glovebox",
+   "colour": "#bdb39c",
+   "bounds_mm": [
+    [
+     0.0,
+     47.2,
+     765.0
+    ],
+    [
+     1200.0,
+     65.0,
+     790.0
+    ]
+   ],
+   "source": {
+    "source": "chamber",
+    "note": "1200 x 1120 x 790 mm interior, sloped long windows (57 and 60 mm lean)"
+   }
+  },
+  {
+   "name": "far side window frame",
+   "group": "glovebox",
+   "colour": "#bdb39c",
+   "bounds_mm": [
+    [
+     0.0,
+     1107.8,
+     0.0
+    ],
+    [
+     1200.0,
+     1128.0,
+     55.0
+    ]
+   ],
+   "source": {
+    "source": "chamber",
+    "note": "1200 x 1120 x 790 mm interior, sloped long windows (57 and 60 mm lean)"
+   }
+  },
+  {
+   "name": "far side window frame",
+   "group": "glovebox",
+   "colour": "#bdb39c",
+   "bounds_mm": [
+    [
+     0.0,
+     1052.0,
+     765.0
+    ],
+    [
+     1200.0,
+     1069.9,
+     790.0
+    ]
+   ],
+   "source": {
+    "source": "chamber",
+    "note": "1200 x 1120 x 790 mm interior, sloped long windows (57 and 60 mm lean)"
+   }
+  },
+  {
+   "name": "antechamber door",
+   "group": "glovebox",
+   "colour": "#c4c4b8",
+   "bounds_mm": [
+    [
+     0.0,
+     274.0,
+     40.0
+    ],
+    [
+     10.0,
+     646.0,
+     412.0
+    ]
+   ],
+   "source": {
+    "source": "chamber",
+    "note": "1200 x 1120 x 790 mm interior, sloped long windows (57 and 60 mm lean)"
+   }
+  },
+  {
+   "name": "antechamber door hub",
+   "group": "glovebox",
+   "colour": "#9c9a92",
+   "bounds_mm": [
+    [
+     0.0,
+     438.0,
+     204.0
+    ],
+    [
+     45.0,
+     482.0,
+     248.0
+    ]
+   ],
+   "source": {
+    "source": "chamber",
+    "note": "1200 x 1120 x 790 mm interior, sloped long windows (57 and 60 mm lean)"
+   }
+  },
+  {
+   "name": "antechamber door bar",
+   "group": "glovebox",
+   "colour": "#a7a59c",
+   "bounds_mm": [
+    [
+     10.0,
+     335.5,
+     118.1
+    ],
+    [
+     18.0,
+     584.5,
+     333.9
+    ]
+   ],
+   "source": {
+    "source": "chamber",
+    "note": "1200 x 1120 x 790 mm interior, sloped long windows (57 and 60 mm lean)"
+   }
+  },
+  {
+   "name": "QR sign",
+   "group": "glovebox",
+   "colour": "#e9e9e4",
+   "bounds_mm": [
+    [
+     0.5,
+     705.0,
+     274.0
+    ],
+    [
+     2.0,
+     950.0,
+     470.0
+    ]
+   ],
+   "source": {
+    "source": "chamber",
+    "note": "1200 x 1120 x 790 mm interior, sloped long windows (57 and 60 mm lean)"
+   }
+  },
+  {
+   "name": "QR panel",
+   "group": "glovebox",
+   "colour": "#1c1c1c",
+   "bounds_mm": [
+    [
+     2.0,
+     760.0,
+     300.0
+    ],
+    [
+     3.0,
+     900.0,
+     450.0
+    ]
+   ],
+   "source": {
+    "source": "chamber",
+    "note": "1200 x 1120 x 790 mm interior, sloped long windows (57 and 60 mm lean)"
+   }
+  },
+  {
+   "name": "duct, far window",
+   "group": "ducts",
+   "colour": "#8f8c88",
+   "bounds_mm": [
+    [
+     60.0,
+     1072.0,
+     0.0
+    ],
+    [
+     1160.0,
+     1112.0,
+     60.0
+    ]
+   ],
+   "source": {
+    "source": "estimate",
+    "note": "40 x 60 mm slotted duct (a common Panduit size), along the edges seen in both views"
+   }
+  },
+  {
+   "name": "duct, far window slots",
+   "group": "ducts",
+   "colour": "#3c3b39",
+   "bounds_mm": [
+    [
+     67.5,
+     1071.3,
+     20.7
+    ],
+    [
+     1152.0,
+     1112.7,
+     53.7
+    ]
+   ],
+   "source": {
+    "source": "estimate",
+    "note": "40 x 60 mm slotted duct (a common Panduit size), along the edges seen in both views"
+   }
+  },
+  {
+   "name": "duct, antechamber wall",
+   "group": "ducts",
+   "colour": "#8f8c88",
+   "bounds_mm": [
+    [
+     4.0,
+     300.0,
+     0.0
+    ],
+    [
+     44.0,
+     1070.0,
+     60.0
+    ]
+   ],
+   "source": {
+    "source": "estimate",
+    "note": "40 x 60 mm slotted duct (a common Panduit size), along the edges seen in both views"
+   }
+  },
+  {
+   "name": "duct, antechamber wall slots",
+   "group": "ducts",
+   "colour": "#3c3b39",
+   "bounds_mm": [
+    [
+     3.3,
+     307.5,
+     20.7
+    ],
+    [
+     44.7,
+     1061.8,
+     53.7
+    ]
+   ],
+   "source": {
+    "source": "estimate",
+    "note": "40 x 60 mm slotted duct (a common Panduit size), along the edges seen in both views"
+   }
+  },
+  {
+   "name": "main breadboard",
+   "group": "breadboards",
+   "colour": "#34363a",
+   "bounds_mm": [
+    [
+     838.0,
+     380.0,
+     53.1
+    ],
+    [
+     1200.0,
+     1080.0,
+     65.8
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "edges back-projected onto their planes; holes M6 on 25 mm (the hole rows measure 24.5-26.4 mm at these heights); sizes rounded to Thorlabs metric sizes where the edges are hidden"
+   }
+  },
+  {
+   "name": "main breadboard holes",
+   "group": "breadboards",
+   "colour": "#0e0e0f",
+   "bounds_mm": [
+    [
+     847.2,
+     389.2,
+     65.8
+    ],
+    [
+     1178.8,
+     1070.8,
+     66.2
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "edges back-projected onto their planes; holes M6 on 25 mm (the hole rows measure 24.5-26.4 mm at these heights); sizes rounded to Thorlabs metric sizes where the edges are hidden"
+   }
+  },
+  {
+   "name": "main breadboard post",
+   "group": "breadboards",
+   "colour": "#c6cacc",
+   "bounds_mm": [
+    [
+     865.3,
+     407.3,
+     0.0
+    ],
+    [
+     890.7,
+     432.7,
+     53.1
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "edges back-projected onto their planes; holes M6 on 25 mm (the hole rows measure 24.5-26.4 mm at these heights); sizes rounded to Thorlabs metric sizes where the edges are hidden"
+   }
+  },
+  {
+   "name": "main breadboard post",
+   "group": "breadboards",
+   "colour": "#c6cacc",
+   "bounds_mm": [
+    [
+     865.3,
+     1027.3,
+     0.0
+    ],
+    [
+     890.7,
+     1052.7,
+     53.1
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "edges back-projected onto their planes; holes M6 on 25 mm (the hole rows measure 24.5-26.4 mm at these heights); sizes rounded to Thorlabs metric sizes where the edges are hidden"
+   }
+  },
+  {
+   "name": "main breadboard post",
+   "group": "breadboards",
+   "colour": "#c6cacc",
+   "bounds_mm": [
+    [
+     1147.3,
+     407.3,
+     0.0
+    ],
+    [
+     1172.7,
+     432.7,
+     53.1
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "edges back-projected onto their planes; holes M6 on 25 mm (the hole rows measure 24.5-26.4 mm at these heights); sizes rounded to Thorlabs metric sizes where the edges are hidden"
+   }
+  },
+  {
+   "name": "main breadboard post",
+   "group": "breadboards",
+   "colour": "#c6cacc",
+   "bounds_mm": [
+    [
+     1147.3,
+     1027.3,
+     0.0
+    ],
+    [
+     1172.7,
+     1052.7,
+     53.1
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "edges back-projected onto their planes; holes M6 on 25 mm (the hole rows measure 24.5-26.4 mm at these heights); sizes rounded to Thorlabs metric sizes where the edges are hidden"
+   }
+  },
+  {
+   "name": "exfoliator breadboard",
+   "group": "breadboards",
+   "colour": "#34363a",
+   "bounds_mm": [
+    [
+     230.0,
+     240.0,
+     147.3
+    ],
+    [
+     680.0,
+     660.0,
+     160.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "edges back-projected onto their planes; holes M6 on 25 mm (the hole rows measure 24.5-26.4 mm at these heights); sizes rounded to Thorlabs metric sizes where the edges are hidden"
+   }
+  },
+  {
+   "name": "exfoliator breadboard holes",
+   "group": "breadboards",
+   "colour": "#0e0e0f",
+   "bounds_mm": [
+    [
+     239.2,
+     249.2,
+     160.0
+    ],
+    [
+     670.8,
+     630.8,
+     160.4
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "edges back-projected onto their planes; holes M6 on 25 mm (the hole rows measure 24.5-26.4 mm at these heights); sizes rounded to Thorlabs metric sizes where the edges are hidden"
+   }
+  },
+  {
+   "name": "exfoliator breadboard post",
+   "group": "breadboards",
+   "colour": "#c6cacc",
+   "bounds_mm": [
+    [
+     257.3,
+     267.3,
+     0.0
+    ],
+    [
+     282.7,
+     292.7,
+     147.3
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "edges back-projected onto their planes; holes M6 on 25 mm (the hole rows measure 24.5-26.4 mm at these heights); sizes rounded to Thorlabs metric sizes where the edges are hidden"
+   }
+  },
+  {
+   "name": "exfoliator breadboard post",
+   "group": "breadboards",
+   "colour": "#c6cacc",
+   "bounds_mm": [
+    [
+     257.3,
+     607.3,
+     0.0
+    ],
+    [
+     282.7,
+     632.7,
+     147.3
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "edges back-projected onto their planes; holes M6 on 25 mm (the hole rows measure 24.5-26.4 mm at these heights); sizes rounded to Thorlabs metric sizes where the edges are hidden"
+   }
+  },
+  {
+   "name": "exfoliator breadboard post",
+   "group": "breadboards",
+   "colour": "#c6cacc",
+   "bounds_mm": [
+    [
+     627.3,
+     267.3,
+     0.0
+    ],
+    [
+     652.7,
+     292.7,
+     147.3
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "edges back-projected onto their planes; holes M6 on 25 mm (the hole rows measure 24.5-26.4 mm at these heights); sizes rounded to Thorlabs metric sizes where the edges are hidden"
+   }
+  },
+  {
+   "name": "exfoliator breadboard post",
+   "group": "breadboards",
+   "colour": "#c6cacc",
+   "bounds_mm": [
+    [
+     627.3,
+     607.3,
+     0.0
+    ],
+    [
+     652.7,
+     632.7,
+     147.3
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "edges back-projected onto their planes; holes M6 on 25 mm (the hole rows measure 24.5-26.4 mm at these heights); sizes rounded to Thorlabs metric sizes where the edges are hidden"
+   }
+  },
+  {
+   "name": "loose breadboard",
+   "group": "breadboards",
+   "colour": "#34363a",
+   "bounds_mm": [
+    [
+     700.0,
+     545.0,
+     17.3
+    ],
+    [
+     925.0,
+     695.0,
+     30.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "edges back-projected onto their planes; holes M6 on 25 mm (the hole rows measure 24.5-26.4 mm at these heights); sizes rounded to Thorlabs metric sizes where the edges are hidden"
+   }
+  },
+  {
+   "name": "loose breadboard holes",
+   "group": "breadboards",
+   "colour": "#0e0e0f",
+   "bounds_mm": [
+    [
+     709.2,
+     554.2,
+     30.0
+    ],
+    [
+     915.8,
+     685.8,
+     30.4
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "edges back-projected onto their planes; holes M6 on 25 mm (the hole rows measure 24.5-26.4 mm at these heights); sizes rounded to Thorlabs metric sizes where the edges are hidden"
+   }
+  },
+  {
+   "name": "chip tray",
+   "group": "gantry",
+   "colour": "#c9cfd0",
+   "bounds_mm": [
+    [
+     499.8,
+     359.2,
+     282.3
+    ],
+    [
+     613.6,
+     437.0,
+     290.3
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "6 x 10 pockets fitted in both views; pitch 9.5 mm, centre and yaw from the joint calibration; chips placed per pocket from chip_tray.json (3 empty, 1 rotated)"
+   }
+  },
+  {
+   "name": "chip tray holder",
+   "group": "gantry",
+   "colour": "#b9bfc0",
+   "bounds_mm": [
+    [
+     488.3,
+     347.7,
+     274.3
+    ],
+    [
+     625.1,
+     448.5,
+     282.3
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "6 x 10 pockets fitted in both views; pitch 9.5 mm, centre and yaw from the joint calibration; chips placed per pocket from chip_tray.json (3 empty, 1 rotated)"
+   }
+  },
+  {
+   "name": "chips",
+   "group": "gantry",
+   "colour": "#3a1f3f",
+   "bounds_mm": [
+    [
+     509.8,
+     369.1,
+     290.3
+    ],
+    [
+     603.7,
+     427.1,
+     291.5
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (56.4 mm) and NEMA 17 (42.3 mm) flanges; SFU1605 screws"
+   }
+  },
+  {
+   "name": "Y axis base",
+   "group": "gantry",
+   "colour": "#d3d8d6",
+   "bounds_mm": [
+    [
+     555.0,
+     242.0,
+     148.0
+    ],
+    [
+     645.0,
+     512.0,
+     172.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (56.4 mm) and NEMA 17 (42.3 mm) flanges; SFU1605 screws"
+   }
+  },
+  {
+   "name": "Y axis rail",
+   "group": "gantry",
+   "colour": "#9ea4a8",
+   "bounds_mm": [
+    [
+     622.0,
+     247.0,
+     172.0
+    ],
+    [
+     642.0,
+     507.0,
+     186.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (56.4 mm) and NEMA 17 (42.3 mm) flanges; SFU1605 screws"
+   }
+  },
+  {
+   "name": "Y axis rail",
+   "group": "gantry",
+   "colour": "#9ea4a8",
+   "bounds_mm": [
+    [
+     558.0,
+     247.0,
+     172.0
+    ],
+    [
+     578.0,
+     507.0,
+     186.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (56.4 mm) and NEMA 17 (42.3 mm) flanges; SFU1605 screws"
+   }
+  },
+  {
+   "name": "Y axis screw",
+   "group": "gantry",
+   "colour": "#c9cdd0",
+   "bounds_mm": [
+    [
+     592.0,
+     262.0,
+     186.0
+    ],
+    [
+     608.0,
+     492.0,
+     202.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (56.4 mm) and NEMA 17 (42.3 mm) flanges; SFU1605 screws"
+   }
+  },
+  {
+   "name": "Y axis end support",
+   "group": "gantry",
+   "colour": "#1e1c1a",
+   "bounds_mm": [
+    [
+     570.0,
+     250.0,
+     170.0
+    ],
+    [
+     630.0,
+     274.0,
+     210.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (56.4 mm) and NEMA 17 (42.3 mm) flanges; SFU1605 screws"
+   }
+  },
+  {
+   "name": "Y axis end support",
+   "group": "gantry",
+   "colour": "#1e1c1a",
+   "bounds_mm": [
+    [
+     570.0,
+     480.0,
+     170.0
+    ],
+    [
+     630.0,
+     504.0,
+     210.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (56.4 mm) and NEMA 17 (42.3 mm) flanges; SFU1605 screws"
+   }
+  },
+  {
+   "name": "X axis base",
+   "group": "gantry",
+   "colour": "#d3d8d6",
+   "bounds_mm": [
+    [
+     270.0,
+     467.0,
+     168.0
+    ],
+    [
+     580.0,
+     557.0,
+     192.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (56.4 mm) and NEMA 17 (42.3 mm) flanges; SFU1605 screws"
+   }
+  },
+  {
+   "name": "X axis rail",
+   "group": "gantry",
+   "colour": "#9ea4a8",
+   "bounds_mm": [
+    [
+     275.0,
+     470.0,
+     192.0
+    ],
+    [
+     575.0,
+     490.0,
+     206.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (56.4 mm) and NEMA 17 (42.3 mm) flanges; SFU1605 screws"
+   }
+  },
+  {
+   "name": "X axis rail",
+   "group": "gantry",
+   "colour": "#9ea4a8",
+   "bounds_mm": [
+    [
+     275.0,
+     534.0,
+     192.0
+    ],
+    [
+     575.0,
+     554.0,
+     206.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (56.4 mm) and NEMA 17 (42.3 mm) flanges; SFU1605 screws"
+   }
+  },
+  {
+   "name": "X axis screw",
+   "group": "gantry",
+   "colour": "#c9cdd0",
+   "bounds_mm": [
+    [
+     290.0,
+     504.0,
+     206.0
+    ],
+    [
+     560.0,
+     520.0,
+     222.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (56.4 mm) and NEMA 17 (42.3 mm) flanges; SFU1605 screws"
+   }
+  },
+  {
+   "name": "X axis end support",
+   "group": "gantry",
+   "colour": "#1e1c1a",
+   "bounds_mm": [
+    [
+     278.0,
+     482.0,
+     190.0
+    ],
+    [
+     302.0,
+     542.0,
+     230.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (56.4 mm) and NEMA 17 (42.3 mm) flanges; SFU1605 screws"
+   }
+  },
+  {
+   "name": "X axis end support",
+   "group": "gantry",
+   "colour": "#1e1c1a",
+   "bounds_mm": [
+    [
+     548.0,
+     482.0,
+     190.0
+    ],
+    [
+     572.0,
+     542.0,
+     230.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (56.4 mm) and NEMA 17 (42.3 mm) flanges; SFU1605 screws"
+   }
+  },
+  {
+   "name": "Y axis motor",
+   "group": "gantry",
+   "colour": "#1e1c1a",
+   "bounds_mm": [
+    [
+     571.8,
+     500.0,
+     165.8
+    ],
+    [
+     628.2,
+     596.0,
+     222.2
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (56.4 mm) and NEMA 17 (42.3 mm) flanges; SFU1605 screws"
+   }
+  },
+  {
+   "name": "X axis motor",
+   "group": "gantry",
+   "colour": "#1e1c1a",
+   "bounds_mm": [
+    [
+     189.0,
+     483.8,
+     185.8
+    ],
+    [
+     285.0,
+     540.2,
+     242.2
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (56.4 mm) and NEMA 17 (42.3 mm) flanges; SFU1605 screws"
+   }
+  },
+  {
+   "name": "tray carriage",
+   "group": "gantry",
+   "colour": "#1e1c1a",
+   "bounds_mm": [
+    [
+     509.2,
+     341.0,
+     230.3
+    ],
+    [
+     604.3,
+     455.2,
+     270.3
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (56.4 mm) and NEMA 17 (42.3 mm) flanges; SFU1605 screws"
+   }
+  },
+  {
+   "name": "printed carriage",
+   "group": "gantry",
+   "colour": "#e6d200",
+   "bounds_mm": [
+    [
+     255.0,
+     425.0,
+     255.0
+    ],
+    [
+     390.0,
+     500.0,
+     320.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (56.4 mm) and NEMA 17 (42.3 mm) flanges; SFU1605 screws"
+   }
+  },
+  {
+   "name": "carriage motor 1",
+   "group": "gantry",
+   "colour": "#1e1c1a",
+   "bounds_mm": [
+    [
+     308.8,
+     433.8,
+     300.0
+    ],
+    [
+     351.2,
+     476.2,
+     368.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (56.4 mm) and NEMA 17 (42.3 mm) flanges; SFU1605 screws"
+   }
+  },
+  {
+   "name": "carriage motor 2",
+   "group": "gantry",
+   "colour": "#1e1c1a",
+   "bounds_mm": [
+    [
+     369.8,
+     493.8,
+     300.0
+    ],
+    [
+     412.2,
+     536.2,
+     368.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (56.4 mm) and NEMA 17 (42.3 mm) flanges; SFU1605 screws"
+   }
+  },
+  {
+   "name": "top axis base",
+   "group": "gantry",
+   "colour": "#d3d8d6",
+   "bounds_mm": [
+    [
+     135.0,
+     270.0,
+     181.0
+    ],
+    [
+     225.0,
+     460.0,
+     205.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (56.4 mm) and NEMA 17 (42.3 mm) flanges; SFU1605 screws"
+   }
+  },
+  {
+   "name": "top axis rail",
+   "group": "gantry",
+   "colour": "#9ea4a8",
+   "bounds_mm": [
+    [
+     202.0,
+     275.0,
+     205.0
+    ],
+    [
+     222.0,
+     455.0,
+     219.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (56.4 mm) and NEMA 17 (42.3 mm) flanges; SFU1605 screws"
+   }
+  },
+  {
+   "name": "top axis rail",
+   "group": "gantry",
+   "colour": "#9ea4a8",
+   "bounds_mm": [
+    [
+     138.0,
+     275.0,
+     205.0
+    ],
+    [
+     158.0,
+     455.0,
+     219.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (56.4 mm) and NEMA 17 (42.3 mm) flanges; SFU1605 screws"
+   }
+  },
+  {
+   "name": "top axis screw",
+   "group": "gantry",
+   "colour": "#c9cdd0",
+   "bounds_mm": [
+    [
+     172.0,
+     290.0,
+     219.0
+    ],
+    [
+     188.0,
+     440.0,
+     235.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (56.4 mm) and NEMA 17 (42.3 mm) flanges; SFU1605 screws"
+   }
+  },
+  {
+   "name": "top axis end support",
+   "group": "gantry",
+   "colour": "#1e1c1a",
+   "bounds_mm": [
+    [
+     150.0,
+     278.0,
+     203.0
+    ],
+    [
+     210.0,
+     302.0,
+     243.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (56.4 mm) and NEMA 17 (42.3 mm) flanges; SFU1605 screws"
+   }
+  },
+  {
+   "name": "top axis end support",
+   "group": "gantry",
+   "colour": "#1e1c1a",
+   "bounds_mm": [
+    [
+     150.0,
+     428.0,
+     203.0
+    ],
+    [
+     210.0,
+     452.0,
+     243.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (56.4 mm) and NEMA 17 (42.3 mm) flanges; SFU1605 screws"
+   }
+  },
+  {
+   "name": "drag chain",
+   "group": "gantry",
+   "colour": "#1e1c1a",
+   "bounds_mm": [
+    [
+     205.8,
+     288.6,
+     250.6
+    ],
+    [
+     309.1,
+     482.1,
+     354.4
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (56.4 mm) and NEMA 17 (42.3 mm) flanges; SFU1605 screws"
+   }
+  },
+  {
+   "name": "drag chain 2",
+   "group": "gantry",
+   "colour": "#1e1c1a",
+   "bounds_mm": [
+    [
+     408.8,
+     548.5,
+     198.6
+    ],
+    [
+     630.3,
+     630.2,
+     276.3
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (56.4 mm) and NEMA 17 (42.3 mm) flanges; SFU1605 screws"
+   }
+  },
+  {
+   "name": "supply reel (blue tape) flange",
+   "group": "exfoliator",
+   "colour": "#b3150d",
+   "bounds_mm": [
+    [
+     651.0,
+     261.0,
+     351.0
+    ],
+    [
+     655.0,
+     357.0,
+     447.0
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance"
+   }
+  },
+  {
+   "name": "supply reel (blue tape) flange",
+   "group": "exfoliator",
+   "colour": "#b3150d",
+   "bounds_mm": [
+    [
+     683.0,
+     261.0,
+     351.0
+    ],
+    [
+     687.0,
+     357.0,
+     447.0
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance"
+   }
+  },
+  {
+   "name": "supply reel (blue tape) tape",
+   "group": "exfoliator",
+   "colour": "#6a90cf",
+   "bounds_mm": [
+    [
+     655.0,
+     267.0,
+     357.0
+    ],
+    [
+     683.0,
+     351.0,
+     441.0
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance"
+   }
+  },
+  {
+   "name": "supply reel (blue tape) hub",
+   "group": "exfoliator",
+   "colour": "#b3150d",
+   "bounds_mm": [
+    [
+     654.0,
+     287.0,
+     377.0
+    ],
+    [
+     684.0,
+     331.0,
+     421.0
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance"
+   }
+  },
+  {
+   "name": "take-up reel (white tape) flange",
+   "group": "exfoliator",
+   "colour": "#b3150d",
+   "bounds_mm": [
+    [
+     649.0,
+     104.0,
+     358.0
+    ],
+    [
+     653.0,
+     200.0,
+     454.0
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance"
+   }
+  },
+  {
+   "name": "take-up reel (white tape) flange",
+   "group": "exfoliator",
+   "colour": "#b3150d",
+   "bounds_mm": [
+    [
+     681.0,
+     104.0,
+     358.0
+    ],
+    [
+     685.0,
+     200.0,
+     454.0
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance"
+   }
+  },
+  {
+   "name": "take-up reel (white tape) tape",
+   "group": "exfoliator",
+   "colour": "#e4ebec",
+   "bounds_mm": [
+    [
+     653.0,
+     110.0,
+     364.0
+    ],
+    [
+     681.0,
+     194.0,
+     448.0
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance"
+   }
+  },
+  {
+   "name": "take-up reel (white tape) hub",
+   "group": "exfoliator",
+   "colour": "#b3150d",
+   "bounds_mm": [
+    [
+     652.0,
+     130.0,
+     384.0
+    ],
+    [
+     682.0,
+     174.0,
+     428.0
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance"
+   }
+  },
+  {
+   "name": "exfoliator housing",
+   "group": "exfoliator",
+   "colour": "#d3d8d6",
+   "bounds_mm": [
+    [
+     700.0,
+     70.0,
+     160.0
+    ],
+    [
+     790.0,
+     270.0,
+     330.0
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance"
+   }
+  },
+  {
+   "name": "press stepper",
+   "group": "exfoliator",
+   "colour": "#1e1c1a",
+   "bounds_mm": [
+    [
+     716.8,
+     201.8,
+     310.0
+    ],
+    [
+     773.2,
+     258.2,
+     410.0
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance"
+   }
+  },
+  {
+   "name": "press stepper label",
+   "group": "exfoliator",
+   "colour": "#2a5bd0",
+   "bounds_mm": [
+    [
+     723.0,
+     208.0,
+     410.0
+    ],
+    [
+     767.0,
+     252.0,
+     412.0
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance"
+   }
+  },
+  {
+   "name": "roller motor",
+   "group": "exfoliator",
+   "colour": "#c7cbcd",
+   "bounds_mm": [
+    [
+     608.0,
+     268.0,
+     250.0
+    ],
+    [
+     672.0,
+     332.0,
+     330.0
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance"
+   }
+  },
+  {
+   "name": "exfoliator stage",
+   "group": "exfoliator",
+   "colour": "#d3d8d6",
+   "bounds_mm": [
+    [
+     641.0,
+     219.7,
+     154.0
+    ],
+    [
+     816.0,
+     515.3,
+     178.0
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance"
+   }
+  },
+  {
+   "name": "exfoliator stage",
+   "group": "exfoliator",
+   "colour": "#9ea4a8",
+   "bounds_mm": [
+    [
+     645.4,
+     225.4,
+     178.0
+    ],
+    [
+     750.9,
+     489.2,
+     192.0
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance"
+   }
+  },
+  {
+   "name": "exfoliator stage",
+   "group": "exfoliator",
+   "colour": "#9ea4a8",
+   "bounds_mm": [
+    [
+     706.1,
+     245.8,
+     178.0
+    ],
+    [
+     811.6,
+     509.6,
+     192.0
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance"
+   }
+  },
+  {
+   "name": "exfoliator stage",
+   "group": "exfoliator",
+   "colour": "#c9cdd0",
+   "bounds_mm": [
+    [
+     682.4,
+     250.5,
+     192.0
+    ],
+    [
+     774.6,
+     484.5,
+     208.0
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance"
+   }
+  },
+  {
+   "name": "exfoliator stage",
+   "group": "exfoliator",
+   "colour": "#1e1c1a",
+   "bounds_mm": [
+    [
+     657.7,
+     461.1,
+     176.0
+    ],
+    [
+     722.3,
+     502.9,
+     216.0
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance"
+   }
+  },
+  {
+   "name": "exfoliator stage",
+   "group": "exfoliator",
+   "colour": "#1e1c1a",
+   "bounds_mm": [
+    [
+     734.7,
+     232.1,
+     176.0
+    ],
+    [
+     799.3,
+     273.9,
+     216.0
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance"
+   }
+  },
+  {
+   "name": "ASI XY stage",
+   "group": "microscope",
+   "colour": "#1e1c1a",
+   "bounds_mm": [
+    [
+     968.0,
+     269.0,
+     120.0
+    ],
+    [
+     1178.0,
+     489.0,
+     175.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "objective on the Overhead 1 ray at the chamber model's height (z 250); elevated breadboard back-projected at z 380; Thorlabs box front edge at z 180-220"
+   }
+  },
+  {
+   "name": "ASI stage riser",
+   "group": "microscope",
+   "colour": "#1e1c1a",
+   "bounds_mm": [
+    [
+     998.0,
+     289.0,
+     55.0
+    ],
+    [
+     1158.0,
+     469.0,
+     120.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "objective on the Overhead 1 ray at the chamber model's height (z 250); elevated breadboard back-projected at z 380; Thorlabs box front edge at z 180-220"
+   }
+  },
+  {
+   "name": "sample insert",
+   "group": "microscope",
+   "colour": "#8d9397",
+   "bounds_mm": [
+    [
+     1058.0,
+     334.0,
+     175.0
+    ],
+    [
+     1138.0,
+     424.0,
+     185.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "objective on the Overhead 1 ray at the chamber model's height (z 250); elevated breadboard back-projected at z 380; Thorlabs box front edge at z 180-220"
+   }
+  },
+  {
+   "name": "objective",
+   "group": "microscope",
+   "colour": "#202224",
+   "bounds_mm": [
+    [
+     1102.0,
+     363.0,
+     250.0
+    ],
+    [
+     1134.0,
+     395.0,
+     310.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "objective on the Overhead 1 ray at the chamber model's height (z 250); elevated breadboard back-projected at z 380; Thorlabs box front edge at z 180-220"
+   }
+  },
+  {
+   "name": "nosepiece",
+   "group": "microscope",
+   "colour": "#d9ddd9",
+   "bounds_mm": [
+    [
+     1070.0,
+     331.0,
+     310.0
+    ],
+    [
+     1166.0,
+     427.0,
+     330.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "objective on the Overhead 1 ray at the chamber model's height (z 250); elevated breadboard back-projected at z 380; Thorlabs box front edge at z 180-220"
+   }
+  },
+  {
+   "name": "microscope body",
+   "group": "microscope",
+   "colour": "#d2d8d2",
+   "bounds_mm": [
+    [
+     1003.0,
+     294.0,
+     330.0
+    ],
+    [
+     1193.0,
+     484.0,
+     400.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "objective on the Overhead 1 ray at the chamber model's height (z 250); elevated breadboard back-projected at z 380; Thorlabs box front edge at z 180-220"
+   }
+  },
+  {
+   "name": "microscope head",
+   "group": "microscope",
+   "colour": "#d2d8d2",
+   "bounds_mm": [
+    [
+     1048.0,
+     339.0,
+     400.0
+    ],
+    [
+     1148.0,
+     439.0,
+     480.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "objective on the Overhead 1 ray at the chamber model's height (z 250); elevated breadboard back-projected at z 380; Thorlabs box front edge at z 180-220"
+   }
+  },
+  {
+   "name": "camera tube",
+   "group": "microscope",
+   "colour": "#1b1b1c",
+   "bounds_mm": [
+    [
+     1076.0,
+     367.0,
+     480.0
+    ],
+    [
+     1120.0,
+     411.0,
+     580.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "objective on the Overhead 1 ray at the chamber model's height (z 250); elevated breadboard back-projected at z 380; Thorlabs box front edge at z 180-220"
+   }
+  },
+  {
+   "name": "microscope camera",
+   "group": "microscope",
+   "colour": "#151515",
+   "bounds_mm": [
+    [
+     1053.0,
+     344.0,
+     580.0
+    ],
+    [
+     1143.0,
+     434.0,
+     640.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "objective on the Overhead 1 ray at the chamber model's height (z 250); elevated breadboard back-projected at z 380; Thorlabs box front edge at z 180-220"
+   }
+  },
+  {
+   "name": "microscope column",
+   "group": "microscope",
+   "colour": "#c9ccc9",
+   "bounds_mm": [
+    [
+     1168.0,
+     319.0,
+     55.0
+    ],
+    [
+     1200.0,
+     439.0,
+     400.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "objective on the Overhead 1 ray at the chamber model's height (z 250); elevated breadboard back-projected at z 380; Thorlabs box front edge at z 180-220"
+   }
+  },
+  {
+   "name": "microscope breadboard",
+   "group": "breadboards",
+   "colour": "#34363a",
+   "bounds_mm": [
+    [
+     965.0,
+     150.0,
+     367.3
+    ],
+    [
+     1200.0,
+     345.0,
+     380.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "edges back-projected onto their planes; holes M6 on 25 mm (the hole rows measure 24.5-26.4 mm at these heights); sizes rounded to Thorlabs metric sizes where the edges are hidden"
+   }
+  },
+  {
+   "name": "microscope breadboard holes",
+   "group": "breadboards",
+   "colour": "#0e0e0f",
+   "bounds_mm": [
+    [
+     974.2,
+     159.2,
+     380.0
+    ],
+    [
+     1180.8,
+     315.8,
+     380.4
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "edges back-projected onto their planes; holes M6 on 25 mm (the hole rows measure 24.5-26.4 mm at these heights); sizes rounded to Thorlabs metric sizes where the edges are hidden"
+   }
+  },
+  {
+   "name": "optics cylinder",
+   "group": "microscope",
+   "colour": "#151515",
+   "bounds_mm": [
+    [
+     1022.0,
+     90.0,
+     362.0
+    ],
+    [
+     1098.0,
+     150.0,
+     438.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "objective on the Overhead 1 ray at the chamber model's height (z 250); elevated breadboard back-projected at z 380; Thorlabs box front edge at z 180-220"
+   }
+  },
+  {
+   "name": "Thorlabs stage box",
+   "group": "microscope",
+   "colour": "#202124",
+   "bounds_mm": [
+    [
+     815.0,
+     371.0,
+     66.0
+    ],
+    [
+     990.0,
+     515.0,
+     200.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "objective on the Overhead 1 ray at the chamber model's height (z 250); elevated breadboard back-projected at z 380; Thorlabs box front edge at z 180-220"
+   }
+  },
+  {
+   "name": "docking fixture side",
+   "group": "microscope",
+   "colour": "#1e1c1a",
+   "bounds_mm": [
+    [
+     885.0,
+     645.0,
+     66.0
+    ],
+    [
+     975.0,
+     657.0,
+     270.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "objective on the Overhead 1 ray at the chamber model's height (z 250); elevated breadboard back-projected at z 380; Thorlabs box front edge at z 180-220"
+   }
+  },
+  {
+   "name": "docking fixture side",
+   "group": "microscope",
+   "colour": "#1e1c1a",
+   "bounds_mm": [
+    [
+     885.0,
+     763.0,
+     66.0
+    ],
+    [
+     975.0,
+     775.0,
+     270.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "objective on the Overhead 1 ray at the chamber model's height (z 250); elevated breadboard back-projected at z 380; Thorlabs box front edge at z 180-220"
+   }
+  },
+  {
+   "name": "docking fixture top",
+   "group": "microscope",
+   "colour": "#1e1c1a",
+   "bounds_mm": [
+    [
+     885.0,
+     645.0,
+     270.0
+    ],
+    [
+     975.0,
+     775.0,
+     282.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "objective on the Overhead 1 ray at the chamber model's height (z 250); elevated breadboard back-projected at z 380; Thorlabs box front edge at z 180-220"
+   }
+  },
+  {
+   "name": "docking fixture side",
+   "group": "microscope",
+   "colour": "#1e1c1a",
+   "bounds_mm": [
+    [
+     1000.0,
+     625.0,
+     66.0
+    ],
+    [
+     1093.0,
+     637.0,
+     270.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "objective on the Overhead 1 ray at the chamber model's height (z 250); elevated breadboard back-projected at z 380; Thorlabs box front edge at z 180-220"
+   }
+  },
+  {
+   "name": "docking fixture side",
+   "group": "microscope",
+   "colour": "#1e1c1a",
+   "bounds_mm": [
+    [
+     1000.0,
+     748.0,
+     66.0
+    ],
+    [
+     1093.0,
+     760.0,
+     270.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "objective on the Overhead 1 ray at the chamber model's height (z 250); elevated breadboard back-projected at z 380; Thorlabs box front edge at z 180-220"
+   }
+  },
+  {
+   "name": "docking fixture top",
+   "group": "microscope",
+   "colour": "#1e1c1a",
+   "bounds_mm": [
+    [
+     1000.0,
+     625.0,
+     270.0
+    ],
+    [
+     1093.0,
+     760.0,
+     282.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "objective on the Overhead 1 ray at the chamber model's height (z 250); elevated breadboard back-projected at z 380; Thorlabs box front edge at z 180-220"
+   }
+  },
+  {
+   "name": "tape measure",
+   "group": "deck",
+   "colour": "#e6d200",
+   "bounds_mm": [
+    [
+     205.4,
+     815.4,
+     0.0
+    ],
+    [
+     304.6,
+     914.6,
+     40.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "back-projected onto the deck from Overhead 2; case size of a 25 ft tape"
+   }
+  },
+  {
+   "name": "tape measure belt clip",
+   "group": "deck",
+   "colour": "#202020",
+   "bounds_mm": [
+    [
+     215.0,
+     850.0,
+     10.0
+    ],
+    [
+     226.0,
+     880.0,
+     38.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "back-projected onto the deck from Overhead 2; case size of a 25 ft tape"
+   }
+  },
+  {
+   "name": "Epson base",
+   "group": "epson",
+   "colour": "#d4dad5",
+   "bounds_mm": [
+    [
+     845.1,
+     830.2,
+     178.5
+    ],
+    [
+     1052.7,
+     1058.9,
+     378.5
+    ]
+   ],
+   "source": {}
+  },
+  {
+   "name": "Epson J1 bearing",
+   "group": "epson",
+   "colour": "#aeb4b2",
+   "bounds_mm": [
+    [
+     849.8,
+     816.2,
+     378.5
+    ],
+    [
+     993.8,
+     960.2,
+     388.0
+    ]
+   ],
+   "source": {}
+  },
+  {
+   "name": "Epson controller box",
+   "group": "epson",
+   "colour": "#d4dad5",
+   "bounds_mm": [
+    [
+     828.3,
+     807.6,
+     467.7
+    ],
+    [
+     1076.0,
+     1095.0,
+     643.8
+    ]
+   ],
+   "source": {}
+  },
+  {
+   "name": "Epson arm 1",
+   "group": "epson",
+   "colour": "#d4dad5",
+   "bounds_mm": [
+    [
+     876.8,
+     521.9,
+     388.0
+    ],
+    [
+     1016.0,
+     933.2,
+     438.0
+    ]
+   ],
+   "source": {}
+  },
+  {
+   "name": "Epson arm 2",
+   "group": "epson",
+   "colour": "#d4dad5",
+   "bounds_mm": [
+    [
+     903.2,
+     279.6,
+     451.0
+    ],
+    [
+     1204.2,
+     634.7,
+     643.8
+    ]
+   ],
+   "source": {}
+  },
+  {
+   "name": "Epson J2 cover",
+   "group": "epson",
+   "colour": "#aeb4b2",
+   "bounds_mm": [
+    [
+     921.0,
+     516.9,
+     438.0
+    ],
+    [
+     1021.0,
+     616.9,
+     451.0
+    ]
+   ],
+   "source": {}
+  },
+  {
+   "name": "Epson J3 shaft",
+   "group": "epson",
+   "colour": "#c8ccce",
+   "bounds_mm": [
+    [
+     1126.5,
+     337.3,
+     239.0
+    ],
+    [
+     1146.5,
+     357.3,
+     769.0
+    ]
+   ],
+   "source": {}
+  },
+  {
+   "name": "Epson shaft nut",
+   "group": "epson",
+   "colour": "#9da3a6",
+   "bounds_mm": [
+    [
+     1117.5,
+     328.3,
+     759.0
+    ],
+    [
+     1155.5,
+     366.3,
+     773.0
+    ]
+   ],
+   "source": {}
+  },
+  {
+   "name": "Epson user duct",
+   "group": "epson",
+   "colour": "#202020",
+   "bounds_mm": [
+    [
+     925.3,
+     449.2,
+     624.4
+    ],
+    [
+     1055.7,
+     992.2,
+     789.0
+    ]
+   ],
+   "source": {}
+  },
+  {
+   "name": "Epson riser block",
+   "group": "epson",
+   "colour": "#d3d8d6",
+   "bounds_mm": [
+    [
+     832.4,
+     817.5,
+     65.8
+    ],
+    [
+     1065.4,
+     1071.6,
+     178.5
+    ]
+   ],
+   "source": {}
+  }
+ ]
+}

@@ -22,9 +22,10 @@ an Ethernet switch on its `eth0`. This follows the 2026-11-06 analysis in issue
   the US DST rule, so DST changes need nothing. See [Camera clocks](#camera-clocks).
 - **No audio,** as intended. The cameras' microphones stay disabled; the relay
   sends a silent track because YouTube expects one.
-- **Vision** on the stills: blurring outside the glovebox and faces before
-  publishing, the chip tray read from both views, lens intrinsics, both
-  cameras placed in the chamber model, and a two-view 3D reconstruction. See
+- **Vision** on the stills: everything but the glovebox interior and any
+  face blurred before publishing, with the Epson segmented on every frame; the
+  chip tray read from both views; lens intrinsics; both cameras calibrated
+  together; and a CAD reconstruction of the interior, part by part. See
   [Vision](#vision).
 - **No pan/tilt/zoom.** See [Angle and image controls](#angle-and-image-controls).
 
@@ -428,79 +429,119 @@ H 107.6° / V 58.1° / D 126.7°. The vertical matches the published 58°.
 scaled from a central window of about 2560x1440 rather than from the whole
 2960x1668 area. No published source confirms that.
 
-### Registration to the chamber model
+### Camera poses
 
-[`vision/register_chamber.py`](vision/register_chamber.py) places each camera
-in the frame of the measured chamber model, `design/aurora-chamber` on branch
-`claude/issue-23-20261109-2222` (5207dc8; pass its path in
-`AURORA_CHAMBER_PATH`). It fits each camera's pose to point landmarks
-([`vision/landmarks.json`](vision/landmarks.json): pixels and the model
-parameter each comes from) and to the deck-edge cable ducts as line landmarks,
-weighted by the model's stated uncertainties. Results are in
-[`vision/out/registration.json`](vision/out/registration.json): K, distortion,
-R and t, and per-landmark residuals.
+[`vision/calibrate_two_view.py`](vision/calibrate_two_view.py) fits both
+cameras together, in the frame of the measured chamber model
+(`design/aurora-chamber` on branch `claude/issue-23-20261109-2222`; x along
+the box from the antechamber-end wall, y from the open side, z up from the
+deck). Results are in [`vision/out/cameras.json`](vision/out/cameras.json).
 
-| | Camera centre (mm) | Looking | Residual |
-|---|---|---|---|
-| Overhead 1 (`.150`) | (330, 281, 639) | along the box towards the far end, 16° towards the far window, 35° down | 6.5 px over microscope objective, Epson J1, spool and the far-window duct |
-| Overhead 2 (`.151`) | (1070, 373, 586) | back towards the antechamber wall, 41° down | 0.65 px over the antechamber door hub, the tray and two wall ducts |
+- **What ties the views together** is the chip tray. Its 6 x 10 lattice is
+  fitted in both frames, and the pocket correspondence between the views is
+  known from tray features alone. That gives 60 shared points on a plane, with
+  0.4 px (Overhead 1) and 0.18 px (Overhead 2) RMS residuals.
+- **What places and scales the pair** are the chamber model's landmarks from
+  [`vision/landmarks.json`](vision/landmarks.json): the microscope objective,
+  the Epson's J1, the supply spool, the antechamber door hub and three deck
+  ducts. They are weighted by the model's stated uncertainties.
+- **Unknowns:** a shared focal length (fitted 1073 ± 39 px, against a prior of
+  1070 ± 45), each camera's pose, and the tray's centre, yaw and pocket pitch.
+  The tray is assumed level.
 
-The frame is the chamber model's: x along the box from the antechamber-end
-wall, y from the open-side window, z up from the deck.
+| | Camera centre (mm) | Looking |
+|---|---|---|
+| Overhead 1 (`.150`) | (348, 294, 700) | along the box, 13° towards the far window, 40° down |
+| Overhead 2 (`.151`) | (1015, 338, 702) | back towards the antechamber wall, 36° towards the far window, 46° down |
 
-- **Uncertainty:** each pose rests on 3 or 4 trustworthy landmarks. The
-  position is good to about ±30 to 100 mm across the view and ±100 to 180 mm
-  along it. Height trades off against f: both cameras come out 150 to 200 mm
-  below the ceiling.
-- The model's `DOME_C`, an earlier guess for the Amcrest dome from photos, is
-  216 mm from camera 1.
-- **A fault in the chamber model:** the QR sign on the antechamber wall
-  appears on the other side of the door from where the model puts it, 470 to
-  540 px off, while the door, the tray and both wall ducts agree to within
-  6 px. So the sign was rejected as a landmark. Either the sign was moved after
-  the walkthrough, or `ANTE_DOOR_DROP`'s offset from it is wrong in
-  `params.py`.
+Both cameras come out about 90 mm below the 790 mm ceiling, which fits a turret
+mount. The chamber model's own landmarks do not agree with each other at this
+level: once the two cameras are tied together by the tray, they miss by 9 to
+38 px (worst: the Epson J1, 38 px). The model's numbers come from the
+walkthrough video and are good to a few centimetres.
 
-The model drawn over each frame (outside the glovebox blurred):
+**Independent checks:**
 
-| Overhead 1 | Overhead 2 |
+- **A tape reel matched by eye in the two frames** triangulates with a 2 mm gap
+  between the two rays. A second reel gives 31 mm.
+- **The gantry's X-axis ball screw**, back-projected separately from each view,
+  lands on the same line (y = 497 to 520 mm from Overhead 1, 501 to 518 mm from
+  Overhead 2).
+- **The antechamber door** back-projected onto the wall plane has a
+  180-190 mm radius. Its 15-inch antechamber datasheet value is 190 mm.
+- **Breadboard holes:** a breadboard lying on the deck in Overhead 2 has its
+  hole rows 25 mm apart at a top height of 30 to 37 mm. That is a metric
+  breadboard (M6 on 25 mm) of usual thickness on the deck.
+- **The QR sign's bottom edge** back-projects to 242 mm. The model calls the
+  sign US Letter landscape (279 mm), so either it is a smaller sheet or the
+  annotated corners are not its corners.
+
+The tray pocket pitch comes out at 9.5 ± 1.1 mm (tray 57 x 95 mm). A ruler
+reading of the tray would pin the scale at about 1 %.
+
+### CAD reconstruction
+
+[`reconstruction/`](reconstruction/) models the glovebox interior as
+individual parts in the same frame. Each part takes its size from a
+datasheet or standard size where one exists, its position from the two
+calibrated cameras, and its colour from the frames.
+[`reconstruction/scene.py`](reconstruction/scene.py) holds every number;
+[`reconstruction/out/parts.json`](reconstruction/out/parts.json) lists each
+part with its bounds, colour and source.
+
+![The model from the open side, both cameras in red](reconstruction/out/overview_open_side.png)
+
+| Overhead 1: published frame, and the model seen from the camera | Overhead 2 |
 |---|---|
-| ![Overhead 1 with the chamber model](vision/out/overlay_cam0_masked.jpg) | ![Overhead 2 with the chamber model](vision/out/overlay_cam1_masked.jpg) |
+| ![](reconstruction/out/view_cam0.jpg) | ![](reconstruction/out/view_cam1.jpg) |
 
-### Two-view reconstruction
+The model blended over each frame, with its edges in yellow:
+[Overhead 1](reconstruction/out/overlay_cam0.jpg),
+[Overhead 2](reconstruction/out/overlay_cam1.jpg). The renders apply the
+cameras' measured lens distortion
+([`reconstruction/render.py`](reconstruction/render.py)), so they compare
+pixel for pixel with the photos.
 
-[`vision/dense_two_view.py`](vision/dense_two_view.py) runs **VGGT-1B** on both
-frames on the CPU (torch 2.15 CPU, 4 threads: about 10 s to load, 21 to 38 s to
-infer, 10 GB of RAM). The frames are first undistorted with the division
-model. VGGT predicts depth for every pixel and the relative camera pose. The
-result is then moved into the chamber frame with the two registered poses,
-refined on the landmarks.
+**How each part is placed:**
 
-- **Agreement with the registration:** VGGT's relative pose comes from the two
-  images alone, the registration from the model's landmarks. The direction
-  from one camera to the other agrees to 5.9°, and the relative rotation to
-  13°. (The scale comes from the registration, so the baseline length is not a
-  check.)
-- **Accuracy in the chamber frame:** landmarks land a median of 89 mm from
-  their model positions (max 289 mm, the door hub). That is enough for layout,
-  not for measuring.
-- **VGGT's own focal estimate** is 6 to 9 % above the 856 px of the
-  undistorted frames, consistent with the adopted 1070 px.
-- **Output:** [`vision/out/glovebox_two_view.ply`](vision/out/glovebox_two_view.ply),
-  147,168 coloured points of the glovebox interior only (masked, 3 mm voxels,
-  2.2 MB binary), and three renders with both cameras drawn: a
-  [top view](vision/out/glovebox_two_view_top.png) and oblique views from the
-  [Overhead 1 side](vision/out/glovebox_two_view_oblique_cam0_side.png) and
-  the [Overhead 2 side](vision/out/glovebox_two_view_oblique_cam1_side.png).
-- **Weak spots:** VGGT's confidence is at its floor for most of Overhead 2's
-  pixels, and the two frames share little: the gantry, the tray, the tape
-  reels and the deck.
-- **Licence:** the VGGT code is under the VGGT License v1; the VGGT-1B
-  weights are CC BY-NC 4.0 (non-commercial). The gated
-  `facebook/VGGT-1B-Commercial` checkpoint is the drop-in replacement for
-  commercial use.
+- **Two views:** the chip tray (its lattice in both views, with every chip
+  drawn in its pocket from `chip_tray.json`: 3 empty, 1 rotated) and the two
+  tape reels (ray intersections).
+- **Silhouette fit, two views:** the Epson T6-B602S. Its outline is from
+  Epson's T6-B drawing: arm lengths 325 + 275 mm, arm 1 and arm 2 heights and
+  widths, the controller box above J1, shaft and stroke. J1's position, the
+  base's facing and height, the riser height and the two arm angles are
+  fitted to the robot's SAM 2.1 masks in both frames
+  ([`reconstruction/silhouette.py`](reconstruction/silhouette.py)).
+  Overlap: IoU 0.62 in Overhead 1 and 0.21 in Overhead 2, where only the
+  side of arm 2 and the duct are in view. The fit puts the base's underside at
+  178 mm, matching the chamber model's 180 mm riser reading. Arm 2's tip is held
+  inside the box; left free, the fit pushes it 30 mm past the modelled far end.
+- **One view, onto a known plane:** the breadboards (edges back-projected at
+  their heights), the gantry's posts, plate, screws and motors (Overhead 2),
+  the exfoliator housing, stage and motors, the microscope and its elevated
+  breadboard, the Thorlabs stage box and the two black docking fixtures
+  (Overhead 1), and the tape measure on the deck.
+- **Standard sizes:** M6 holes on a 25 mm grid on 12.7 mm breadboards; NEMA 23
+  (56.4 mm) and NEMA 17 (42.3 mm) steppers; 16 mm ball screws; 40 x 60 mm
+  slotted duct.
+- **The shell** is the chamber model's: 1200 x 1120 x 790 mm, sloped long
+  windows. The far end is drawn as a window frame, because the room shows
+  through it in Overhead 1.
 
-![Two-view reconstruction, oblique view](vision/out/glovebox_two_view_oblique_cam0_side.png)
+**Accuracy:** parts placed from two views or the silhouette fit sit within
+about 10 to 20 px of the photo in both frames. Parts placed from one view are
+right in that view, but their depth along the ray rests on an assumed height,
+and they can be off by 20 to 50 mm in the other view. Hidden geometry is
+inferred: breadboard extents behind equipment, the far end, and the backs of
+parts. The cables, tubing and wiring are not modelled.
+
+**Files:** `out/glovebox.glb` (all 113 parts, coloured, one node per part; opens
+in any glTF viewer), `out/stl/<group>.stl` (one per group: glovebox, ducts,
+breadboards, epson, gantry, exfoliator, microscope, deck), the renders above,
+and `out/parts.json`. Rebuild with
+`xvfb-run -a python reconstruction/build_reconstruction.py` (numpy, opencv,
+trimesh, pyvista, scipy).
 
 ## Earlier findings
 
@@ -592,8 +633,11 @@ for the YouTube relay.
 - [`probe_camera_link.py`](probe_camera_link.py): the read-only network recon
   from 2026-11-11 (`sniff` / `sweep` / `probe` / `discover`). It never sends
   credentials.
-- [`vision/`](vision/): privacy blur, chip tray, intrinsics
-  (`plumbline.py`, `lensmodel.py`, `intrinsics.py`, `tray_focal.py`),
-  registration to the chamber model (`register_chamber.py`) and the two-view
-  reconstruction (`dense_two_view.py`), with results in `vision/out/`.
+- [`vision/`](vision/): privacy blur (`privacy_blur.py`, `build_inside_mask.py`,
+  `inside_masks.json`, `masks/`), chip tray, intrinsics (`plumbline.py`,
+  `lensmodel.py`, `intrinsics.py`, `tray_focal.py`), the first per-camera
+  registration (`register_chamber.py`) and the joint two-camera calibration
+  (`calibrate_two_view.py`), with results in `vision/out/`.
+- [`reconstruction/`](reconstruction/): the CAD reconstruction of the glovebox
+  interior, its exports and renders.
 - [`captures/`](captures/): the stills above, blurred.

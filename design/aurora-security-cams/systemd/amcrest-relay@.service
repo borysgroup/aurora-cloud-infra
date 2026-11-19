@@ -1,6 +1,7 @@
-# Relay Amcrest security cam %i (slot in cams.env: 0 = .150, 1 = .151) to
-# YouTube from the Pi 5. See design/aurora-security-cams/README.md in
-# borysgroup/aurora-cloud-infra. Not installed yet; see "Making it permanent".
+# Relay Amcrest security cam %i (slot in cams.env: 0 = .150, Exfoliation
+# Overhead 1; 1 = .151, Exfoliation Overhead 2) to YouTube from the Pi 5.
+# Installed 2026-11-19; see design/aurora-security-cams/README.md in
+# borysgroup/aurora-cloud-infra.
 [Unit]
 Description=Relay Amcrest security cam %i to YouTube
 Wants=network-online.target amcrest-eth0.service

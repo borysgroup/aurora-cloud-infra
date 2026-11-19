@@ -1,41 +1,51 @@
-# Aurora security cameras → Pi 5 → YouTube
+# Exfoliation Overhead cameras (Amcrest) → Pi 5 → YouTube
 
-Streaming the two glovebox-area **Amcrest security cameras** to YouTube through
-the **Pi 5** (the ex-OT-2 overhead HQ camera, now the "cataloging stage
-overhead" stream). The Pi 5 reaches the cameras through an Ethernet switch on
-its `eth0`. This follows the 2026-11-06 analysis in issue #23
-([comment](https://github.com/borysgroup/aurora-cloud-infra/issues/23#issuecomment-6697495676)).
+The two **Amcrest security cameras** in the Aurora glovebox, **Exfoliation
+Overhead 1** (`192.168.3.150`) and **Exfoliation Overhead 2** (`192.168.3.151`),
+stream to YouTube through the **Pi 5** (the ex-OT-2 overhead HQ camera, now
+the "cataloging stage overhead" stream). The Pi 5 reaches the cameras through
+an Ethernet switch on its `eth0`. This follows the 2026-11-06 analysis in issue
+#23 ([comment](https://github.com/borysgroup/aurora-cloud-infra/issues/23#issuecomment-6697495676)).
 
 ## Status (2026-11-19)
 
-- **Access works.** Both cameras accept the `relay` viewer login over RTSP and
-  the admin login over HTTP (used read-only).
-- **Feeds pulled.** Both main streams are H.264 1920x1080 at 20 fps, about
-  4.2 Mbit/s CBR, with a keyframe every 2.0 s. That already matches YouTube's
-  ingest recommendations, so no camera setting was changed.
-- **Relayed to YouTube.** [`amcrest_relay.py`](amcrest_relay.py) on the Pi 5
-  copies each camera's H.264 to its own broadcast from the picam Lambda.
-  Both broadcasts are **unlisted** and live with stream health "good", and each
-  sits in its own **private** playlist.
-- **Test run, not installed.** The relays run as transient systemd units until
-  the Pi's scheduled 21:00 MST reboot (04:00 UTC). After that the Pi is back to
-  how it was. [Making it permanent](#making-it-permanent) needs the static
-  `eth0` address confirmed (item 4 under [Still open](#still-open)).
-- **No pan/tilt/zoom.** The cameras report no PTZ, motorized zoom or focus;
-  see [Angle and image controls](#angle-and-image-controls).
+- **Streaming, installed for good.** `amcrest-relay@0` and `@1` on the Pi 5
+  copy each camera's H.264 (no re-encode) to its own **unlisted** YouTube
+  broadcast, in a **private** playlist per camera. They start at boot, so each
+  of the Pi's scheduled reboots (05:00, 13:00, 21:00) starts fresh broadcasts,
+  as for the picam. See [Pi 5 setup](#pi-5-setup-2026-11-19).
+- **`eth0` has a fixed address,** `192.168.3.199/24`, from
+  `amcrest-eth0.service`: no gateway, never the default route, an in-memory
+  NetworkManager profile. `ip_forward` stays 0.
+- **Camera clocks fixed.** The Pi runs chrony and serves NTP to the camera
+  subnet only. Both cameras sync to it every 10 minutes, on Mountain time with
+  the US DST rule, so DST changes need nothing. See [Camera clocks](#camera-clocks).
+- **No audio,** as intended. The cameras' microphones stay disabled; the relay
+  sends a silent track because YouTube expects one.
+- **Vision** on the stills: blurring outside the glovebox and faces before
+  publishing, and reading the chip tray from both views. See [Vision](#vision).
+- **No pan/tilt/zoom.** See [Angle and image controls](#angle-and-image-controls).
 
-## Stills (2026-11-19 00:23 UTC)
+## Stills (2026-11-19 16:38 UTC)
 
-One main-stream frame from each camera, pulled with the viewer login
-(`pull_feed.py N still`). No one was in either frame. The burned-in clock reads
-an hour ahead of Mountain time (see [Camera clocks](#camera-clocks)).
+Grabbed within 2 s of each other with `pull_feed.py N still`. Before
+publishing, [`vision/privacy_blur.py`](vision/privacy_blur.py) blurs what lies
+outside the glovebox (hand-drawn polygons in
+[`vision/outside_glovebox.json`](vision/outside_glovebox.json)) and any faces
+(deface's CenterFace detector). No one was in either frame. deface's two
+low-score detections, on a cabinet and a cassette holder, were blurred anyway.
+The burned-in clocks still show the old offset, an hour and two minutes ahead;
+they were fixed nine minutes later.
 
-| `192.168.3.150` (cams.env slot `_0`) | `192.168.3.151` (slot `_1`) |
+| Exfoliation Overhead 1 (`192.168.3.150`) | Exfoliation Overhead 2 (`192.168.3.151`) |
 |---|---|
-| ![192.168.3.150](captures/2026-11-19_cam0_192.168.3.150.jpg) | ![192.168.3.151](captures/2026-11-19_cam1_192.168.3.151.jpg) |
-| Wide view: the Epson SCARA arm, the microscope/optics stage and the sample tray | Close view: the XY gantry with the sample tray; an out-of-focus object blocks the lower right |
+| ![Exfoliation Overhead 1](captures/2026-11-19_1638Z_cam0_192.168.3.150.jpg) | ![Exfoliation Overhead 2](captures/2026-11-19_1638Z_cam1_192.168.3.151.jpg) |
+| Wide view: the Epson SCARA, the microscope, the exfoliator and the chip tray | Close view: the XY gantry with the chip tray and the antechamber-end wall; an out-of-focus object blocks the lower right |
 
-## Camera settings (read 2026-11-19, nothing changed)
+The 00:23 UTC stills from the first relay test (`captures/2026-11-19_0023Z_*`)
+are blurred the same way.
+
+## Camera settings (read 2026-11-19)
 
 Read with [`read_camera_config.py`](read_camera_config.py) (admin login over
 stdin, `getConfig`/`getCaps` only). Both cameras are configured identically:
@@ -62,15 +72,42 @@ Other settings seen:
   no web UI or SDK client (such as an NVR) was logged in. RTSP clients don't
   appear in that list (the relays' own sessions didn't), so it can't rule out
   another RTSP viewer.
-
 ### Camera clocks
 
-Both cameras read 18:22 when it was 17:22 MST on the Pi, so their clocks (and
-the burned-in timestamp) are **one hour ahead of Mountain Standard Time**, most
-likely still on daylight time. The cameras have no internet path and so no NTP,
-and the two already differ by several seconds. Not changed. The fix is the time
-zone/DST setting in the web UI (*Setup → System → General → Date & Time*), or
-NTP served to the segment from the Pi.
+**Found** (read 16:45 UTC): on both cameras `NTP.Enable=false` (server
+`time.windows.com`, unreachable without an internet path), time zone
+`NTP.TimeZone=26` (GMT-06:00, "CentralAmerica") and `Locales.DSTEnable=false`.
+The burned-in clocks read 1 h 01 min 48 s (`.150`) and 1 h 01 min 41 s (`.151`)
+ahead of Mountain Standard Time: an hour from the wrong zone, the rest drift.
+
+**Changed** (16:47 UTC, [`camera_time.py`](camera_time.py) `ntp`, admin login
+over stdin, one camera at a time, both read back):
+
+| Setting | Before | After |
+|---|---|---|
+| `NTP.Enable` | `false` | `true` |
+| `NTP.Address` | `time.windows.com` | `192.168.3.199` (the Pi 5's `eth0`) |
+| `NTP.TimeZone` | `26` (GMT-06:00) | `27` (GMT-07:00) |
+| `NTP.UpdatePeriod` | `10` | `10` (minutes) |
+| `Locales.DSTEnable` | `false` | `true` |
+| `Locales.DSTStart` / `DSTEnd` | 2nd Sunday of March 02:00 / 1st Sunday of November 02:00 | unchanged |
+
+Straight after, both cameras showed the Pi's time to the second (09:47:32 MST
+at 16:47:32 UTC), and chrony on the Pi listed both as clients.
+`NTP.TimeZoneDesc` still reads `CentralAmerica`: the firmware didn't update
+that label, and the time shown is GMT-07:00.
+
+So the overlay shows local time: MST now, MDT from the second Sunday of March,
+with the camera switching by itself, and NTP from the Pi removing drift every
+10 minutes. The switch itself can only be seen on 2027-03-14. For UTC on the
+overlay instead, set `NTP.TimeZone=0` and `Locales.DSTEnable=false`.
+
+**The NTP server.** Debian's `chrony` package replaced systemd-timesyncd on the
+Pi 5 (default Debian pool sources, stratum 3 at install).
+[`pi5/aurora-cams.conf`](pi5/aurora-cams.conf), in `/etc/chrony/conf.d/`,
+allows clients from `192.168.3.0/24` only. Until chrony has synchronised (after
+a reboot without network, say), it answers as unsynchronised, so the cameras
+keep their own time rather than taking a wrong one.
 
 ### Angle and image controls
 
@@ -140,9 +177,10 @@ the workflow name. Only if none exists does it create
 workflow's first `create` decides the playlist's privacy for good. To get a
 private playlist with unlisted broadcasts, as the picam devices have:
 
-1. Run the relay once with `--privacy private`: this creates the private
-   playlist (and a short private test broadcast).
-2. From then on, run it with `--privacy unlisted` (the default).
+1. Run the relay once with `--privacy private` for about a minute: this creates
+   the private playlist (and a short private broadcast).
+2. From then on, run it with `--privacy unlisted` (the default, and what the
+   units use).
 
 A cleaner fix would be an optional `playlist_privacy_status` field in
 `create_broadcast_and_bind_stream` in
@@ -153,16 +191,17 @@ A cleaner fix would be an optional `playlist_privacy_status` field in
 
 | Slot | Camera | `CAM_NAME` | `WORKFLOW_NAME` (and playlist) |
 |---|---|---|---|
-| `_0` | `192.168.3.150` | `amcrest-150` | `Aurora security cam 150` |
-| `_1` | `192.168.3.151` | `amcrest-151` | `Aurora security cam 151` |
+| `_0` | `192.168.3.150` | `amcrest-150` | `Exfoliation Overhead 1` |
+| `_1` | `192.168.3.151` | `amcrest-151` | `Exfoliation Overhead 2` |
 
-These are placeholders until the cameras' roles are settled (item 1 under
-[Still open](#still-open)). The Lambda matches **substrings** for both `end`
-(which ends every live broadcast whose title contains the workflow name) and
-the playlist lookup. So a workflow name must not contain, or be contained in,
-another device's name. For example `Cataloging stage overhead camera 2` would
-let the picam's `end` end it, and `aurora` alone would end every picam
-broadcast. Renaming later starts a new playlist.
+Broadcast titles read `Exfoliation Overhead 1 stream amcrest-150, <date> UTC
+<time>`. The Lambda matches **substrings** for both `end` (which ends every
+live broadcast whose title contains the workflow name) and the playlist lookup.
+So a workflow name must not contain, or be contained in, another device's
+name: `Exfoliation Overhead 1` and `... 2` don't overlap each other or
+`Cataloging stage overhead`, but adding an `Exfoliation Overhead 10` later
+would let camera 1's `end` end it. Renaming starts a new playlist (and needs the
+private first run again). The cameras' on-screen title is still `IPC`.
 
 ### Why RTMPS, and what it costs
 
@@ -202,67 +241,123 @@ stream health `good`. The only issue YouTube raised was `audioBitrateLow` (the
 silent track), which the picams get too. In total the relays add about
 11 Mbit/s of sustained upload, roughly 5 GB per hour.
 
-### What the test left on YouTube
+### What is on YouTube
 
-On *Aurora PCL Hardware Streams*, two new **private** playlists,
-`Aurora security cam 150 Livestreams Playlist` and
-`Aurora security cam 151 Livestreams Playlist`, each with:
+On *Aurora PCL Hardware Streams*, all playlists **private**:
 
-1. a private test broadcast of about a minute (the run that created the private
-   playlist),
-2. an unlisted broadcast of 3 to 4 minutes, ended when the relay was restarted
-   on its final code,
-3. the unlisted broadcast that went live at 00:33 UTC and runs until the
-   21:00 MST (04:00 UTC) reboot.
+| Playlist | Holds |
+|---|---|
+| `Exfoliation Overhead 1 Livestreams Playlist`, `... 2 ...` | a 1-minute private broadcast (16:48 UTC on 2026-11-19, which created the playlist), then the unlisted broadcasts from 16:50 UTC on; each reboot of the Pi adds one per camera |
+| `Aurora security cam 150 Livestreams Playlist`, `... 151 ...` | the first test (2026-11-19 00:22 to 04:00 UTC): a 1-minute private broadcast, a 3 to 4 minute unlisted one and an unlisted one of about 3.5 h |
 
-The upload token can't delete or edit videos, and nothing was deleted.
+Checked with the read-only token at 16:51 UTC: both relays live, `unlisted`,
+stream health `good`, no configuration issues; the picam on the same Pi
+unchanged (`ok`, `bitrateLow`). The upload token can't delete or edit videos,
+and nothing was deleted.
 
-## Pi 5 state after this session
+## Pi 5 setup (2026-11-19)
 
-- **Running:** transient units `amcrest-relay-0` and `amcrest-relay-1` (made by
-  `systemd-run`, run as `vcl`, `Restart=always`, at most 3 starts an hour,
-  `Nice=10`). No unit files are on disk and nothing is enabled.
-- **Files:** `amcrest_relay.py` in `/tmp/aurora-cams/` (tmpfs).
-- **`eth0`:** the unsaved, gateway-less `cam-probe` profile,
-  `192.168.3.199/24`, `ipv4.never-default yes`, no IPv6. The default route is
-  still `wlan0`, and `ip_forward=0`.
-- **Unchanged:** `device.service`, both stream timers, the cameras' settings.
+| What | Where | Notes |
+|---|---|---|
+| `amcrest-eth0.service` | `/etc/systemd/system/`, enabled | creates the in-memory NetworkManager profile `cam-link` at boot: `192.168.3.199/24`, no gateway, `ipv4.never-default`, no DNS, no IPv6, duplicate-address detection, autoconnect priority 50 so it comes back after a link drop (the DHCP profile `netplan-eth0` has 0) |
+| `amcrest-relay@0`, `@1` | `/etc/systemd/system/amcrest-relay@.service`, enabled | `~/aurora-security-cams/amcrest_relay.py` as `vcl`, names from `~/.config/aurora-security-cams/relay-N.env` (mode 600, no secrets), `Nice=10`, at most 3 starts an hour |
+| chrony | Debian package (replaced systemd-timesyncd) | `/etc/chrony/conf.d/aurora-cams.conf`: serves `192.168.3.0/24` only |
 
-At the scheduled 21:00 MST (04:00 UTC) reboot, the relays end their broadcasts
-through the Lambda, `/tmp` is wiped, the `cam-probe` profile disappears and
-`eth0` goes back to having no address. There is nothing to undo by hand. To
-stop sooner:
+Unchanged: `device.service` (0 restarts after the install), the watchdog and
+reboot timers, `ip_forward=0`, the default route on `wlan0`, `cams.env`.
 
-```bash
-sudo systemctl stop amcrest-relay-0 amcrest-relay-1   # ends both broadcasts
-sudo nmcli connection delete cam-probe
-```
+**Why `.199`:** the segment has no DHCP server, `.199` drew no reply to a
+duplicate-address probe (`arping -D`) on 2026-11-19, and every session since
+2026-11-11 has used it without a conflict. If someone keeps an address plan for
+this network, `.199` should go in it. The `.1` gateway that never answers
+doesn't matter to the relay; while nothing answers there, the cameras have no
+route to the internet. If a router ever appears at `.1`, they would have one.
 
-## Making it permanent
-
-Not done yet: it needs the `eth0` address confirmed (item 4), and
-`CLAUDE.md`'s "eth0 has no address by default" would need updating. The units
-are in [`systemd/`](systemd/):
-
-- [`amcrest-eth0.service`](systemd/amcrest-eth0.service) creates the same
-  unsaved, gateway-less profile at each boot. Nothing about `eth0` is written to
-  disk.
-- [`amcrest-relay@.service`](systemd/amcrest-relay@.service), one instance per
-  cams.env slot, with names from
-  [`relay-0.env`](systemd/relay-0.env) / [`relay-1.env`](systemd/relay-1.env).
+Install, as done here (on the Pi 5, from a checkout of this directory):
 
 ```bash
-# on the Pi 5, from a checkout of this directory
 mkdir -p ~/aurora-security-cams && cp amcrest_relay.py ~/aurora-security-cams/
 install -m 600 systemd/relay-0.env systemd/relay-1.env ~/.config/aurora-security-cams/
+sudo apt-get install chrony    # replaces systemd-timesyncd
+sudo install -m 644 pi5/aurora-cams.conf /etc/chrony/conf.d/ && sudo systemctl restart chrony
 sudo cp systemd/amcrest-eth0.service systemd/amcrest-relay@.service /etc/systemd/system/
 sudo systemctl daemon-reload
-sudo systemctl enable --now amcrest-eth0.service amcrest-relay@0.service amcrest-relay@1.service
+sudo systemctl enable --now amcrest-eth0.service
+# new workflow names only: one private run per camera first (see Playlist privacy)
+sudo systemctl enable --now amcrest-relay@0.service amcrest-relay@1.service
 ```
 
-The playlists already exist and are private, so the units run `unlisted` from
-the start. Each reboot (05:00, 13:00, 21:00) then starts fresh broadcasts, as
-for the picam.
+Stop or undo:
+
+```bash
+sudo systemctl disable --now amcrest-relay@0 amcrest-relay@1   # ends both broadcasts
+sudo systemctl disable --now amcrest-eth0                      # eth0 back to no address
+sudo apt-get install systemd-timesyncd                          # replaces chrony; the cameras lose their time source
+```
+
+## Vision
+
+Scripts in [`vision/`](vision/) work on stills from `pull_feed.py`; results
+are in [`vision/out/`](vision/out/). The raw stills stay off the repo, because
+they show the lab around the glovebox. Below, camera 1 and camera 2 are
+Exfoliation Overhead 1 (`.150`) and 2 (`.151`); the scripts call them `cam0`
+and `cam1`, after their `cams.env` slots.
+
+### Privacy blur
+
+[`vision/privacy_blur.py`](vision/privacy_blur.py) `--cam N IN.jpg OUT.jpg`:
+
+1. **Faces:** deface's CenterFace model (`deface` 1.5.0 with onnxruntime) on
+   the whole unmodified frame, at deface's default threshold of 0.2, and an
+   elliptical blur over each detection.
+2. **Outside the glovebox:** the polygons in
+   [`vision/outside_glovebox.json`](vision/outside_glovebox.json) get a heavy
+   Gaussian blur with a feathered edge: the lab seen through the side windows,
+   and the floor. That is 32 % of camera 1's frame and 17 % of camera 2's. Where
+   equipment inside the box sits in front of a window (the Epson's base and
+   cable duct, a tape reel), the polygons go around it where practical. They
+   are drawn for the current aim, so they need redrawing if a camera is moved.
+3. The burned-in date and time are kept legible.
+
+This covers the published stills, not the live streams. Blurring the streams
+would mean either re-encoding on the Pi 5 (no hardware encoder, and it already
+software-encodes the picam), or the cameras' own privacy masks (solid boxes
+applied in the camera, so they would also mask any other viewer of the
+cameras, such as a recorder).
+
+### Chip tray
+
+[`vision/chip_tray.py`](vision/chip_tray.py) `CAM0.jpg CAM1.jpg --out DIR`
+finds the tray in each view, fits the pocket lattice with a homography,
+rectifies it, and classifies every pocket. It then compares the two views in
+one tray frame: row 0 is the handwritten edge, and columns keep the same
+handedness seen from above. That mapping comes from tray features only, not
+from which pockets are full, so the occupancy comparison is an independent
+check.
+
+![Chip tray, both views](vision/out/chip_tray_views.png)
+
+On the 16:38 UTC stills:
+
+- The tray is a **6 x 10 grid** (60 pockets). The chamber model's "8 x 8" was
+  a different tray.
+- **Both views agree on all 60 pockets:** 56 chips, 3 empty, 1 misplaced.
+- **Empty:** (column 2, row 5), (0, 8) and (1, 9).
+- **Misplaced:** the chip at (0, 1) is rotated about 11° in its pocket (10.9°
+  from camera 1, 12.5° from camera 2, the same way round). It is centred and
+  of normal size. Most chips sit within 4°; the threshold is 10°, so this flag
+  depends on it.
+- As a separate check, of the 4 rotations and flips that fit a 6 x 10 grid,
+  only the feature-based one matches all 60 pockets (the others match 54).
+- Fit residuals: 0.5 px median (pitch 20 px) on camera 1, 0.2 px (pitch 14 px)
+  on camera 2. Camera 2 sees the tray at a low angle, so it can't resolve
+  rotations under about 5° or offsets under about 0.1 pitch.
+
+Per-pocket results, angles and offsets are in
+[`vision/out/chip_tray.json`](vision/out/chip_tray.json). The tray moves with
+the stage, so the script searches a region of interest per camera (an option)
+rather than fixed pixels; an edge row or column with no chips at all would be
+missed.
 
 ## Earlier findings
 
@@ -282,11 +377,11 @@ With no live gateway, the cameras have no path to the internet, so their
 Dahua-based firmware can't be reached from outside and can't phone home. The
 relay keeps it that way (no NAT, `ip_forward=0` on the Pi).
 
-By default `eth0` is up at 1 Gb/s full duplex with **no IP** (its
-NetworkManager/netplan profile is DHCP, and there is no DHCP server on the
-segment). For each session it gets a temporary, in-memory address
-(`192.168.3.199/24`, `ipv4.never-default yes`, `save no`, and since
-2026-11-19 duplicate-address detection) that disappears on reboot.
+`eth0` is up at 1 Gb/s full duplex. Its own NetworkManager/netplan profile is
+DHCP, and there is no DHCP server on the segment, so until 2026-11-19 it had
+**no IP** by default and each session gave it a temporary in-memory address.
+Since 2026-11-19, `amcrest-eth0.service` gives it `192.168.3.199/24` at boot
+(see [Pi 5 setup](#pi-5-setup-2026-11-19)).
 
 ### The two cameras
 
@@ -322,27 +417,27 @@ for the YouTube relay.
 - **To undo:** `userManager.cgi?action=deleteUser&name=relay` with the admin
   login on each camera, and delete the `cams.env` directory on the Pi 5.
 
+
 ## Still open
 
-1. **What each camera is for:** names and titles for YouTube (now
-   placeholders), and optionally the on-screen title (`IPC` now). The stills
-   above show what each one sees.
-2. **Audio:** the relay sends silence. The cameras have microphones, but audio
-   is disabled in their encoder settings. Enabling it is a camera change, and
-   the relay would then copy it instead of adding silence.
-3. **Camera clocks:** fix the one-hour offset (time zone/DST), and decide
-   whether the Pi should serve them NTP.
-4. **A static `eth0` address for the Pi** (`.199` so far, never saved), and
-   confirmation that the dead `.1` gateway is intentional. This is what
-   [making it permanent](#making-it-permanent) waits on.
-5. **Upload budget:** about 11 Mbit/s for both cameras over RTMPS. If that is
-   too much, use the watchdog change above (about 9 Mbit/s), lower the cameras'
-   main-stream bitrate, or enable and relay a sub-stream.
+1. **Names:** `Exfoliation Overhead 1` / `2` are in use for YouTube. Renaming
+   again starts new playlists. The on-screen title is still `IPC` on both
+   (`ChannelTitle`, one setting per camera, if wanted).
+2. **DST:** the cameras' own DST rule takes over on 2027-03-14; that switch
+   can't be checked before then.
+3. **The network's owner,** if there is one: reserve `.199` for the Pi, and
+   say whether the dead `.1` gateway is meant to be that way.
+4. **Upload:** about 11 Mbit/s for both cameras over RTMPS, accepted. The
+   watchdog change under [Why RTMPS](#why-rtmps-and-what-it-costs) would bring
+   it to about 9 Mbit/s.
+5. **Blurring the live streams** (see [Privacy blur](#privacy-blur)), if wanted.
 
 ## Files
 
 - [`amcrest_relay.py`](amcrest_relay.py): the relay (runs on the Pi 5).
-- [`systemd/`](systemd/): units and per-camera settings for a permanent install.
+- [`systemd/`](systemd/): the units and per-camera settings installed on the Pi 5.
+- [`pi5/aurora-cams.conf`](pi5/aurora-cams.conf): chrony's NTP service for the camera subnet.
+- [`camera_time.py`](camera_time.py): read or set the cameras' time zone, DST and NTP, with the admin login over stdin.
 - [`pull_feed.py`](pull_feed.py): probe a feed, measure it, or grab a still,
   with the viewer login from `cams.env`.
 - [`read_camera_config.py`](read_camera_config.py): read-only dump of the
@@ -350,4 +445,5 @@ for the YouTube relay.
 - [`probe_camera_link.py`](probe_camera_link.py): the read-only network recon
   from 2026-11-11 (`sniff` / `sweep` / `probe` / `discover`). It never sends
   credentials.
-- [`captures/`](captures/): the stills above.
+- [`vision/`](vision/): privacy blur and chip tray, with results in `vision/out/`.
+- [`captures/`](captures/): the stills above, blurred.

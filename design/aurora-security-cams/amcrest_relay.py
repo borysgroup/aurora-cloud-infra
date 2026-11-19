@@ -42,7 +42,7 @@ for a private playlist, then run ``--privacy unlisted`` from then on.
 Run (as the user that owns cams.env, normally via amcrest-relay@.service)::
 
     python3 -I amcrest_relay.py --cam 0 \\
-        --workflow-name "Aurora security cam 150" --cam-name amcrest-150
+        --workflow-name "Exfoliation Overhead 1" --cam-name amcrest-150
 
 Test the camera side without YouTube (writes a local FLV and exits)::
 
@@ -287,7 +287,7 @@ class Relay:
         concat_path, host = write_concat(run_dir, a.cam, a.subtype, a.cams_env)
         octet = host.rsplit(".", 1)[-1]
         cam_name = a.cam_name or f"amcrest-{octet}"
-        workflow = a.workflow_name or f"Aurora security cam {octet}"
+        workflow = a.workflow_name or f"Exfoliation Overhead {a.cam + 1}"
         url = None
         try:
             if a.test_output:

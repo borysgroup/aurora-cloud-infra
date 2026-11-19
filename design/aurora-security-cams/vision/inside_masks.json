@@ -1,0 +1,46 @@
+{
+  "_doc": "What each fixed Amcrest view shows of the glovebox interior. Pixel x, y at 1920x1080. build_inside_mask.py turns 'polygons' (hand-drawn, inside the glovebox) and 'sam_static' (SAM 2.1 point prompts on fixed equipment, for exact outlines where it stands in front of a window) into masks/inside_camN.png. Everything outside that mask is blurred. 'robot' is segmented again on every frame by privacy_blur.py, from prompts on the Epson's fixed base, and only kept inside 'robot_zone', so the arm stays sharp wherever it moves and the room around it stays blurred. Redraw after re-aiming a camera or moving equipment that stands in front of a window.",
+  "cam0": {
+    "polygons": {
+      "deck_and_left_duct": [[305, 555], [262, 650], [215, 750], [178, 830], [140, 900], [100, 1000], [62, 1080], [720, 1080], [720, 640], [560, 640], [560, 520], [340, 520]],
+      "centre_equipment": [[560, 300], [700, 300], [860, 285], [1180, 300], [1180, 480], [1250, 480], [1250, 1080], [560, 1080], [560, 640]],
+      "epson_base_and_riser": [[300, 335], [430, 330], [560, 380], [562, 512], [578, 530], [572, 640], [345, 640], [345, 540], [300, 520]]
+    },
+    "sam_static": {
+      "microscope": {"pos": [[1080, 150], [1000, 230], [1090, 50], [1040, 270]]},
+      "microscope_breadboard": {"pos": [[1280, 260], [1300, 150], [1410, 250], [1200, 230]]},
+      "microscope_support": {"pos": [[1300, 350], [1340, 430], [1250, 320]]},
+      "exfoliator_right": {"pos": [[1420, 700], [1550, 610], [1420, 500], [1350, 800]]},
+      "cables_bottom_right": {"pos": [[1300, 950], [1600, 880], [1450, 1000], [1250, 1050]]},
+      "left_duct": {"pos": [[200, 800], [100, 1000], [260, 650], [160, 900]]},
+      "deck": {"pos": [[400, 850], [250, 1000], [500, 760]]},
+      "epson_cables": {"pos": [[310, 450], [300, 560], [330, 620]]}
+    },
+    "robot": {"pos": [[380, 150], [430, 420], [600, 250], [830, 120], [450, 580]],
+              "neg": [[150, 450], [640, 120], [230, 700], [100, 300], [200, 200], [1250, 50]]},
+    "robot_zone": [[0, 0], [1350, 0], [1350, 330], [900, 330], [700, 700], [0, 700]]
+  },
+  "cam1": {
+    "polygons": {
+      "core": [[150, 0], [995, 0], [995, 185], [1395, 470], [1340, 640], [1250, 1080], [230, 1080], [205, 880], [205, 720], [215, 520], [165, 380], [210, 300], [155, 270]],
+      "wall_strut": [[85, 0], [150, 0], [155, 270], [100, 270]],
+      "motor_top_left": [[100, 258], [212, 258], [212, 372], [115, 372]],
+      "frame_bracket": [[88, 378], [170, 378], [170, 560], [88, 560]],
+      "tape_reel": "ellipse 126 622 88 102",
+      "motor_bottom_left": [[112, 728], [210, 728], [210, 872], [118, 872]],
+      "left_duct": [[185, 870], [245, 870], [252, 1080], [198, 1080]]
+    },
+    "sam_static": {
+      "epson_box": {"pos": [[1400, 400], [1500, 300], [1650, 250], [1350, 600]], "neg": [[1250, 150], [1450, 120]]},
+      "blue_tube": {"pos": [[1400, 60], [1700, 140], [1850, 300], [1200, 10]]},
+      "near_black_box": {"pos": [[1500, 800], [1700, 600], [1300, 1000], [1850, 900]]},
+      "breadboard": {"pos": [[1000, 850], [1100, 800], [1050, 950]]},
+      "far_duct": {"pos": [[1150, 330], [1300, 440], [1050, 250]]},
+      "deck": {"pos": [[1000, 550], [800, 450], [1200, 600], [700, 800]]},
+      "cables_bottom_left": {"pos": [[300, 950], [400, 1050], [250, 1000], [350, 880]]}
+    },
+    "robot": {"pos": [[1400, 400], [1500, 300], [1650, 250]],
+              "neg": [[1250, 150], [1450, 120], [1800, 260], [1900, 450]]},
+    "robot_zone": [[1000, 0], [1920, 0], [1920, 1080], [1000, 1080]]
+  }
+}

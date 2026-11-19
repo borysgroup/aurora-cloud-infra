@@ -28,24 +28,21 @@ an Ethernet switch on its `eth0`. This follows the 2026-11-06 analysis in issue
   [Vision](#vision).
 - **No pan/tilt/zoom.** See [Angle and image controls](#angle-and-image-controls).
 
-## Stills (2026-11-19 16:38 UTC)
+## Stills (2026-11-19 18:22 UTC)
 
 Grabbed within 2 s of each other with `pull_feed.py N still`. Before
-publishing, [`vision/privacy_blur.py`](vision/privacy_blur.py) blurs what lies
-outside the glovebox (hand-drawn polygons in
-[`vision/outside_glovebox.json`](vision/outside_glovebox.json)) and any faces
-(deface's CenterFace detector). No one was in either frame. deface's two
-low-score detections, on a cabinet and a cassette holder, were blurred anyway.
-The burned-in clocks still show the old offset, an hour and two minutes ahead;
-they were fixed nine minutes later.
+publishing, [`vision/privacy_blur.py`](vision/privacy_blur.py) keeps sharp
+only what is known to be the glovebox interior, segments the Epson on every
+frame so it stays sharp wherever it is, and blurs everything else and any
+faces (see [Privacy blur](#privacy-blur)). No one was in either frame.
 
 | Exfoliation Overhead 1 (`192.168.3.150`) | Exfoliation Overhead 2 (`192.168.3.151`) |
 |---|---|
-| ![Exfoliation Overhead 1](captures/2026-11-19_1638Z_cam0_192.168.3.150.jpg) | ![Exfoliation Overhead 2](captures/2026-11-19_1638Z_cam1_192.168.3.151.jpg) |
-| Wide view: the Epson SCARA, the microscope, the exfoliator and the chip tray | Close view: the XY gantry with the chip tray and the antechamber-end wall; an out-of-focus object blocks the lower right |
+| ![Exfoliation Overhead 1](captures/2026-11-19_1822Z_cam0_192.168.3.150.jpg) | ![Exfoliation Overhead 2](captures/2026-11-19_1822Z_cam1_192.168.3.151.jpg) |
+| Wide view: the Epson SCARA, the microscope, the exfoliator and the chip tray | Close view: the XY gantry with the chip tray and the antechamber-end wall; the microscope camera, out of focus, blocks the lower right |
 
-The 00:23 UTC stills from the first relay test (`captures/2026-11-19_0023Z_*`)
-are blurred the same way.
+The earlier stills in `captures/` (00:23 and 16:38 UTC) are re-blurred the
+same way.
 
 ## Camera settings (read 2026-11-19)
 
@@ -307,25 +304,53 @@ and `cam1`, after their `cams.env` slots.
 
 ### Privacy blur
 
-[`vision/privacy_blur.py`](vision/privacy_blur.py) `--cam N IN.jpg OUT.jpg`:
+[`vision/privacy_blur.py`](vision/privacy_blur.py) `--cam N IN.jpg OUT.jpg`
+keeps a pixel sharp only if it is known to show the glovebox interior. The
+walls on both long sides are clear, so most of each frame's edge is the room,
+seen through them, and it is blurred:
 
-1. **Faces:** deface's CenterFace model (`deface` 1.5.0 with onnxruntime) on
+1. **Static interior:** [`vision/masks/inside_camN.png`](vision/masks), built
+   once per view by [`vision/build_inside_mask.py`](vision/build_inside_mask.py)
+   from [`vision/inside_masks.json`](vision/inside_masks.json). That file
+   holds hand-drawn polygons for the deck, the walls and the bulk of the
+   equipment, plus point prompts for SAM 2.1 (`sam2.1_b`, through
+   `ultralytics`), which outlines each piece of equipment that stands in front
+   of a window to the pixel. The robot's moving parts are not in this mask.
+2. **The Epson, wherever it is:** SAM 2.1 runs again on every frame, prompted
+   on the robot's fixed base and controller box, with negative prompts on the
+   room next to it. It returns the whole robot in its current pose, and only
+   the part inside the camera's `robot_zone` is kept sharp. If the
+   segmentation misses part of the arm, that part is blurred, never the room.
+   About 3 s per frame on 4 CPU cores.
+3. **Change guard:** interior pixels that differ from
+   [`vision/masks/reference_camN.jpg`](vision/masks) (the blurred frame the
+   mask was built on), in a blob that touches the blurred region, are blurred
+   too. This covers equipment moved away from a window, which would otherwise
+   expose the room through the static mask. Changes in the middle of the deck,
+   such as the stage moving, are not touched.
+4. **Faces:** deface's CenterFace model (`deface` 1.5.0 with onnxruntime) on
    the whole unmodified frame, at deface's default threshold of 0.2, and an
    elliptical blur over each detection.
-2. **Outside the glovebox:** the polygons in
-   [`vision/outside_glovebox.json`](vision/outside_glovebox.json) get a heavy
-   Gaussian blur with a feathered edge: the lab seen through the side windows,
-   and the floor. That is 32 % of camera 1's frame and 17 % of camera 2's. Where
-   equipment inside the box sits in front of a window (the Epson's base and
-   cable duct, a tape reel), the polygons go around it where practical. They
-   are drawn for the current aim, so they need redrawing if a camera is moved.
-3. The burned-in date and time are kept legible.
+5. **Burned-in date and time** are kept: only small near-white strokes with a
+   dark outline are copied back, so no patch of a bright background behind
+   the clock comes through.
 
-This covers the published stills, not the live streams. Blurring the streams
-would mean either re-encoding on the Pi 5 (no hardware encoder, and it already
-software-encodes the picam), or the cameras' own privacy masks (solid boxes
-applied in the camera, so they would also mask any other viewer of the
-cameras, such as a recorder).
+On the 18:22 UTC frames this keeps 61.5 % of Overhead 1 and 82.1 % of
+Overhead 2 sharp (Overhead 2's lower right is the out-of-focus microscope
+camera). The robot's segmentation has only been seen in its parked pose; the
+arm did not move during this work.
+
+Re-run `build_inside_mask.py --cam N FRAME.jpg` after re-aiming a camera or
+moving equipment that stands in front of a window, and check the reference it
+writes.
+
+This covers the published stills, not the live streams. Running it on the
+streams would mean decoding and re-encoding both 1080p feeds on the Pi 5,
+which has no hardware encoder and already software-encodes the picam, and SAM
+is far too slow there for 20 fps. A static mask (steps 1, 4 and 5 without the
+robot) could run in `ffmpeg` at reduced resolution; the cameras' own privacy
+masks are solid boxes and would also apply to any other viewer, such as a
+recorder.
 
 ### Chip tray
 

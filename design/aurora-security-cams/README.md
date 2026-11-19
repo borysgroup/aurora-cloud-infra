@@ -630,10 +630,18 @@ for the YouTube relay.
    watchdog change under [Why RTMPS](#why-rtmps-and-what-it-costs) would bring
    it to about 9 Mbit/s.
 5. **Blurring the live streams** (see [Privacy blur](#privacy-blur)), if wanted.
-6. **Chamber model:** the QR sign versus door conflict (see
-   [Registration](#registration-to-the-chamber-model)), and a tape-measured
-   distance in view of both cameras would pin down the poses and the scale far
-   better than the 3 or 4 landmarks per camera used here.
+6. **Scale and the chamber model:** two tape readings would pin the scale to
+   about 1 %. One is the chip tray's long side (the fit gives a 9.5 mm pocket
+   pitch, about 95 mm for 10 pockets). The other is the glovebox's inside
+   length (1200 mm in the model, which the Epson fit would rather see longer).
+   The chamber model's landmarks disagree with each other by 9 to 38 px once
+   the cameras are tied (see [Camera poses](#camera-poses)). Its QR sign also
+   conflicts with the door.
+7. **The out-of-focus black box** close to Overhead 2 (lower right of its view)
+   is not identified: the microscope camera or a tool on the Epson.
+8. **CAD fidelity:** the parts are primitives at the right size, place and
+   colour. Vendor STEP files (Epson T6-B, Thorlabs breadboards and stages, the
+   ASI stage) could replace them part by part in `reconstruction/scene.py`.
 
 ## Files
 

@@ -40,7 +40,7 @@ faces (see [Privacy blur](#privacy-blur)). No one was in either frame.
 | Exfoliation Overhead 1 (`192.168.3.150`) | Exfoliation Overhead 2 (`192.168.3.151`) |
 |---|---|
 | ![Exfoliation Overhead 1](captures/2026-11-19_1822Z_cam0_192.168.3.150.jpg) | ![Exfoliation Overhead 2](captures/2026-11-19_1822Z_cam1_192.168.3.151.jpg) |
-| Wide view: the Epson SCARA, the microscope, the exfoliator and the chip tray | Close view: the XY gantry with the chip tray and the antechamber-end wall; the microscope camera, out of focus, blocks the lower right |
+| Wide view: the Epson SCARA, the microscope, the exfoliator and the chip tray | Close view: the XY gantry with the chip tray and the antechamber-end wall; an out-of-focus black box close to the camera (the microscope camera or a tool on the Epson) blocks the lower right |
 
 The earlier stills in `captures/` (00:23 and 16:38 UTC) are re-blurred the
 same way.
@@ -337,8 +337,8 @@ seen through them, and it is blurred:
    the clock comes through.
 
 On the 18:22 UTC frames this keeps 61.5 % of Overhead 1 and 82.1 % of
-Overhead 2 sharp (Overhead 2's lower right is the out-of-focus microscope
-camera). The robot's segmentation has only been seen in its parked pose; the
+Overhead 2 sharp (Overhead 2's lower right is an out-of-focus black box close
+to the camera). The robot's segmentation has only been seen in its parked pose; the
 arm did not move during this work.
 
 Re-run `build_inside_mask.py --cam N FRAME.jpg` after re-aiming a camera or
@@ -451,7 +451,7 @@ deck). Results are in [`vision/out/cameras.json`](vision/out/cameras.json).
 
 | | Camera centre (mm) | Looking |
 |---|---|---|
-| Overhead 1 (`.150`) | (348, 294, 700) | along the box, 13° towards the far window, 40° down |
+| Overhead 1 (`.150`) | (348, 294, 700) | along the box, 16° towards the far window, 40° down |
 | Overhead 2 (`.151`) | (1015, 338, 702) | back towards the antechamber wall, 36° towards the far window, 46° down |
 
 Both cameras come out about 90 mm below the 790 mm ceiling, which fits a turret
@@ -476,7 +476,7 @@ walkthrough video and are good to a few centimetres.
   sign US Letter landscape (279 mm), so either it is a smaller sheet or the
   annotated corners are not its corners.
 
-The tray pocket pitch comes out at 9.5 ± 1.1 mm (tray 57 x 95 mm). A ruler
+The tray pocket pitch comes out at 9.5 ± 1.1 mm (a 57 x 95 mm pocket field). A ruler
 reading of the tray would pin the scale at about 1 %.
 
 ### CAD reconstruction

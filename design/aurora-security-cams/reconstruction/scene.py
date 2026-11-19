@@ -238,9 +238,9 @@ def gantry(cal):
     c = np.array(t["centre"])
     # lower axis along y at x ~ 600, upper axis along x at y ~ 510, plate top 160 (post 147 + 12.7)
     out += ballscrew_axis("Y axis", (600, 262), (600, 492), 172.0)
-    out += ballscrew_axis("X axis", (290, 512), (560, 512), 192.0)
+    out += ballscrew_axis("X axis", (285, 505), (680, 520), 192.0)  # seen from both views
     out.append(Part("Y axis motor", stepper((600, 520, 194), (0, -1, 0), 56.4, 76), BLACK, "gantry"))
-    out.append(Part("X axis motor", stepper((265, 512, 214), (1, 0, 0), 56.4, 76), BLACK, "gantry"))
+    out.append(Part("X axis motor", stepper((262, 504, 214), (1, 0, 0), 56.4, 76), BLACK, "gantry"))
     # tray carriage: plate under the tray holder, on the X axis carriage
     out.append(Part("tray carriage", obox(c - (0, 0, 40), (110, 90, 40), t["yaw_deg"]), BLACK, "gantry"))
     # yellow printed carriage with two steppers, riding at the -x end of the X axis (Overhead 2, top at z ~ 320)
@@ -263,9 +263,9 @@ def gantry(cal):
 
 def exfoliator():
     out = []
-    # the two red tape reels, centres triangulated from both views (ray gaps 2 and 31 mm), axes along x
+    # the two red tape reels, flange centres triangulated from both views (ray gaps 2 and 9 mm), axes along x
     for name, ctr, tape in (("supply reel (blue tape)", (669, 309, 399), TAPE_BLUE),
-                            ("take-up reel (white tape)", (667, 152, 406), TAPE_WHITE)):
+                            ("take-up reel (white tape)", (670, 142, 401), TAPE_WHITE)):
         ctr = np.array(ctr, float)
         out.append(Part(name + " flange", ring(ctr - (16, 0, 0), (1, 0, 0), 12, 48, 4), RED, "exfoliator"))
         out.append(Part(name + " flange", ring(ctr + (16, 0, 0), (1, 0, 0), 12, 48, 4), RED, "exfoliator"))

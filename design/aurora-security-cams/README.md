@@ -462,11 +462,11 @@ walkthrough video and are good to a few centimetres.
 
 **Independent checks:**
 
-- **A tape reel matched by eye in the two frames** triangulates with a 2 mm gap
-  between the two rays. A second reel gives 31 mm.
+- **The two tape reels, matched by eye in the two frames,** triangulate with
+  gaps of 2 and 9 mm between the two rays.
 - **The gantry's X-axis ball screw**, back-projected separately from each view,
-  lands on the same line (y = 497 to 520 mm from Overhead 1, 501 to 518 mm from
-  Overhead 2).
+  lands on the same line: y = 497 to 520 mm from Overhead 1, and 501 to 518 mm
+  from Overhead 2. The model's axis runs along it.
 - **The antechamber door** back-projected onto the wall plane has a
   180-190 mm radius. Its 15-inch antechamber datasheet value is 190 mm.
 - **Breadboard holes:** a breadboard lying on the deck in Overhead 2 has its
@@ -531,12 +531,17 @@ pixel for pixel with the photos.
   windows. The far end is drawn as a window frame, because the room shows
   through it in Overhead 1.
 
-**Accuracy:** parts placed from two views or the silhouette fit sit within
-about 10 to 20 px of the photo in both frames. Parts placed from one view are
-right in that view, but their depth along the ray rests on an assumed height,
-and they can be off by 20 to 50 mm in the other view. Hidden geometry is
-inferred: breadboard extents behind equipment, the far end, and the backs of
-parts. The cables, tubing and wiring are not modelled.
+**Accuracy:**
+
+- **Parts placed from both views** reproject closely in both frames. The tray
+  is within 0.4 px, and the two reels within 2 and 9 px.
+- **The Epson** overlaps its masks at the IoU above.
+- **Parts placed from one view** sit right in that view, but their depth along
+  the ray rests on an assumed height. In the other view they can be off by 20
+  to 50 mm.
+- **Hidden geometry is inferred:** the breadboards' extents behind equipment,
+  the far end, and the backs of parts.
+- **Not modelled:** cables, tubing and wiring.
 
 **Files:** `out/glovebox.glb` (all 114 parts, coloured, one node per part; opens
 in any glTF viewer), `out/stl/<group>.stl` (one per group: glovebox, ducts,

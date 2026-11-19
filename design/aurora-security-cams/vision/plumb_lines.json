@@ -1,0 +1,161 @@
+{
+ "_note": "approximate endpoints (px, streamed 1920x1080 frame) of long straight edges; plumbline.py snaps to the edge",
+ "cam0": [
+  {
+   "name": "duct_left",
+   "a": [
+    290,
+    685
+   ],
+   "b": [
+    85,
+    1060
+   ]
+  },
+  {
+   "name": "cab_floor_r",
+   "a": [
+    1390,
+    335
+   ],
+   "b": [
+    1750,
+    400
+   ]
+  },
+  {
+   "name": "counter_r",
+   "a": [
+    1370,
+    125
+   ],
+   "b": [
+    1770,
+    205
+   ]
+  },
+  {
+   "name": "breadboard_front",
+   "a": [
+    340,
+    655
+   ],
+   "b": [
+    880,
+    700
+   ]
+  },
+  {
+   "name": "stage_rail",
+   "a": [
+    840,
+    735
+   ],
+   "b": [
+    1240,
+    760
+   ]
+  },
+  {
+   "name": "post_r",
+   "a": [
+    1801,
+    160
+   ],
+   "b": [
+    1811,
+    470
+   ]
+  },
+  {
+   "name": "duct_left_inner",
+   "a": [
+    330,
+    700
+   ],
+   "b": [
+    175,
+    1000
+   ]
+  }
+ ],
+ "cam1": [
+  {
+   "name": "duct_farwin",
+   "a": [
+    1012,
+    205
+   ],
+   "b": [
+    1355,
+    440
+   ]
+  },
+  {
+   "name": "duct_antewall",
+   "a": [
+    745,
+    262
+   ],
+   "b": [
+    990,
+    203
+   ]
+  },
+  {
+   "name": "rail_left",
+   "a": [
+    105,
+    40
+   ],
+   "b": [
+    140,
+    290
+   ]
+  },
+  {
+   "name": "gantry_screw",
+   "a": [
+    420,
+    715
+   ],
+   "b": [
+    740,
+    590
+   ]
+  },
+  {
+   "name": "gantry_rail_r",
+   "a": [
+    610,
+    310
+   ],
+   "b": [
+    770,
+    520
+   ]
+  },
+  {
+   "name": "breadboard_br",
+   "a": [
+    935,
+    830
+   ],
+   "b": [
+    1150,
+    705
+   ]
+  },
+  {
+   "name": "counter_r",
+   "a": [
+    1180,
+    30
+   ],
+   "b": [
+    1300,
+    75
+   ]
+  }
+ ]
+}

@@ -23,7 +23,9 @@ an Ethernet switch on its `eth0`. This follows the 2026-11-06 analysis in issue
 - **No audio,** as intended. The cameras' microphones stay disabled; the relay
   sends a silent track because YouTube expects one.
 - **Vision** on the stills: blurring outside the glovebox and faces before
-  publishing, and reading the chip tray from both views. See [Vision](#vision).
+  publishing, the chip tray read from both views, lens intrinsics, both
+  cameras placed in the chamber model, and a two-view 3D reconstruction. See
+  [Vision](#vision).
 - **No pan/tilt/zoom.** See [Angle and image controls](#angle-and-image-controls).
 
 ## Stills (2026-11-19 16:38 UTC)
@@ -359,6 +361,122 @@ the stage, so the script searches a region of interest per camera (an option)
 rather than fixed pixels; an edge row or column with no chips at all would be
 missed.
 
+### Lens intrinsics
+
+Both cameras are the same model, so they are estimated together and checked
+against each other. All values are for the 1920x1080 main stream, with the
+principal point taken at the frame centre (not estimated).
+[`vision/intrinsics.py`](vision/intrinsics.py) writes
+[`vision/out/intrinsics.json`](vision/out/intrinsics.json).
+
+**Published** (Amcrest spec sheet, which matches Dahua's IPC-HDW2541T-S (S2)):
+1/2.7" CMOS, 2.8 mm F1.6 M12 lens, FOV H 111° / V 58° / D 132°, largest main
+stream 2960x1668. The sensor and its pixel pitch are not published.
+
+**Distortion:** strong barrel. The two-parameter division model
+`p_u - c = (p_d - c) / (1 + l1 r² + l2 r⁴)` (r in units of 1000 px) is fitted
+to 7 long straight edges ([`vision/plumbline.py`](vision/plumbline.py),
+[`vision/plumb_lines.json`](vision/plumb_lines.json)): l1 = -0.289,
+l2 = -0.090, with 0.48 px residual. Per camera it is (-0.298, -0.085) and
+(-0.280, -0.109), so the two lenses agree. OpenCV's 8-coefficient rational
+model reproduces it to 0.004 px (in `intrinsics.json`); the 5-coefficient form
+is off by up to 16 px in the corners.
+
+**Focal length (px):**
+
+| Source | Camera 1 | Camera 2 |
+|---|---|---|
+| Published 2.8 mm, assuming a 2.0 µm pitch and the whole 2960-px width scaled to 1920 | 908 | 908 |
+| Published FOV H / V / D, with the measured distortion | 1004 / 1073 / 949 | same |
+| Chip tray as a planar target ([`vision/tray_focal.py`](vision/tray_focal.py)) | 1062 (1015 to 1111) | 1089 (998 to 1199) |
+| Registration with f free | 1474 ± 328 | 1170 ± 1054 |
+| **Adopted** | **1070 ± 45** | **1070 ± 45** |
+
+The chip-tray value uses the orthogonality constraint on the tray's
+homography after undistortion, which holds whatever the pocket pitch. Without
+the distortion correction the same method gives inconsistent numbers (1311 and
+1679, and worse for the other constraint), which also supports the distortion
+fit. With f = 1070 px, the pose fits below have lower residuals than with 950
+(6.5 against 7.6 px, and 0.8 against 1.4 px), and the implied FOV is
+H 107.6° / V 58.1° / D 126.7°. The vertical matches the published 58°.
+1070 px is 13 to 18 % above the whole-sensor value, which fits a 1080p stream
+scaled from a central window of about 2560x1440 rather than from the whole
+2960x1668 area. No published source confirms that.
+
+### Registration to the chamber model
+
+[`vision/register_chamber.py`](vision/register_chamber.py) places each camera
+in the frame of the measured chamber model, `design/aurora-chamber` on branch
+`claude/issue-23-20261109-2222` (5207dc8; pass its path in
+`AURORA_CHAMBER_PATH`). It fits each camera's pose to point landmarks
+([`vision/landmarks.json`](vision/landmarks.json): pixels and the model
+parameter each comes from) and to the deck-edge cable ducts as line landmarks,
+weighted by the model's stated uncertainties. Results are in
+[`vision/out/registration.json`](vision/out/registration.json): K, distortion,
+R and t, and per-landmark residuals.
+
+| | Camera centre (mm) | Looking | Residual |
+|---|---|---|---|
+| Overhead 1 (`.150`) | (330, 281, 639) | along the box towards the far end, 16° towards the far window, 35° down | 6.5 px over microscope objective, Epson J1, spool and the far-window duct |
+| Overhead 2 (`.151`) | (1070, 373, 586) | back towards the antechamber wall, 41° down | 0.65 px over the antechamber door hub, the tray and two wall ducts |
+
+The frame is the chamber model's: x along the box from the antechamber-end
+wall, y from the open-side window, z up from the deck.
+
+- **Uncertainty:** each pose rests on 3 or 4 trustworthy landmarks. The
+  position is good to about ±30 to 100 mm across the view and ±100 to 180 mm
+  along it. Height trades off against f: both cameras come out 150 to 200 mm
+  below the ceiling.
+- The model's `DOME_C`, an earlier guess for the Amcrest dome from photos, is
+  216 mm from camera 1.
+- **A fault in the chamber model:** the QR sign on the antechamber wall
+  appears on the other side of the door from where the model puts it, 470 to
+  540 px off, while the door, the tray and both wall ducts agree to within
+  6 px. So the sign was rejected as a landmark. Either the sign was moved after
+  the walkthrough, or `ANTE_DOOR_DROP`'s offset from it is wrong in
+  `params.py`.
+
+The model drawn over each frame (outside the glovebox blurred):
+
+| Overhead 1 | Overhead 2 |
+|---|---|
+| ![Overhead 1 with the chamber model](vision/out/overlay_cam0_masked.jpg) | ![Overhead 2 with the chamber model](vision/out/overlay_cam1_masked.jpg) |
+
+### Two-view reconstruction
+
+[`vision/dense_two_view.py`](vision/dense_two_view.py) runs **VGGT-1B** on both
+frames on the CPU (torch 2.15 CPU, 4 threads: about 10 s to load, 21 to 38 s to
+infer, 10 GB of RAM). The frames are first undistorted with the division
+model. VGGT predicts depth for every pixel and the relative camera pose. The
+result is then moved into the chamber frame with the two registered poses,
+refined on the landmarks.
+
+- **Agreement with the registration:** VGGT's relative pose comes from the two
+  images alone, the registration from the model's landmarks. The direction
+  from one camera to the other agrees to 5.9°, and the relative rotation to
+  13°. (The scale comes from the registration, so the baseline length is not a
+  check.)
+- **Accuracy in the chamber frame:** landmarks land a median of 89 mm from
+  their model positions (max 289 mm, the door hub). That is enough for layout,
+  not for measuring.
+- **VGGT's own focal estimate** is 6 to 9 % above the 856 px of the
+  undistorted frames, consistent with the adopted 1070 px.
+- **Output:** [`vision/out/glovebox_two_view.ply`](vision/out/glovebox_two_view.ply),
+  147,168 coloured points of the glovebox interior only (masked, 3 mm voxels,
+  2.2 MB binary), and three renders with both cameras drawn: a
+  [top view](vision/out/glovebox_two_view_top.png) and oblique views from the
+  [Overhead 1 side](vision/out/glovebox_two_view_oblique_cam0_side.png) and
+  the [Overhead 2 side](vision/out/glovebox_two_view_oblique_cam1_side.png).
+- **Weak spots:** VGGT's confidence is at its floor for most of Overhead 2's
+  pixels, and the two frames share little: the gantry, the tray, the tape
+  reels and the deck.
+- **Licence:** the VGGT code is under the VGGT License v1; the VGGT-1B
+  weights are CC BY-NC 4.0 (non-commercial). The gated
+  `facebook/VGGT-1B-Commercial` checkpoint is the drop-in replacement for
+  commercial use.
+
+![Two-view reconstruction, oblique view](vision/out/glovebox_two_view_oblique_cam0_side.png)
+
 ## Earlier findings
 
 ### The camera segment (2026-11-11)
@@ -431,6 +549,10 @@ for the YouTube relay.
    watchdog change under [Why RTMPS](#why-rtmps-and-what-it-costs) would bring
    it to about 9 Mbit/s.
 5. **Blurring the live streams** (see [Privacy blur](#privacy-blur)), if wanted.
+6. **Chamber model:** the QR sign versus door conflict (see
+   [Registration](#registration-to-the-chamber-model)), and a tape-measured
+   distance in view of both cameras would pin down the poses and the scale far
+   better than the 3 or 4 landmarks per camera used here.
 
 ## Files
 
@@ -445,5 +567,8 @@ for the YouTube relay.
 - [`probe_camera_link.py`](probe_camera_link.py): the read-only network recon
   from 2026-11-11 (`sniff` / `sweep` / `probe` / `discover`). It never sends
   credentials.
-- [`vision/`](vision/): privacy blur and chip tray, with results in `vision/out/`.
+- [`vision/`](vision/): privacy blur, chip tray, intrinsics
+  (`plumbline.py`, `lensmodel.py`, `intrinsics.py`, `tray_focal.py`),
+  registration to the chamber model (`register_chamber.py`) and the two-view
+  reconstruction (`dense_two_view.py`), with results in `vision/out/`.
 - [`captures/`](captures/): the stills above, blurred.

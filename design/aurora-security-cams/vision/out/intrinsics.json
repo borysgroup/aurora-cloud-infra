@@ -1,0 +1,225 @@
+{
+ "image_size": [
+  1920,
+  1080
+ ],
+ "published": {
+  "source": "Amcrest IP5M-T1179EW-AI-V3 spec sheet (2025-10-30) and Dahua IPC-HDW2541T-S (S2) datasheet",
+  "sensor": "1/2.7\" progressive CMOS (part and pixel pitch not published)",
+  "lens": "2.8 mm, F1.6, M12, fixed",
+  "fov_deg": {
+   "h": 111.0,
+   "v": 58.0,
+   "d": 132.0
+  },
+  "top_main_stream": [
+   2960,
+   1668
+  ],
+  "readout_assumption": "1080p is the full 2960x1668 active area scaled by 0.6486 (same 16:9 aspect, and the frame shows the full ~111 deg width, so not a crop)",
+  "principal_point_px": [
+   959.5,
+   539.5
+  ],
+  "cases": {
+   "pitch 2.0 um (typical 1/2.7-inch 5 MP 16:9 sensors)": {
+    "pitch_um": 2.0,
+    "f_px_full_mode": 1400.0,
+    "f_px_1080p": 908.1
+   },
+   "pitch from a 6.6 mm (1/2.7-inch) diagonal over 2960x1668": {
+    "pitch_um": 1.943,
+    "f_px_full_mode": 1441.4,
+    "f_px_1080p": 935.0
+   },
+   "alternative: 1080p scaled from the 2688x1520 mode (a crop), pitch 2.0 um": {
+    "f_px_1080p": 1000.0
+   },
+   "alternative: 1080p a 1:1 crop, pitch 2.0 um": {
+    "f_px_1080p": 1400.0
+   }
+  },
+  "f_from_fov_pinhole_px": {
+   "h": 659.8,
+   "v": 974.2,
+   "d": 490.4
+  },
+  "f_from_fov_equidistant_px": {
+   "h": 991.1,
+   "v": 1066.9,
+   "d": 956.2
+  },
+  "note": "FOV figures of a wide lens include its barrel distortion, so the pinhole reading of them (f = half-size / tan(half-angle)) is far below f from focal length / pixel pitch; the published H/V/D are also mutually inconsistent (no single mapping fits all three)."
+ },
+ "estimated": {
+  "principal_point_px": [
+   959.5,
+   539.5
+  ],
+  "principal_point_note": "assumed at the frame centre (not estimated)",
+  "distortion": {
+   "model": "division, p_u - c = (p_d - c) / (1 + l1 r^2 + l2 r^4), r = |p_d - c| / 1000 px",
+   "joint_two_param": {
+    "l1": -0.28937447872083394,
+    "l2": -0.08972209839730458,
+    "rms_px": 0.4836188016562594,
+    "n_lines": 7
+   },
+   "per_camera_two_param": {
+    "cam0": {
+     "l1": -0.2980301101876734,
+     "l2": -0.08510850298618645,
+     "rms_px": 0.5365612160618387
+    },
+    "cam1": {
+     "l1": -0.2800437529024049,
+     "l2": -0.10865647420942798,
+     "rms_px": 0.3647395230103161
+    }
+   },
+   "per_camera_one_param": {
+    "cam0": {
+     "l1": -0.5413344163294133,
+     "se": 0.007119890771802161,
+     "rms_px": 0.6374911892493581,
+     "rms_px_uncorrected": 1.9183311497364648
+    },
+    "cam1": {
+     "l1": -0.39268338524709484,
+     "se": 0.10113624966140512,
+     "rms_px": 0.5905139202053982,
+     "rms_px_uncorrected": 1.0996626515555028
+    }
+   },
+   "lines_used": {
+    "cam0": [
+     "duct_left",
+     "cab_floor_r",
+     "counter_r",
+     "stage_rail"
+    ],
+    "cam1": [
+     "duct_farwin",
+     "duct_antewall",
+     "rail_left"
+    ]
+   },
+   "lines_rejected": {
+    "cam0": [
+     "breadboard_front",
+     "post_r",
+     "duct_left_inner"
+    ],
+    "cam1": [
+     "gantry_screw",
+     "gantry_rail_r",
+     "breadboard_br",
+     "counter_r"
+    ]
+   }
+  },
+  "f_matching_published_fov_with_this_distortion": {
+   "h": 1004.1,
+   "v": 1072.9,
+   "d": 948.8
+  },
+  "f_from_registration_f_free": {
+   "cam0": {
+    "f": 1474.269753913889,
+    "sd": 328.1881452903618,
+    "camera_centre": [
+     101.1923236974351,
+     245.55467492110932,
+     790.2134963451575
+    ]
+   },
+   "cam1": {
+    "f": 1170.4635053938212,
+    "sd": 1054.18909487718,
+    "camera_centre": [
+     1131.548604587147,
+     357.96382813497803,
+     629.4418355354138
+    ]
+   }
+  },
+  "f_from_registration_note": "poorly constrained: 3-4 model landmarks with +/-20-35 mm uncertainty per camera, so f trades off against camera distance; not adopted",
+  "f_from_chip_tray_homography": {
+   "method": "chip tray as a planar target: grid-to-image homographies from out/chip_tray.json, pocket centres undistorted with the division model above, homography refit, f from the orthogonality constraint with the principal point at the centre (independent of pocket pitch); computed by tray_focal.py",
+   "cam0": {
+    "f": 1062,
+    "p16_p84": [
+     1015,
+     1111
+    ]
+   },
+   "cam1": {
+    "f": 1089,
+    "p16_p84": [
+     998,
+     1199
+    ]
+   },
+   "equal_norm_constraint": {
+    "cam0": 1100,
+    "cam1": 986
+   },
+   "combined": {
+    "f": 1070,
+    "sd": 45
+   }
+  }
+ },
+ "adopted": {
+  "f_px": 1070.0,
+  "f_sd_px": 45.0,
+  "cx": 959.5,
+  "cy": 539.5,
+  "division": [
+   -0.28937447872083394,
+   -0.08972209839730458
+  ],
+  "K": [
+   [
+    1070.0,
+    0,
+    959.5
+   ],
+   [
+    0,
+    1070.0,
+    539.5
+   ],
+   [
+    0,
+    0,
+    1
+   ]
+  ],
+  "dist_opencv_rational": [
+   1.6545492065808676,
+   0.5494946523722254,
+   0.0,
+   0.0,
+   0.015965566372577924,
+   1.9854910610985466,
+   1.1095713211397318,
+   0.1114202460451234
+  ],
+  "dist_opencv_rational_max_err_px": 0.0037562279215763716,
+  "dist_opencv_5": [
+   -0.30484523587318796,
+   0.0798291537330462,
+   0.0,
+   0.0,
+   -0.008595701395722275
+  ],
+  "dist_opencv_5_max_err_px": 16.122510369313243,
+  "fov_deg_implied": {
+   "h": 107.6,
+   "v": 58.1,
+   "d": 126.7
+  },
+  "why": "f = 1070 +/- 45 px from the images: the chip-tray homographies (1062 and 1089 px) and lower registration residuals than at 950 px (cam0 6.5 vs 7.6 px, cam1 0.8 vs 1.4 px on points; ducts 20/4.6/5.8 vs 26/8.2/5.5 px). It is 13-18 % above the sensor-based 908-935 px, which fits a 1080p stream scaled from a central ~2560x1440 window rather than the whole 2960x1668 area (not confirmed by any published source); with the measured distortion it gives the published 58 deg vertical FOV exactly"
+ }
+}

@@ -1,0 +1,621 @@
+{
+ "frame": "aurora_chamber scene frame, mm (x from the antechamber-end wall, y from the open side, z up from the deck)",
+ "image_size": [
+  1920,
+  1080
+ ],
+ "dome_c_model": [
+  300.0,
+  130.0,
+  790.0
+ ],
+ "note": "R, t map scene to camera (x_cam = R X + t), OpenCV camera axes (x right, y down, z forward)",
+ "cameras": {
+  "cam0": {
+   "K": [
+    [
+     1070.0,
+     0.0,
+     959.5
+    ],
+    [
+     0.0,
+     1070.0,
+     539.5
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "division_model": {
+    "l1": -0.28937447872083394,
+    "l2": -0.08972209839730458,
+    "norm_px": 1000.0,
+    "centre": [
+     959.5,
+     539.5
+    ]
+   },
+   "dist_opencv_rational": [
+    1.6545492065808676,
+    0.5494946523722254,
+    0.0,
+    0.0,
+    0.015965566372577924,
+    1.9854910610985466,
+    1.1095713211397318,
+    0.1114202460451234
+   ],
+   "dist_opencv_rational_max_err_px": 0.0037562279215763716,
+   "dist_opencv_5": [
+    -0.30484523587318796,
+    0.0798291537330462,
+    0.0,
+    0.0,
+    -0.008595701395722275
+   ],
+   "dist_opencv_5_max_err_px": 16.122510369313243,
+   "R": [
+    [
+     0.21514107209616784,
+     -0.9717081384340085,
+     -0.09745569659299136
+    ],
+    [
+     -0.5801922860793043,
+     -0.04690632831565722,
+     -0.81312773137928
+    ],
+    [
+     0.7855515452670067,
+     0.23148021527780194,
+     -0.5738690440018178
+    ]
+   ],
+   "t": [
+    264.4757142479666,
+    724.424298692973,
+    42.08153905022716
+   ],
+   "rvec": [
+    1.7255293347418303,
+    -1.4585901854325813,
+    0.6467230987629721
+   ],
+   "camera_centre": [
+    330.34858321524564,
+    281.23224422866093,
+    638.9734441010866
+   ],
+   "view_dir": [
+    0.7855515452670067,
+    0.23148021527780194,
+    -0.5738690440018178
+   ],
+   "point_rms_px": 6.5017324798854625,
+   "residuals": [
+    {
+     "name": "micro_objective",
+     "px": [
+      1100,
+      345
+     ],
+     "model_xyz": [
+      1117.0,
+      381.0,
+      268.0
+     ],
+     "proj_px": [
+      1093.1300140614603,
+      343.03989803877096
+     ],
+     "err_px": 7.14413791119313,
+     "depth_mm": 853.9396733418289,
+     "param": "MICRO_OBJ_DROP",
+     "sigma_mm": 30
+    },
+    {
+     "name": "epson_j1_arm1",
+     "px": [
+      467,
+      318
+     ],
+     "model_xyz": [
+      940.0,
+      832.0,
+      389.5
+     ],
+     "proj_px": [
+      467.80573446827174,
+      310.6941387614599
+     ],
+     "err_px": 7.350157581315102,
+     "depth_mm": 749.5695380736365,
+     "param": "J1_DROP, RISER_H, T6",
+     "sigma_mm": 35
+    },
+    {
+     "name": "spool_centre",
+     "px": [
+      1140,
+      610
+     ],
+     "model_xyz": [
+      735.0,
+      312.0,
+      304.0
+     ],
+     "proj_px": [
+      1143.1487332807073,
+      613.4408620260987
+     ],
+     "err_px": 4.66412400732248,
+     "depth_mm": 517.2275626115986,
+     "param": "SPOOL_DROP",
+     "sigma_mm": 20
+    },
+    {
+     "name": "duct_farwin",
+     "line": true,
+     "n_edge_points": 65,
+     "rms_dist_px": 19.968704907343177,
+     "mean_dist_px": 3.8096532484780163
+    },
+    {
+     "name": "tray_centre",
+     "px": [
+      880,
+      940
+     ],
+     "model_xyz": [
+      579.9,
+      418.0,
+      229.0
+     ],
+     "proj_px": [
+      873.3875508895338,
+      939.0901596241983
+     ],
+     "used": false,
+     "err_px": 6.674750388437291,
+     "depth_mm": 462.96559906026926,
+     "param": "PLATE_DROP y, z + TRAY_SIZE (x from this camera's own ray; checks y only)",
+     "sigma_mm": 20,
+     "why_not_used": "check only: its x comes from this camera's own ray"
+    }
+   ],
+   "pose_param_sd": [
+    0.09802840415179659,
+    0.11709842684902688,
+    0.09365310365350767,
+    79.65342185562349,
+    72.46056309981617,
+    177.18631896073626
+   ],
+   "dist_to_dome_c_mm": 215.8732238706266,
+   "free_f": {
+    "f": 1474.269753913889,
+    "camera_centre": [
+     101.1923236974351,
+     245.55467492110932,
+     790.2134963451575
+    ],
+    "point_rms_px": 2.6684688687894043,
+    "param_sd": [
+     0.09706130038830685,
+     0.10030394858731315,
+     0.09661827335618778,
+     69.2029177017835,
+     69.45051536030431,
+     79.143327538997,
+     328.1881452903618
+    ],
+    "residuals": [
+     {
+      "name": "micro_objective",
+      "px": [
+       1100,
+       345
+      ],
+      "model_xyz": [
+       1117.0,
+       381.0,
+       268.0
+      ],
+      "proj_px": [
+       1098.9625041423221,
+       346.2831710990734
+      ],
+      "err_px": 1.6501290022892063,
+      "depth_mm": 1134.9498247358147,
+      "param": "MICRO_OBJ_DROP",
+      "sigma_mm": 30
+     },
+     {
+      "name": "epson_j1_arm1",
+      "px": [
+       467,
+       318
+      ],
+      "model_xyz": [
+       940.0,
+       832.0,
+       389.5
+      ],
+      "proj_px": [
+       465.74109084809845,
+       313.91505810694093
+      ],
+      "err_px": 4.274529508894572,
+      "depth_mm": 1018.3958849443901,
+      "param": "J1_DROP, RISER_H, T6",
+      "sigma_mm": 35
+     },
+     {
+      "name": "spool_centre",
+      "px": [
+       1140,
+       610
+      ],
+      "model_xyz": [
+       735.0,
+       312.0,
+       304.0
+      ],
+      "proj_px": [
+       1140.6021053270572,
+       610.0715488617486
+      ],
+      "err_px": 0.6063415411203223,
+      "depth_mm": 794.5506501457493,
+      "param": "SPOOL_DROP",
+      "sigma_mm": 20
+     },
+     {
+      "name": "duct_farwin",
+      "line": true,
+      "n_edge_points": 65,
+      "rms_dist_px": 5.090847551088285,
+      "mean_dist_px": 1.4180492365174722
+     },
+     {
+      "name": "tray_centre",
+      "px": [
+       880,
+       940
+      ],
+      "model_xyz": [
+       579.9,
+       418.0,
+       229.0
+      ],
+      "proj_px": [
+       902.9346915327769,
+       892.8777657439387
+      ],
+      "used": false,
+      "err_px": 52.407108649368844,
+      "depth_mm": 734.4866556266011,
+      "param": "PLATE_DROP y, z + TRAY_SIZE (x from this camera's own ray; checks y only)",
+      "sigma_mm": 20,
+      "why_not_used": "check only: its x comes from this camera's own ray"
+     }
+    ]
+   }
+  },
+  "cam1": {
+   "K": [
+    [
+     1070.0,
+     0.0,
+     959.5
+    ],
+    [
+     0.0,
+     1070.0,
+     539.5
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "division_model": {
+    "l1": -0.28937447872083394,
+    "l2": -0.08972209839730458,
+    "norm_px": 1000.0,
+    "centre": [
+     959.5,
+     539.5
+    ]
+   },
+   "dist_opencv_rational": [
+    1.6545492065808676,
+    0.5494946523722254,
+    0.0,
+    0.0,
+    0.015965566372577924,
+    1.9854910610985466,
+    1.1095713211397318,
+    0.1114202460451234
+   ],
+   "dist_opencv_rational_max_err_px": 0.0037562279215763716,
+   "dist_opencv_5": [
+    -0.30484523587318796,
+    0.0798291537330462,
+    0.0,
+    0.0,
+    -0.008595701395722275
+   ],
+   "dist_opencv_5_max_err_px": 16.122510369313243,
+   "R": [
+    [
+     0.48079700807732495,
+     0.8747544514367465,
+     0.060323185554884196
+    ],
+    [
+     0.5972767571964697,
+     -0.2763638950721595,
+     -0.7529166440007907
+    ],
+    [
+     -0.6419460353773996,
+     0.398029706419183,
+     -0.655345435988607
+    ]
+   ],
+   "t": [
+    -876.0276011600537,
+    -94.41305521909136,
+    922.3018468927164
+   ],
+   "rvec": [
+    1.9920441017506598,
+    1.2154791219318932,
+    -0.48025505617791975
+   ],
+   "camera_centre": [
+    1069.6501871232126,
+    373.11315066162257,
+    586.185920815563
+   ],
+   "view_dir": [
+    -0.6419460353773996,
+    0.398029706419183,
+    -0.655345435988607
+   ],
+   "point_rms_px": 0.6495989823332459,
+   "residuals": [
+    {
+     "name": "ante_door_hub",
+     "px": [
+      505,
+      165
+     ],
+     "model_xyz": [
+      0.0,
+      459.0,
+      211.0
+     ],
+     "proj_px": [
+      505.11041816896403,
+      165.45993621566754
+     ],
+     "err_px": 0.47300475105430706,
+     "depth_mm": 966.7195951455253,
+     "param": "ANTE_DOOR_DROP",
+     "sigma_mm": 20
+    },
+    {
+     "name": "tray_centre",
+     "px": [
+      568,
+      474
+     ],
+     "model_xyz": [
+      579.9,
+      418.0,
+      229.0
+     ],
+     "proj_px": [
+      567.7793873516923,
+      474.7560120637817
+     ],
+     "err_px": 0.7875431297248617,
+     "depth_mm": 566.33965341919,
+     "param": "PLATE_DROP (y, z of the rear stage) + TRAY_SIZE; x = 580 mm from cam0's ray through the tray centre (cam0 px 880, 940) at z = 229 (frames within 2 s; the stage only moves along x)",
+     "sigma_mm": 20
+    },
+    {
+     "name": "duct_farwin",
+     "line": true,
+     "n_edge_points": 57,
+     "rms_dist_px": 3.489392409519772,
+     "mean_dist_px": -0.04495777299584197
+    },
+    {
+     "name": "duct_antewall",
+     "line": true,
+     "n_edge_points": 40,
+     "rms_dist_px": 5.686648562660696,
+     "mean_dist_px": -0.6158462635963378
+    },
+    {
+     "name": "sign_BL",
+     "px": [
+      730,
+      73
+     ],
+     "model_xyz": [
+      15.0,
+      162.0,
+      460.0
+     ],
+     "proj_px": [
+      196.95271205953054,
+      19.87322067443438
+     ],
+     "used": false,
+     "err_px": 535.6882170275888,
+     "depth_mm": 675.6945682472038,
+     "param": "SIGN_SIZE (origin of the drop frame)",
+     "sigma_mm": 5,
+     "why_not_used": "inconsistent with the door hub, the tray and both wall ducts (leave-one-out: with the sign the tray misses by 65-72 px and the ducts by 140-390 px; without it all fit within 8 px). In the frame the sign is right of (+y from) the door; the model has it left of the hub"
+    },
+    {
+     "name": "sign_BR",
+     "px": [
+      931,
+      32
+     ],
+     "model_xyz": [
+      15.0,
+      441.4,
+      460.0
+     ],
+     "proj_px": [
+      468.0903330906461,
+      -58.662206885839055
+     ],
+     "used": false,
+     "err_px": 471.70435176659083,
+     "depth_mm": 786.9040682207236,
+     "param": "SIGN_SIZE",
+     "sigma_mm": 5,
+     "why_not_used": "inconsistent with the door hub, the tray and both wall ducts (leave-one-out: with the sign the tray misses by 65-72 px and the ducts by 140-390 px; without it all fit within 8 px). In the frame the sign is right of (+y from) the door; the model has it left of the hub"
+    }
+   ],
+   "pose_param_sd": [
+    0.04868214599416799,
+    0.05947084069711766,
+    0.05509009155074176,
+    29.367919439291327,
+    33.414029144903814,
+    92.43918075728693
+   ],
+   "dist_to_dome_c_mm": 832.4695750820068,
+   "free_f": {
+    "f": 1170.4635053938212,
+    "camera_centre": [
+     1131.548604587147,
+     357.96382813497803,
+     629.4418355354138
+    ],
+    "point_rms_px": 0.5122324915459097,
+    "param_sd": [
+     0.199788011363731,
+     0.14047585874339238,
+     0.18902846719271615,
+     36.78606251732214,
+     48.347049417764275,
+     944.3254963538488,
+     1054.18909487718
+    ],
+    "residuals": [
+     {
+      "name": "ante_door_hub",
+      "px": [
+       505,
+       165
+      ],
+      "model_xyz": [
+       0.0,
+       459.0,
+       211.0
+      ],
+      "proj_px": [
+       504.85630154768,
+       165.66299300376755
+      ],
+      "err_px": 0.6783870342539613,
+      "depth_mm": 1053.7461102490017,
+      "param": "ANTE_DOOR_DROP",
+      "sigma_mm": 20
+     },
+     {
+      "name": "tray_centre",
+      "px": [
+       568,
+       474
+      ],
+      "model_xyz": [
+       579.9,
+       418.0,
+       229.0
+      ],
+      "proj_px": [
+       568.0348921556863,
+       474.2516700618237
+      ],
+      "err_px": 0.2540773160807072,
+      "depth_mm": 644.6541730100842,
+      "param": "PLATE_DROP (y, z of the rear stage) + TRAY_SIZE; x = 580 mm from cam0's ray through the tray centre (cam0 px 880, 940) at z = 229 (frames within 2 s; the stage only moves along x)",
+      "sigma_mm": 20
+     },
+     {
+      "name": "duct_farwin",
+      "line": true,
+      "n_edge_points": 57,
+      "rms_dist_px": 0.8202979666258822,
+      "mean_dist_px": -0.37917003538224286
+     },
+     {
+      "name": "duct_antewall",
+      "line": true,
+      "n_edge_points": 40,
+      "rms_dist_px": 5.916229881274509,
+      "mean_dist_px": -0.4644107821161444
+     },
+     {
+      "name": "sign_BL",
+      "px": [
+       730,
+       73
+      ],
+      "model_xyz": [
+       15.0,
+       162.0,
+       460.0
+      ],
+      "proj_px": [
+       210.88979076126122,
+       25.20286465952006
+      ],
+      "used": false,
+      "err_px": 521.3060286267975,
+      "depth_mm": 767.8972628637396,
+      "param": "SIGN_SIZE (origin of the drop frame)",
+      "sigma_mm": 5,
+      "why_not_used": "inconsistent with the door hub, the tray and both wall ducts (leave-one-out: with the sign the tray misses by 65-72 px and the ducts by 140-390 px; without it all fit within 8 px). In the frame the sign is right of (+y from) the door; the model has it left of the hub"
+     },
+     {
+      "name": "sign_BR",
+      "px": [
+       931,
+       32
+      ],
+      "model_xyz": [
+       15.0,
+       441.4,
+       460.0
+      ],
+      "proj_px": [
+       474.25987511928435,
+       -52.86590626607449
+      ],
+      "used": false,
+      "err_px": 464.55760000500896,
+      "depth_mm": 876.3827465831495,
+      "param": "SIGN_SIZE",
+      "sigma_mm": 5,
+      "why_not_used": "inconsistent with the door hub, the tray and both wall ducts (leave-one-out: with the sign the tray misses by 65-72 px and the ducts by 140-390 px; without it all fit within 8 px). In the frame the sign is right of (+y from) the door; the model has it left of the hub"
+     }
+    ]
+   }
+  }
+ }
+}

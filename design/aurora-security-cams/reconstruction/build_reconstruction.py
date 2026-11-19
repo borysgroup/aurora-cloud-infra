@@ -8,6 +8,7 @@ colour, bounds and the source of each part's numbers), and renders:
   out/view_cam0.jpg, out/view_cam1.jpg                    the model as each camera sees it (lens distortion
                                                           applied), next to the published, blurred frame
   out/overlay_cam0.jpg, out/overlay_cam1.jpg              the model blended over the blurred frame
+  out/turntable.gif                                       an orbit around the model
 --photos defaults to the published 18:22 UTC stills in ../captures (already blurred).
 """
 import argparse
@@ -36,6 +37,20 @@ def camera_glyph(cam, size=60.0):
     V = np.array([c] + base)
     F = np.array([[0, 1, 2], [0, 2, 3], [0, 3, 4], [0, 4, 1], [1, 3, 2], [1, 4, 3]])
     return trimesh.Trimesh(V, F)
+
+
+def turntable(parts, path, n=30, size=(800, 520)):
+    """Orbit around the box (ceiling and near frames hidden) and write an animated GIF."""
+    import imageio.v2 as imageio
+    shown = [p for p in parts if p.name not in ("ceiling", "open side window frame")]
+    extra = [(camera_glyph(c), "#ff2d2d") for c in (CAM0, CAM1)]
+    frames = []
+    for k in range(n):
+        a = np.radians(-90 + 360.0 * k / n)
+        pos = (600 + 2300 * np.cos(a), 560 + 2300 * np.sin(a), 1500)
+        frames.append(render.render_view(shown, position=pos, focal=(600, 560, 220), size=size, view_angle=34,
+                                         extra=extra)[:, :, ::-1])
+    imageio.mimsave(path, frames, duration=0.25, loop=0)
 
 
 def main():
@@ -88,6 +103,7 @@ def main():
     im = render.render_view(shown, position=(600, 560, 3200), focal=(600, 560, 0), up=(1, 0, 0), size=(1600, 1600),
                             view_angle=26, extra=extra)
     cv2.imwrite(os.path.join(OUT, "overview_top.png"), im)
+    turntable(parts, os.path.join(OUT, "turntable.gif"))
     print(f"{len(parts)} parts, {sum(len(p.mesh.faces) for p in parts)} faces; wrote {OUT}")
 
 

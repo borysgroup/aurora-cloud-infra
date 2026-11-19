@@ -491,6 +491,8 @@ part with its bounds, colour and source.
 
 ![The model from the open side, both cameras in red](reconstruction/out/overview_open_side.png)
 
+![An orbit around the model](reconstruction/out/turntable.gif)
+
 | Overhead 1: published frame, and the model seen from the camera | Overhead 2 |
 |---|---|
 | ![](reconstruction/out/view_cam0.jpg) | ![](reconstruction/out/view_cam1.jpg) |
@@ -513,9 +515,9 @@ pixel for pixel with the photos.
   base's facing and height, the riser height and the two arm angles are
   fitted to the robot's SAM 2.1 masks in both frames
   ([`reconstruction/silhouette.py`](reconstruction/silhouette.py)).
-  Overlap: IoU 0.62 in Overhead 1 and 0.21 in Overhead 2, where only the
+  Overlap: IoU 0.64 in Overhead 1 and 0.20 in Overhead 2, where only the
   side of arm 2 and the duct are in view. The fit puts the base's underside at
-  178 mm, matching the chamber model's 180 mm riser reading. Arm 2's tip is held
+  177 mm, matching the chamber model's 180 mm riser reading. Arm 2's tip is held
   inside the box; left free, the fit pushes it 30 mm past the modelled far end.
 - **One view, onto a known plane:** the breadboards (edges back-projected at
   their heights), the gantry's posts, plate, screws and motors (Overhead 2),
@@ -536,10 +538,10 @@ and they can be off by 20 to 50 mm in the other view. Hidden geometry is
 inferred: breadboard extents behind equipment, the far end, and the backs of
 parts. The cables, tubing and wiring are not modelled.
 
-**Files:** `out/glovebox.glb` (all 113 parts, coloured, one node per part; opens
+**Files:** `out/glovebox.glb` (all 114 parts, coloured, one node per part; opens
 in any glTF viewer), `out/stl/<group>.stl` (one per group: glovebox, ducts,
 breadboards, epson, gantry, exfoliator, microscope, deck), the renders above,
-and `out/parts.json`. Rebuild with
+an orbit (`out/turntable.gif`) and `out/parts.json`. Rebuild with
 `xvfb-run -a python reconstruction/build_reconstruction.py` (numpy, opencv,
 trimesh, pyvista, scipy).
 

@@ -149,10 +149,14 @@ def epson(j1, base_underside_z, back_dir, th1_deg, th2_deg, z_down=0.0, riser=No
                     EPSON_WHITE, "epson"))
     out.append(Part("Epson J1 bearing", cyl((j1[0], j1[1], z0 + 200), (j1[0], j1[1], z0 + 209.5), 72), EPSON_GREY,
                     "epson"))
-    # controller box on top of the base, above J1
-    ccb = j1 + b * 70
+    # the base rises behind J1 (outside J1's +/-132 deg range) to carry the controller box above arm 1
+    cu = j1 + b * 110
+    out.append(Part("Epson base upright", rounded_box((cu[0], cu[1], z0 + (200 + T6["box"][0]) / 2),
+                                                      (100, T6["base_w"], T6["box"][0] - 200), 14, yaw_b),
+                    EPSON_WHITE, "epson"))
+    ccb = j1 + b * 45
     out.append(Part("Epson controller box", rounded_box((ccb[0], ccb[1], (z0 + T6["box"][0] + z0 + T6["box"][1]) / 2),
-                                                        (250, 165, T6["box"][1] - T6["box"][0]), 14, yaw_b),
+                                                        (240, 165, T6["box"][1] - T6["box"][0]), 14, yaw_b),
                     EPSON_WHITE, "epson"))
     t1 = np.radians(th1_deg)
     j2 = j1 + T6["L1"] * np.array([np.cos(t1), np.sin(t1)])
@@ -199,7 +203,7 @@ def breadboard(name, x0, y0, sx, sy, z_top, t=12.7, pitch=25.0, edge=12.5, legs=
 def breadboards():
     out = []
     # under the Epson, the ASI stages and the microscope: front (-x) edge at x 835 seen from Overhead 1
-    out += breadboard("main breadboard", 838, 380, 362, 700, 65.8, legs=True)
+    out += breadboard("main breadboard", 838, 380, 362, 700, 69.3, legs=True)
     # exfoliator breadboard on 147 mm posts (post foot and top measured from Overhead 2)
     out += breadboard("exfoliator breadboard", 230, 240, 450, 420, 160.0, legs=True)
     # loose breadboard lying on the deck, seen at the bottom right of Overhead 2 (hole rows at 25 mm pitch)
@@ -303,12 +307,12 @@ def microscope():
                     "microscope"))
     out += breadboard("microscope breadboard", 965, 150, 235, 195, 380.0)
     out.append(Part("optics cylinder", cyl((1060, 150, 400), (1060, 90, 400), 38), "#151515", "microscope"))
-    out.append(Part("Thorlabs stage box", box((815, 371, 66), (990, 515, 200)), "#202124", "microscope"))
+    out.append(Part("Thorlabs stage box", box((815, 371, 69), (990, 515, 200)), "#202124", "microscope"))
     # two black docking fixtures on the main breadboard between the Epson and the stages (Overhead 1:
     # feet back-projected at the board height, tops at z 280)
     for x0, x1, y0, y1 in ((885, 975, 645, 775), (1000, 1093, 625, 760)):
         for yy in (y0, y1 - 12):
-            out.append(Part("docking fixture side", box((x0, yy, 66), (x1, yy + 12, 270)), BLACK, "microscope"))
+            out.append(Part("docking fixture side", box((x0, yy, 69), (x1, yy + 12, 270)), BLACK, "microscope"))
         out.append(Part("docking fixture top", box((x0, y0, 270), (x1, y1, 282)), BLACK, "microscope"))
     src("microscope", "one-view", "objective on the Overhead 1 ray at the chamber model's height (z 250); elevated "
         "breadboard back-projected at z 380; Thorlabs box front edge at z 180-220")
@@ -327,8 +331,8 @@ def deck_items():
 # ---- assembled scene ---------------------------------------------------------------------------------
 
 # fitted to the SAM silhouettes in both views (silhouette.py), with arm 2's tip kept inside the box
-ROBOT = dict(j1=(921.8, 888.2), base_underside_z=178.5, back_yaw_deg=64.3, th1_deg=-81.3, th2_deg=28.3,
-             riser_h=112.7)
+ROBOT = dict(j1=(925.3, 887.9), base_underside_z=176.6, back_yaw_deg=65.6, th1_deg=-81.6, th2_deg=28.2,
+             riser_h=107.3)
 
 
 def build(cal, robot=None):

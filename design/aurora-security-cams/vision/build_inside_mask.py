@@ -8,6 +8,8 @@ Reads inside_masks.json, fills its hand-drawn polygons, adds a SAM 2.1 mask for 
     masks/inside_camN.png     white = glovebox interior that does not move
     masks/reference_camN.jpg  FRAME with everything else blurred (privacy_blur's change guard
                               compares new frames with it, and it is safe to publish)
+    masks/robot_camN.png      the Epson's mask on FRAME (privacy_blur keeps robot pixels only where
+                              this mask has them or where the frame has changed)
 
 The robot's moving parts are deliberately not in the static mask; privacy_blur.py segments the
 Epson on every frame. Re-run after re-aiming a camera or moving equipment near a window.
@@ -47,6 +49,7 @@ def main():
     os.makedirs(pb.MASK_DIR, exist_ok=True)
     cv2.imwrite(os.path.join(pb.MASK_DIR, f"inside_cam{a.cam}.png"), inside)
     robot = pb.robot_mask(img, a.cam)
+    cv2.imwrite(os.path.join(pb.MASK_DIR, f"robot_cam{a.cam}.png"), robot)
     ref = pb.blur_outside(img, cv2.bitwise_or(inside, robot))
     osd = pb.osd_glyphs(img)
     ref[osd] = img[osd]

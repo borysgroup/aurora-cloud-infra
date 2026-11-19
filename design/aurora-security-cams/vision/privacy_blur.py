@@ -4,9 +4,11 @@ The rule is "sharp only where we know it is the glovebox interior"; anything els
 
 1. Static interior: masks/inside_camN.png, built once per camera view by build_inside_mask.py
    from hand-drawn polygons and SAM 2.1 outlines of the fixed equipment (inside_masks.json).
-2. The Epson, wherever it is: SAM 2.1 runs on every frame with point prompts on the robot's
-   fixed base, so the arm is segmented in its current pose. Only the part inside the camera's
-   robot_zone is kept. If the segmentation misses the arm, the arm is blurred, never the room.
+2. The Epson, wherever it is: SAM 2.1 runs on every frame with point prompts only on parts of the
+   robot that never move (base, riser, controller box), and returns the robot in its current pose.
+   Only the part inside the camera's robot_zone, and only pixels the reference also had as robot or
+   that have changed since, are kept. If the segmentation misses part of the arm, that part is
+   blurred, never the room.
 3. Change guard: interior pixels that differ from masks/reference_camN.jpg, in a blob that
    touches the blurred region, are blurred too. That catches equipment that has been moved or
    removed from in front of a window (which would otherwise expose the room through the mask)
@@ -76,10 +78,26 @@ def static_inside(cam, shape):
     return m
 
 
-def robot_mask(img, cam):
+def robot_mask(img, cam, ref_robot=None, ref=None):
+    """The Epson in this frame. Prompts sit only on parts that never move (base, riser, controller box),
+    so they stay on the robot whatever the arm does. Pixels are kept only inside robot_zone, and only
+    where the reference frame also had the robot or where the frame has changed, so a mask that spills
+    onto the unchanged room behind the robot is cut back."""
     s = spec(cam)
-    r = sam_mask(img, s["robot"]["pos"], s["robot"].get("neg", ()))
-    return cv2.bitwise_and(r, poly_mask(img.shape, [s["robot_zone"]]))
+    if "robot" not in s:
+        return np.zeros(img.shape[:2], np.uint8)
+    zone = poly_mask(img.shape, [s["robot_zone"]])
+    pos, neg = s["robot"]["pos"], s["robot"].get("neg", ())
+    r = cv2.bitwise_and(sam_mask(img, pos, neg), zone)
+    if ref_robot is not None and ref is not None:
+        if ref.shape != img.shape:
+            ref = cv2.resize(ref, (img.shape[1], img.shape[0]))
+        if ref_robot.shape != r.shape:
+            ref_robot = cv2.resize(ref_robot, (r.shape[1], r.shape[0]), interpolation=cv2.INTER_NEAREST)
+        d = np.abs(cv2.GaussianBlur(img, (5, 5), 0).astype(np.int16) - cv2.GaussianBlur(ref, (5, 5), 0)).max(axis=2)
+        changed = cv2.dilate((d > 40).astype(np.uint8) * 255, np.ones((7, 7), np.uint8))
+        r = cv2.bitwise_and(r, cv2.bitwise_or(ref_robot, changed))
+    return r
 
 
 def change_guard(img, ref, inside, thresh=32, min_area=400):
@@ -149,10 +167,11 @@ def inside_mask(img, cam, robot=True, guard=True):
     """Final 'keep sharp' mask for one frame, and the robot and guard masks that went into it."""
     inside = static_inside(cam, img.shape)
     g = np.zeros(img.shape[:2], np.uint8)
+    ref = cv2.imread(os.path.join(MASK_DIR, f"reference_cam{cam}.jpg"))
     if guard:
-        ref = cv2.imread(os.path.join(MASK_DIR, f"reference_cam{cam}.jpg"))
         g = change_guard(img, ref, inside)
-    r = robot_mask(img, cam) if robot else np.zeros(img.shape[:2], np.uint8)
+    rr = cv2.imread(os.path.join(MASK_DIR, f"robot_cam{cam}.png"), cv2.IMREAD_GRAYSCALE)
+    r = robot_mask(img, cam, rr, ref if guard else None) if robot else np.zeros(img.shape[:2], np.uint8)
     keep = cv2.bitwise_or(cv2.bitwise_and(inside, cv2.bitwise_not(g)), r)
     return keep, r, g
 

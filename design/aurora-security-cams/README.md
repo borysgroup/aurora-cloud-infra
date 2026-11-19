@@ -317,12 +317,20 @@ seen through them, and it is blurred:
    equipment, plus point prompts for SAM 2.1 (`sam2.1_b`, through
    `ultralytics`), which outlines each piece of equipment that stands in front
    of a window to the pixel. The robot's moving parts are not in this mask.
-2. **The Epson, wherever it is:** SAM 2.1 runs again on every frame, prompted
-   on the robot's fixed base and controller box, with negative prompts on the
-   room next to it. It returns the whole robot in its current pose, and only
-   the part inside the camera's `robot_zone` is kept sharp. If the
-   segmentation misses part of the arm, that part is blurred, never the room.
-   About 3 s per frame on 4 CPU cores.
+2. **The Epson, wherever it is:** SAM 2.1 runs again on every frame. Its
+   prompts sit only on parts of the robot that never move: the base, the riser
+   and the controller box. Negative prompts sit on the room next to it. SAM
+   returns the robot in its current pose, arm included.
+   - Only the part inside the camera's `robot_zone` is kept.
+   - Only pixels that the reference frame also had as robot, or that have
+     changed since, are kept. A mask that spills onto the unchanged room
+     behind the robot is cut back.
+   - If the segmentation misses part of the arm, that part is blurred, never
+     the room. On the reference frame, the upper part of arm 2's housing is
+     blurred for this reason.
+   - Overhead 2 sees no fixed part of the Epson, only the side of arm 2 and
+     its cable duct at the right edge, so there the housing is simply blurred.
+   - About 3 s per frame on 4 CPU cores.
 3. **Change guard:** interior pixels that differ from
    [`vision/masks/reference_camN.jpg`](vision/masks) (the blurred frame the
    mask was built on), in a blob that touches the blurred region, are blurred
@@ -336,10 +344,10 @@ seen through them, and it is blurred:
    dark outline are copied back, so no patch of a bright background behind
    the clock comes through.
 
-On the 18:22 UTC frames this keeps 61.5 % of Overhead 1 and 82.1 % of
-Overhead 2 sharp (Overhead 2's lower right is an out-of-focus black box close
-to the camera). The robot's segmentation has only been seen in its parked pose; the
-arm did not move during this work.
+On the 18:22 UTC frames this keeps 61.2 % of Overhead 1 and 79.5 % of
+Overhead 2 sharp. Overhead 2's lower right is an out-of-focus black box close
+to the camera. The robot's segmentation has only been seen in its parked
+pose; the arm did not move during this work.
 
 Re-run `build_inside_mask.py --cam N FRAME.jpg` after re-aiming a camera or
 moving equipment that stands in front of a window, and check the reference it

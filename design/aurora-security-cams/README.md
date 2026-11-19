@@ -210,9 +210,10 @@ On *Aurora PCL Hardware Streams*, two new **private** playlists,
 
 1. a private test broadcast of about a minute (the run that created the private
    playlist),
-2. an unlisted broadcast of about 5 minutes, ended when the relay was restarted
+2. an unlisted broadcast of 3 to 4 minutes, ended when the relay was restarted
    on its final code,
-3. the unlisted broadcast that is live until the 21:00 MST reboot.
+3. the unlisted broadcast that went live at 00:33 UTC and runs until the
+   21:00 MST (04:00 UTC) reboot.
 
 The upload token can't delete or edit videos, and nothing was deleted.
 

@@ -10,11 +10,18 @@ camera's calibrated pose and lens. The label is the rendered robot's exact mask.
 - Room behind the windows: the stored stills are blurred outside the glovebox, the live feed is not.
   So the outside is often replaced with an unblurred room crop, which also gives the model people,
   benches and screens next to the arm as hard negatives.
+- Two looks for the robot: flat-shaded CAD with a random grey level, tint and light; or "textured",
+  each face coloured from Overhead 1's 18:22 frame where the camera saw it at the parked pose (the
+  face colours then travel with the arm to any pose, with the frame's light baked in).
+- Two kinds of camera: the two calibrated Amcrest cameras, or (with --virtual) a random pinhole camera
+  0.35 to 1.5 m from a random part of the robot, from any side and up to 65 deg above it, over a room
+  crop or a plate. The second kind is for cameras that get moved or re-aimed, and for the video test.
 - Randomised: joints over the full range (j1 +/-132 deg, j2 +/-150 deg, z 0-200 mm, u), base position
-  +/-15 mm, height +/-10 mm and yaw +/-2 deg, camera rotation +/-0.7 deg, a stand-in end effector, the
-  robot's grey level and tint, the light, blur, noise, JPEG quality and occluders cut from the plate.
+  (8 mm), height (5 mm) and yaw (1 deg), camera rotation (0.4 deg), a stand-in end effector, blur,
+  noise, JPEG quality and occluders cut from the plate.
 
-    python synth.py --raw RAW0.jpg RAW1.jpg --video VIDEO.mp4 --out DIR -n 1600 [--workers 4]
+    python synth.py --raw RAW0.jpg RAW1.jpg --video VIDEO.mp4 --out DIR -n 1600 [--textured 0.5]
+                    [--virtual 0.35] [--workers 4]
 
 writes DIR/images/*.jpg and DIR/labels/*.txt (YOLO segmentation polygons, class 0 = Epson robot).
 """
@@ -127,27 +134,56 @@ def polygons(mask, min_area=30):
 
 
 _G = {}
+TEX_FRAME = ("masks/reference_cam0.jpg", "robotseg/gt/cam0_2026-11-19_1822Z_cam0_192.168.3.150.png")
+MAX_EDGE = 12.0     # mm, face size of the textured meshes
 
 
-def _init(raw, video):
+def _init(raw, video, p_tex, p_virt):
     _G["plates"] = {c: plates(c, raw) for c in (0, 1)}
     _G["room"] = room_pool(video)
-    _G["pose"] = R.fitted_pose()[0]
+    pose, pk = R.fitted_pose()
+    _G["pose"], _G["p_tex"], _G["p_virt"] = pose, p_tex, p_virt
+    if p_tex > 0:
+        img = cv2.imread(os.path.join(VIS, TEX_FRAME[0]))
+        m = cv2.imread(os.path.join(VIS, TEX_FRAME[1]), cv2.IMREAD_GRAYSCALE)
+        ms = R.posed_meshes(pose, pk["j1"], pk["j2"], max_edge=MAX_EDGE)
+        _G["tex"] = R.texture_from_frame(img, R.CAM0, ms, m)[0]
+
+
+def virtual_cam(rng, meshes):
+    """A random pinhole camera looking at a random part of the robot."""
+    names = [k for k in ("base", "arm1", "arm2", "shaft") if k in meshes]
+    target = meshes[names[rng.integers(len(names))]].vertices.mean(axis=0) + rng.normal(0, 60, 3)
+    az, el = rng.uniform(0, 2 * np.pi), np.radians(rng.uniform(0, 65))
+    d = rng.uniform(350, 1500)
+    centre = target + d * np.array([np.cos(el) * np.cos(az), np.cos(el) * np.sin(az), np.sin(el)])
+    return R.VirtualCam(centre, target, rng.uniform(700, 1500))
 
 
 def make(args):
     i, seed, out = args
     rng = np.random.default_rng(seed)
+    virtual = rng.random() < _G["p_virt"]
+    textured = rng.random() < _G["p_tex"]
     cam = 0 if rng.random() < 0.75 else 1
     img, hole, inside, kind = _G["plates"][cam][rng.integers(len(_G["plates"][cam]))]
-    h, w = img.shape[:2]
     img = img.astype(np.float32)
-    a = feather(hole, 9)
-    img = img * (1 - a) + room_crop(rng, _G["room"], w, h) * a                       # parked robot out
-    if rng.random() < (0.3 if kind == "raw" else 0.7):                                # unblurred room
-        o = cv2.bitwise_and(cv2.bitwise_not(inside), cv2.bitwise_not(hole))
-        a = feather(o, 7)
-        img = img * (1 - a) + room_crop(rng, _G["room"], w, h) * a
+    if virtual:
+        w, h = OUT_W, int(round(OUT_W * 1080 / 1920))
+        if rng.random() < 0.6:
+            img = room_crop(rng, _G["room"], w, h).astype(np.float32)
+        else:
+            a = feather(hole, 9)
+            img = img * (1 - a) + room_crop(rng, _G["room"], img.shape[1], img.shape[0]) * a
+            img = cv2.resize(img, (w, h), interpolation=cv2.INTER_AREA)
+    else:
+        h, w = img.shape[:2]
+        a = feather(hole, 9)
+        img = img * (1 - a) + room_crop(rng, _G["room"], w, h) * a                   # parked robot out
+        if rng.random() < (0.3 if kind == "raw" else 0.7):                            # unblurred room
+            o = cv2.bitwise_and(cv2.bitwise_not(inside), cv2.bitwise_not(hole))
+            a = feather(o, 7)
+            img = img * (1 - a) + room_crop(rng, _G["room"], w, h) * a
     p0 = _G["pose"]
     pose = dict(j1=(p0["j1"][0] + rng.normal(0, 8), p0["j1"][1] + rng.normal(0, 8)), z0=p0["z0"] + rng.normal(0, 5),
                 yaw=p0["yaw"] + rng.normal(0, 1.0))
@@ -159,10 +195,16 @@ def make(args):
                   cable=tuple([rng.uniform(10, 60)] * 3), unit=tuple([rng.uniform(10, 50)] * 3),
                   tool=[(40, 40, 40), (60, 100, 200), (190, 195, 200), (25, 25, 25)][rng.integers(4)])
     light = (rng.normal(0, 0.6), rng.normal(0, 0.6), rng.uniform(0.3, 1.2))
-    ms = R.posed_meshes(pose, j1, j2, z, u, tool=tool)
-    rob, al = R.render(ms, R.CAMS[cam], CROPS[cam], (w, h), colors=colors, light=light,
+    ms = R.posed_meshes(pose, j1, j2, z, u, tool=tool, max_edge=MAX_EDGE if textured else None)
+    if virtual:
+        vc = virtual_cam(rng, ms)
+        cam_obj, crop, dR = vc, (0, 0, 1920, 1080), None
+    else:
+        cam_obj, crop, dR = R.CAMS[cam], CROPS[cam], small_rot(rng, 0.4)
+    rob, al = R.render(ms, cam_obj, crop, (w, h), colors=colors, light=light,
                        ambient=rng.uniform(0.35, 0.7), diffuse=rng.uniform(0.25, 0.6), spec=rng.uniform(0, 0.3),
-                       shininess=rng.uniform(5, 30), dR=small_rot(rng, 0.4))
+                       shininess=rng.uniform(5, 30), dR=dR, face_rgb=_G.get("tex") if textured else None,
+                       tex_shade=rng.uniform(0.0, 0.3), cull=True)
     if rng.random() < 0.5:
         s = rng.uniform(0.3, 1.0)
         rob = cv2.GaussianBlur(rob, (0, 0), s)
@@ -186,11 +228,11 @@ def make(args):
         img = cv2.GaussianBlur(img, (0, 0), rng.uniform(0.3, 0.9))
     img = np.clip(img + rng.normal(0, rng.uniform(0, 4), img.shape), 0, 255).astype(np.uint8)
     ok, enc = cv2.imencode(".jpg", img, [cv2.IMWRITE_JPEG_QUALITY, int(rng.integers(55, 96))])
-    name = f"syn{cam}_{i:05d}"
+    name = f"{'virt' if virtual else f'syn{cam}'}{'t' if textured else ''}_{i:05d}"
     open(os.path.join(out, "images", name + ".jpg"), "wb").write(enc.tobytes())
     with open(os.path.join(out, "labels", name + ".txt"), "w") as f:
         f.writelines(f"0 {p}\n" for p in polygons(lab))
-    return cam, int((lab > 0).sum())
+    return (2 if virtual else cam), int((lab > 0).sum())
 
 
 def main():
@@ -201,15 +243,18 @@ def main():
     ap.add_argument("-n", type=int, default=1600)
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--workers", type=int, default=4)
+    ap.add_argument("--textured", type=float, default=0.0, help="share of robots coloured from the real frame")
+    ap.add_argument("--virtual", type=float, default=0.0, help="share of samples seen by a random camera")
     a = ap.parse_args()
     for d in ("images", "labels"):
         os.makedirs(os.path.join(a.out, d), exist_ok=True)
     jobs = [(i, a.seed * 1000003 + i, a.out) for i in range(a.n)]
-    with Pool(a.workers, initializer=_init, initargs=(a.raw, a.video)) as p:
+    with Pool(a.workers, initializer=_init, initargs=(a.raw, a.video, a.textured, a.virtual)) as p:
         res = p.map(make, jobs, chunksize=8)
     cams = np.array([r[0] for r in res])
     px = np.array([r[1] for r in res])
-    print(f"{a.n} samples: {int((cams == 0).sum())} Overhead 1, {int((cams == 1).sum())} Overhead 2; "
+    print(f"{a.n} samples: {int((cams == 0).sum())} Overhead 1, {int((cams == 1).sum())} Overhead 2, "
+          f"{int((cams == 2).sum())} random cameras; "
           f"robot visible in {int((px > 0).sum())}; median robot area {np.median(px):.0f} px")
 
 

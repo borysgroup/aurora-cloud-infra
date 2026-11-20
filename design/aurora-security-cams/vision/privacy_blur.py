@@ -4,13 +4,17 @@ The rule is "sharp only where we know it is the glovebox interior"; anything els
 
 1. Static interior: masks/inside_camN.png, built once per camera view by build_inside_mask.py
    from hand-drawn polygons and SAM 2.1 outlines of the fixed equipment (inside_masks.json).
-2. The Epson, wherever it is: SAM 2.1 runs on every frame with point prompts on the robot's base,
-   riser and controller box, which are all fixed to the base (Epson's T-B drawing), and returns the
-   robot in its current pose. A prompt whose patch no longer matches the reference (the arm passing
-   in front of it, say) is dropped.
-   Only the part inside the camera's robot_zone, and only pixels the reference also had as robot or
-   that have changed since, are kept. If the segmentation misses part of the arm, that part is
-   blurred, never the room.
+2. The Epson, wherever it is, by one of two methods:
+   - sam (default): SAM 2.1 runs on every frame with point prompts on the robot's base, riser and
+     controller box, which are all fixed to the base (Epson's T-B drawing), and returns the robot in
+     its current pose. A prompt whose patch no longer matches the reference (the arm passing in front
+     of it, say) is dropped. About 3 s a frame on 4 x86 cores.
+   - yolo: the one-class YOLO11n-seg in robotseg/models/epson_t6_seg.onnx, trained on mixed-reality
+     renders of Epson's own CAD (robotseg/), run with onnxruntime on the robot zone. About 0.1 s a
+     frame on one Pi 5 core, so it is the one for live use.
+   Either way, only the part inside the camera's robot_zone, and only pixels the reference also had
+   as robot or that have changed since, are kept. If the segmentation misses part of the arm, that
+   part is blurred, never the room.
 3. Change guard: interior pixels that differ from masks/reference_camN.jpg, in a blob that
    touches the blurred region, are blurred too. That catches equipment that has been moved or
    removed from in front of a window (which would otherwise expose the room through the mask)
@@ -21,7 +25,8 @@ The rule is "sharp only where we know it is the glovebox interior"; anything els
    dark outline are copied back, so no patch of a bright background comes through with them.
 
     pip install deface onnxruntime opencv-python-headless numpy ultralytics
-    python privacy_blur.py --cam 0 IN.jpg OUT.jpg [--mask-out INSIDE.png] [--no-robot] [--no-guard]
+    python privacy_blur.py --cam 0 IN.jpg OUT.jpg [--mask-out INSIDE.png] [--robot {sam,yolo}] [--no-robot]
+                           [--no-guard]
 
 Prints the share of the frame kept sharp, the robot and guard pixel counts, and the face count.
 """
@@ -37,8 +42,10 @@ SPEC = os.path.join(HERE, "inside_masks.json")
 MASK_DIR = os.path.join(HERE, "masks")
 OSD_TIME_BOX = (1300, 30, 1860, 105)  # x0, y0, x1, y1 of the burned-in date/time at 1920x1080
 SAM_WEIGHTS = os.environ.get("SAM_WEIGHTS", "sam2.1_b.pt")  # ultralytics downloads it on first use
+SEG_MODEL = os.environ.get("EPSON_SEG_MODEL", os.path.join(HERE, "robotseg", "models", "epson_t6_seg.onnx"))
 
 _sam = None
+_seg = None
 
 
 def spec(cam):
@@ -71,6 +78,24 @@ def sam_mask(img, pos, neg=()):
     return r[0].masks.data[0].numpy().astype(np.uint8) * 255
 
 
+def yolo_mask(img, zone_poly):
+    """The Epson model's mask (uint8 0/255) for the bounding box of the robot zone; zero elsewhere."""
+    global _seg
+    if _seg is None:
+        import sys
+        sys.path.insert(0, os.path.join(HERE, "robotseg"))
+        from yolo_onnx import EpsonSeg
+        _seg = EpsonSeg(SEG_MODEL, threads=int(os.environ.get("EPSON_SEG_THREADS", "2")))
+    sx, sy = img.shape[1] / 1920.0, img.shape[0] / 1080.0
+    p = np.array(zone_poly, float) * (sx, sy)
+    x0, y0 = np.floor(p.min(axis=0)).astype(int).clip(0)
+    x1, y1 = np.ceil(p.max(axis=0)).astype(int)
+    x1, y1 = min(x1, img.shape[1]), min(y1, img.shape[0])
+    m = np.zeros(img.shape[:2], np.uint8)
+    m[y0:y1, x0:x1] = _seg(img[y0:y1, x0:x1])
+    return m
+
+
 def static_inside(cam, shape):
     m = cv2.imread(os.path.join(MASK_DIR, f"inside_cam{cam}.png"), cv2.IMREAD_GRAYSCALE)
     if m is None:
@@ -80,18 +105,20 @@ def static_inside(cam, shape):
     return m
 
 
-def robot_mask(img, cam, ref_robot=None, ref=None):
-    """The Epson in this frame. Prompts sit on the base, riser and controller box, and each is used only
-    while the image under it matches the reference (the last two prompts, base and riser, are kept
-    regardless). Pixels are kept only inside robot_zone, and only where the reference frame also had
-    the robot or where the frame has changed, so a mask that spills onto the unchanged room behind
-    the robot is cut back."""
+def robot_mask(img, cam, ref_robot=None, ref=None, method="sam"):
+    """The Epson in this frame. With method="sam", prompts sit on the base, riser and controller box, and
+    each is used only while the image under it matches the reference (the last two prompts, base and
+    riser, are kept regardless); method="yolo" runs the trained model instead. Pixels are kept only
+    inside robot_zone, and only where the reference frame also had the robot or where the frame has
+    changed, so a mask that spills onto the unchanged room behind the robot is cut back."""
     s = spec(cam)
     if "robot" not in s:
         return np.zeros(img.shape[:2], np.uint8)
     zone = poly_mask(img.shape, [s["robot_zone"]])
     pos, neg = list(s["robot"]["pos"]), s["robot"].get("neg", ())
-    if ref is not None:
+    if method == "yolo":
+        r = cv2.bitwise_and(yolo_mask(img, s["robot_zone"]), zone)
+    elif ref is not None:
         # a prompt counts only while the robot surface under it looks as it did in the reference, so a
         # prompt covered by the arm (or anything else) is dropped; base and riser are the fallback
         if ref.shape != img.shape:
@@ -104,7 +131,8 @@ def robot_mask(img, cam, ref_robot=None, ref=None):
             b = ref[max(0, y - h):y + h, max(0, x - h):x + h].astype(np.int16)
             return np.abs(a - b).mean() < 18
         pos = [q for q in pos if same(*q)] or pos[-2:]
-    r = cv2.bitwise_and(sam_mask(img, pos, neg), zone)
+    if method != "yolo":
+        r = cv2.bitwise_and(sam_mask(img, pos, neg), zone)
     if ref_robot is not None and ref is not None:
         if ref.shape != img.shape:
             ref = cv2.resize(ref, (img.shape[1], img.shape[0]))
@@ -179,7 +207,7 @@ def blur_outside(img, inside, ksize=151, feather=15):
     return (img.astype(np.float32) * (1 - a) + blurred.astype(np.float32) * a).astype(np.uint8)
 
 
-def inside_mask(img, cam, robot=True, guard=True):
+def inside_mask(img, cam, robot=True, guard=True, method="sam"):
     """Final 'keep sharp' mask for one frame, and the robot and guard masks that went into it."""
     inside = static_inside(cam, img.shape)
     g = np.zeros(img.shape[:2], np.uint8)
@@ -187,7 +215,7 @@ def inside_mask(img, cam, robot=True, guard=True):
     if guard:
         g = change_guard(img, ref, inside)
     rr = cv2.imread(os.path.join(MASK_DIR, f"robot_cam{cam}.png"), cv2.IMREAD_GRAYSCALE)
-    r = robot_mask(img, cam, rr, ref if guard else None) if robot else np.zeros(img.shape[:2], np.uint8)
+    r = robot_mask(img, cam, rr, ref if guard else None, method) if robot else np.zeros(img.shape[:2], np.uint8)
     keep = cv2.bitwise_or(cv2.bitwise_and(inside, cv2.bitwise_not(g)), r)
     return keep, r, g
 
@@ -200,11 +228,13 @@ def main():
     ap.add_argument("--face-threshold", type=float, default=0.2)
     ap.add_argument("--mask-out", help="also write the final keep-sharp mask (white = inside) here")
     ap.add_argument("--no-robot", action="store_true", help="skip the per-frame Epson segmentation")
+    ap.add_argument("--robot", choices=("sam", "yolo"), default="sam",
+                    help="Epson segmentation: SAM 2.1 point prompts, or the trained YOLO11n-seg (ONNX)")
     ap.add_argument("--no-guard", action="store_true", help="skip the change guard")
     ap.add_argument("--quality", type=int, default=90)
     a = ap.parse_args()
     img = cv2.imread(a.src)
-    keep, r, g = inside_mask(img, a.cam, robot=not a.no_robot, guard=not a.no_guard)
+    keep, r, g = inside_mask(img, a.cam, robot=not a.no_robot, guard=not a.no_guard, method=a.robot)
     faced, n = blur_faces(img, a.face_threshold)
     out = blur_outside(faced, keep)
     osd = osd_glyphs(img)

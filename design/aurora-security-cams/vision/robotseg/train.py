@@ -1,11 +1,13 @@
 """Assemble the dataset and train the one-class Epson segmentation model (YOLO11n-seg, COCO weights) on CPU,
 then export it to ONNX at the live-blur input size (448 x 256).
 
-    python train.py --syn-train DIR --syn-val DIR --video-labels DIR --work DIR [--epochs 12]
+    python train.py --syn-train DIR --syn-val DIR --work DIR [--epochs 12] [--init WEIGHTS.pt]
+                    [--video-labels DIR --video-shots ...]
 
-Training set: the mixed-reality samples from synth.py, plus the "retrieval" shot of the AURORA video
-(another T6, labelled by label_video.py). The "transfer" shot, which shows this glovebox's T6, and the
-real Overhead 1 stills are held out for evaluate.py. Validation (for checkpoint selection) is synthetic.
+Training set: the mixed-reality samples from synth.py only. Video shots labelled by label_video.py can be
+added with --video-shots, but by default none are: SAM 2.1 missed part of the robot in the "retrieval"
+shot, and the "transfer" shot (this glovebox's T6) and the real Overhead 1 stills are held out for
+evaluate.py. Validation (for checkpoint selection) is synthetic.
 """
 import argparse
 import glob
@@ -18,7 +20,6 @@ import numpy as np
 from synth import polygons
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-TRAIN_SHOTS = ("retrieval",)
 VIDEO_SIZE = (448, 252)
 
 
@@ -49,25 +50,27 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--syn-train", required=True)
     ap.add_argument("--syn-val", required=True)
-    ap.add_argument("--video-labels", required=True)
+    ap.add_argument("--video-labels", default=None)
+    ap.add_argument("--video-shots", nargs="*", default=[], help="video shots to add to training")
     ap.add_argument("--work", required=True)
     ap.add_argument("--epochs", type=int, default=12)
     ap.add_argument("--imgsz", type=int, default=448)
     ap.add_argument("--batch", type=int, default=16)
     ap.add_argument("--freeze", type=int, default=0)
+    ap.add_argument("--init", default="yolo11n-seg.pt", help="starting weights (COCO by default)")
     a = ap.parse_args()
     data = os.path.join(a.work, "data")
     if os.path.exists(data):
         shutil.rmtree(data)
     link_split(a.syn_train, os.path.join(data, "train"))
     link_split(a.syn_val, os.path.join(data, "val"))
-    nv = add_video(a.video_labels, os.path.join(data, "train"), TRAIN_SHOTS)
+    nv = add_video(a.video_labels, os.path.join(data, "train"), a.video_shots) if a.video_shots else 0
     yaml = os.path.join(a.work, "epson.yaml")
     open(yaml, "w").write(f"path: {data}\ntrain: train/images\nval: val/images\nnames:\n  0: epson_t6\n")
     print(f"train: {len(os.listdir(os.path.join(data, 'train', 'images')))} images ({nv} video frames); "
           f"val: {len(os.listdir(os.path.join(data, 'val', 'images')))}")
     from ultralytics import YOLO
-    model = YOLO("yolo11n-seg.pt")
+    model = YOLO(a.init)
     model.train(data=yaml, imgsz=a.imgsz, epochs=a.epochs, batch=a.batch, workers=4, device="cpu", single_cls=True,
                 project=a.work, name="train", exist_ok=True, cache="ram", patience=100, close_mosaic=3,
                 degrees=3.0, translate=0.1, scale=0.4, fliplr=0.5, hsv_h=0.02, hsv_s=0.5, hsv_v=0.4, mosaic=0.7,

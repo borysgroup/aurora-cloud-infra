@@ -166,9 +166,10 @@ with credentials in it. The cameras' admin logins are separate:
 same numbering. Use them only for the web UI or camera configuration, send them to the
 Pi 5 over stdin only, and don't store them there; the relay uses the viewer logins. Read
 the current camera settings before changing any, and record every change in that README.
-`eth0` has no address by default; give it one only with a gateway-less, unsaved profile
-(`ipv4.never-default yes`, `save no`), and keep `ip_forward=0` so the cameras stay off the
-internet.
+`eth0` gets `192.168.3.199/24` at boot from `amcrest-eth0.service` (a gateway-less, in-memory
+profile, `ipv4.never-default yes`); don't add a gateway or a saved profile, and keep
+`ip_forward=0` so the cameras stay off the internet. The relays run as `amcrest-relay@0`/`@1`,
+and chrony on the Pi 5 serves the cameras NTP (see that README's "Pi 5 setup").
 
 **Treat the Pi as a live production device.** Inspect read-only first (`systemctl status`,
 `journalctl`, `crontab -l` as root) before changing state: scheduled reboots, watchdog

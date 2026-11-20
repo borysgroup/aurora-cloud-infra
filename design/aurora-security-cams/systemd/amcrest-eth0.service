@@ -1,0 +1,25 @@
+# Put the Pi 5's eth0 on the Amcrest camera segment at boot: 192.168.3.199/24,
+# no gateway, never the default route, no DNS, no IPv6. The NetworkManager
+# profile is in-memory only (save no), so nothing about eth0 is written to disk
+# and stopping or disabling this unit returns eth0 to no address. Autoconnect
+# with a higher priority than netplan-eth0 (DHCP, priority 0) brings the
+# address back after a link drop. ip_forward stays 0, so the cameras keep no
+# internet path. Installed 2026-11-19; see README, "Pi 5 setup".
+[Unit]
+Description=Gateway-less eth0 address on the Amcrest camera segment
+Wants=NetworkManager.service
+After=NetworkManager.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStartPre=-/usr/bin/nmcli connection delete cam-link
+ExecStart=/usr/bin/nmcli connection add type ethernet ifname eth0 con-name cam-link \
+    ipv4.method manual ipv4.addresses 192.168.3.199/24 ipv4.never-default yes \
+    ipv4.ignore-auto-dns yes ipv4.dad-timeout 3000 ipv6.method disabled \
+    connection.autoconnect yes connection.autoconnect-priority 50 save no
+ExecStart=/usr/bin/nmcli -w 20 connection up cam-link
+ExecStop=-/usr/bin/nmcli connection delete cam-link
+
+[Install]
+WantedBy=multi-user.target

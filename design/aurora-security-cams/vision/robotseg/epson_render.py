@@ -3,8 +3,9 @@ distortion included: a shaded image and an exact mask of the robot in any joint 
 
 Painter's algorithm: every triangle is projected with the camera's division model, given a flat
 Lambert-plus-specular shade from a light chosen by the caller, sorted far to near and filled with
-OpenCV at 2x, then box-filtered down. Fast (about 0.1 s for the whole robot at 1350 x 700) and needs
-no OpenGL. Accurate enough for training data and silhouettes, not for photorealism.
+OpenCV at 2x, then box-filtered down. About 0.1 s for the whole robot at 1350 x 700 with Epson's meshes,
+0.3 s with 12 mm faces (for colours sampled from a real frame), and no OpenGL. Accurate enough for
+training data and silhouettes, not for photorealism.
 """
 import json
 import os

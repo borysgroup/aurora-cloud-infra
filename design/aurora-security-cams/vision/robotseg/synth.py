@@ -20,7 +20,7 @@ camera's calibrated pose and lens. The label is the rendered robot's exact mask.
   (8 mm), height (5 mm) and yaw (1 deg), camera rotation (0.4 deg), a stand-in end effector, blur,
   noise, JPEG quality and occluders cut from the plate.
 
-    python synth.py --raw RAW0.jpg RAW1.jpg --video VIDEO.mp4 --out DIR -n 1600 [--textured 0.5]
+    python synth.py --raw raw_cam0.jpg raw_cam1.jpg --video VIDEO.mp4 --out DIR -n 1600 [--textured 0.5]
                     [--virtual 0.35] [--workers 4]
 
 writes DIR/images/*.jpg and DIR/labels/*.txt (YOLO segmentation polygons, class 0 = Epson robot).

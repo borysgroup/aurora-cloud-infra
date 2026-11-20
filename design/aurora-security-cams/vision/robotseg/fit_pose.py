@@ -25,7 +25,6 @@ def main():
     cv2.fillPoly(zone, [np.array(spec["robot_zone"], np.int32)], 255)
     tgt = cv2.resize(sam, None, fx=S, fy=S, interpolation=cv2.INTER_NEAREST) > 0
     zs = cv2.resize(zone, None, fx=S, fy=S, interpolation=cv2.INTER_NEAREST) > 0
-    pose0, parked0 = R.fitted_pose()
     from scene import ROBOT
     pose0, j10, j20 = R.E.from_scene_robot(ROBOT)
     x0 = np.array([pose0["j1"][0], pose0["j1"][1], pose0["z0"], pose0["yaw"], j10, j20])

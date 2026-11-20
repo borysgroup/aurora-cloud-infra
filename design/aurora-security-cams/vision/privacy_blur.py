@@ -10,8 +10,8 @@ The rule is "sharp only where we know it is the glovebox interior"; anything els
      its current pose. A prompt whose patch no longer matches the reference (the arm passing in front
      of it, say) is dropped. About 3 s a frame on 4 x86 cores.
    - yolo: the one-class YOLO11n-seg in robotseg/models/epson_t6_seg.onnx, trained on mixed-reality
-     renders of Epson's own CAD (robotseg/), run with onnxruntime on the robot zone. About 0.1 s a
-     frame on one Pi 5 core, so it is the one for live use.
+     renders of Epson's own CAD (robotseg/), run with onnxruntime on the robot zone. About 0.15 s
+     a frame on one Pi 5 core, so it is the one for live use.
    Either way, only the part inside the camera's robot_zone, and only pixels the reference also had
    as robot or that have changed since, are kept. If the segmentation misses part of the arm, that
    part is blurred, never the room.

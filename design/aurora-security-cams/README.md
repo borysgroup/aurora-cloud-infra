@@ -28,6 +28,14 @@ an Ethernet switch on its `eth0`. This follows the 2026-11-06 analysis in issue
   together; and a CAD reconstruction of the interior, part by part. See
   [Vision](#vision).
 - **No pan/tilt/zoom.** See [Angle and image controls](#angle-and-image-controls).
+- **2026-11-20: both cameras offline.** Neither `.150` nor `.151` has answered
+  since the Pi's 13:00 MST reboot (no ARP reply; `eth0` up with `.199`). The
+  lab took at least one down to fit other equipment. Both relays hit
+  systemd's restart limit and are `failed` (open item 9). The picam is
+  unaffected.
+- **A segmentation model for the Epson,** for live blurring, trained here on
+  mixed-reality images from Epson's own CAD. See
+  [Epson segmentation model](#epson-segmentation-model-trained-2026-11-20).
 
 ## Stills (2026-11-19 18:22 UTC)
 
@@ -335,6 +343,9 @@ seen through them, and it is blurred:
      just under the camera: its housing at the right edge and a black unit on
      it, out of focus at the lower right. Both are simply blurred.
    - About 3 s per frame on 4 CPU cores.
+   - `--robot yolo` runs the trained model from
+     [Epson segmentation model](#epson-segmentation-model-trained-2026-11-20)
+     on the robot zone instead, with the same zone and reference checks.
 3. **Change guard:** interior pixels that differ from
    [`vision/masks/reference_camN.jpg`](vision/masks) (the blurred frame the
    mask was built on), in a blob that touches the blurred region, are blurred
@@ -409,14 +420,16 @@ picam, which leaves too little. At 720p:
 | Picam, as now | 0.5 |
 | Overhead 2: static mask, 720p | 0.9 |
 | Overhead 1: static mask, 720p | 0.9 |
-| Overhead 1: YOLO11n-seg on the robot zone, 5 times a second, one thread | 0.6 |
-| **Total, of 4** | **2.9** |
+| Overhead 1: YOLO11n-seg on the robot zone, 5 times a second, one thread | 0.7 |
+| **Total, of 4** | **3.0** |
 
 How the Epson step would work live:
 
 - The model runs on Overhead 1's `robot_zone` (1350 x 700 px), fed at
-  448 x 224. That is about as many pixels as 320 x 320, so about 113 ms on one
-  thread.
+  448 x 232 in a 448 x 256 input: 123 ms on one thread, measured with the
+  trained model (see
+  [Epson segmentation model](#epson-segmentation-model-trained-2026-11-20)),
+  plus about 20 ms for pre- and post-processing.
 - Between runs, each frame reuses the last mask, cut back to the pixels that
   have not changed since the frame it was computed on. A spot the arm leaves
   changes from robot to room and is blurred at once. So a lagging mask can
@@ -430,11 +443,11 @@ How the Epson step would work live:
 What it needs first:
 
 - **Training data.** COCO has no class for a robot arm, so the model has to be
-  trained on this camera's view of the Epson. SAM 2.1, the slow pipeline used
-  for the stills, can label the frames offline. The arm has only been seen
-  parked so far, so a few minutes of it moving through its range are needed:
-  during normal runs or a jog, recorded on the Pi with
-  `pull_feed.py 0 record SECONDS OUT.mp4`.
+  trained on this camera's view of the Epson. Done without footage of the arm
+  moving, from Epson's CAD: see
+  [Epson segmentation model](#epson-segmentation-model-trained-2026-11-20).
+  A few minutes of the arm moving, recorded on the Pi with
+  `pull_feed.py 0 record SECONDS OUT.mp4`, are still the best test.
 - **720p output** for both cameras.
 
 Alternatives:
@@ -450,6 +463,153 @@ Alternatives:
   encode both feeds in hardware at 1080p.
 - **EdgeSAM** takes SAM 2.1's prompts and needs no training. At about 1.8 s
   per frame on two cores, it could update the mask only every few seconds.
+
+### Epson segmentation model (trained 2026-11-20)
+
+[`vision/robotseg/`](vision/robotseg/) trains the YOLO11n-seg for the live
+robot step without any footage of the arm moving. The training images are
+mixed reality: real frames of each camera with Epson's own CAD robot drawn
+into them at random joint angles. Everything ran on the runner's four CPU
+cores, no GPU.
+
+**Epson's CAD.** Epson publishes the T6-B602S as a STEP assembly (base, arm 1,
+arm 2, shaft, user duct) on its support page.
+[`reconstruction/epson_cad.py`](reconstruction/epson_cad.py) downloads it,
+meshes each link with gmsh and articulates it at J1, J2, Z and U, within the
+manual's limits (J1 ±132°, J2 ±150°, Z 200 mm). The STEP file and the meshes
+are not redistributed here.
+
+**Where the robot is.** [`fit_pose.py`](vision/robotseg/fit_pose.py) fits the
+base (J1 position, height and yaw) and the parked joint angles to the SAM 2.1
+silhouette in Overhead 1. Silhouette IoU in the robot zone is 0.78, against
+0.57 for the hand-built model in `scene.py`. Much of the remaining gap is the
+SAM mask's: it misses the top of arm 2's housing and includes the riser block
+and the cables above the controller. Result:
+[`vision/out/epson_pose.json`](vision/out/epson_pose.json).
+
+**Training images** ([`synth.py`](vision/robotseg/synth.py), drawn by
+[`epson_render.py`](vision/robotseg/epson_render.py)):
+
+- **Plate:** one of the stored frames of either camera. The parked robot (its
+  CAD silhouette and SAM mask, dilated) is cut out and filled with a room
+  from a robot-free shot of the AURORA video: labs, people, a server room.
+- **Outside the glovebox:** often replaced by an unblurred room crop. The
+  stored stills are blurred there and the live feed is not. This also puts
+  people, benches and screens next to the arm as hard negatives.
+- **Robot:** Epson's CAD at random J1, J2, Z and U over the full range (a
+  third near the parked pose), drawn through the camera's calibrated pose and
+  lens distortion. The renderer is a painter's algorithm in OpenCV: about
+  0.3 s per image, no OpenGL. The label is the rendered mask, so it fits the
+  drawn robot exactly.
+- **Also randomised:** the base position (σ 8 mm), height (σ 5 mm) and yaw
+  (σ 1°), the camera's rotation (σ 0.4°), a stand-in end effector, blur,
+  noise, JPEG quality, and occluders cut from the plate.
+- **Crop:** Overhead 1 images are its robot zone (1350 x 700 px), as the live
+  step would run it. Overhead 2 images are the whole frame.
+
+Two models were trained:
+
+| | v1 | v2 (committed) |
+|---|---|---|
+| Images (train + validation) | 1,600 + 160 | 2,000 + 200 |
+| Robot's look | flat-shaded, random grey level, tint and light | 55 % textured: each face takes its colour from Overhead 1's 18:22 frame, where the camera saw it at the parked pose, and keeps it at any other pose |
+| Cameras | the two calibrated ones | also 40 % random pinhole cameras, 0.35 to 1.5 m from the robot, from any side, up to 65° above it, over a room crop or a plate |
+| Training | from COCO weights, 10 epochs, 29 min | from v1, 8 epochs, 24 min |
+| Validation mask mAP50-95 (synthetic) | 0.90 (epoch 10, its own set) | 0.86 (epoch 7, its own set, with random cameras) |
+
+**The video.** The [AURORA video](https://www.youtube.com/watch?v=moBCWzP9Izw)
+(60 s) has two shots with a T6. It was downloaded through the Pi 5, because
+YouTube blocks the runner's IP, at 800 KB/s, and is not redistributed.
+[`label_video.py`](vision/robotseg/label_video.py) labels both shots with SAM
+2.1's video predictor. The "retrieval" shot shows another T6, and SAM left
+part of that robot out, so it is not used. The "transfer" shot shows this
+glovebox's T6 moving under a handheld camera. It is held out as a test.
+
+**Results on real frames held out from training**
+([`evaluate.py`](vision/robotseg/evaluate.py), with the ONNX model run by
+[`yolo_onnx.py`](vision/robotseg/yolo_onnx.py) exactly as on the Pi;
+[`vision/out/robotseg_eval.json`](vision/out/robotseg_eval.json) for v2):
+
+| Test frames | v1: IoU / precision / recall | v2: IoU / precision / recall |
+|---|---|---|
+| Overhead 1, the unblurred 00:23 still, arm parked | 0.80 / 0.93 / 0.85 | 0.88 / 0.90 / 0.97 |
+| Overhead 1, the three published (blurred) stills | 0.76 / 0.87 / 0.86 | 0.87 / 0.91 / 0.96 |
+| AURORA video, transfer shot, 30 frames | 0.00 (nothing detected) | 0.03 / 0.07 / 0.03 |
+
+- **Ground truth** is SAM 2.1 in both cases: point prompts on the stills, the
+  video predictor on the shot. It has its own errors. On the blurred stills
+  the top of arm 2's housing is patchy, so some of the model's "false
+  positives" there are robot.
+- **Independence.** v1 never saw a real pixel of this robot. v2's textures
+  come from Overhead 1's 18:22 frame, so its Overhead 1 scores are not
+  independent: same parked robot, same place (18:22 itself scores IoU 0.91).
+  The video is independent for both: another camera, other light, the arm
+  moving.
+- **The video is a failure for both.** Neither model finds the robot in the
+  handheld views, where it is close, large and cut off by the frame edge.
+  Cropped nearer the training scale, a frame scores 0.5 to 0.6, so it is
+  mostly viewpoint and scale, but v2's random cameras did not cover it.
+  Treat the model as specific to the calibrated views.
+- **Precision is what matters for privacy:** a false positive keeps a patch
+  sharp. In the pipeline the robot mask is also cut to the robot zone, and to
+  pixels that were robot in the reference or have changed since, as with SAM.
+
+| v2 on two published stills | v2 on two held-out video frames |
+|---|---|
+| ![](vision/out/robotseg_cam0.jpg) | ![](vision/out/robotseg_video.jpg) |
+
+Green: model and ground truth agree. Red: model only. Blue: ground truth only.
+
+**On the Pi 5,** measured with [`bench_pi.py`](vision/robotseg/bench_pi.py) on
+2026-11-20 (onnxruntime 1.32, 448 x 256 input, median of 20 runs at `nice 19`
+while the picam streamed):
+
+| | 1 thread | 2 threads |
+|---|---|---|
+| Forward pass, median | 123 ms | 68 ms |
+| Forward pass, 90th percentile | 147 ms | 95 ms |
+
+That matches the stock model's 113 ms at 320 x 320, scaled for the larger
+input. Letterboxing, NMS and the masks add 2.3 ms on the runner, where the
+forward pass takes 12.5 ms. The Pi is about 10 times slower here, so that is
+roughly 20 ms more on the Pi (an estimate: the Pi has no OpenCV, which
+`yolo_onnx.py` needs). Five runs a second on one thread is then about 0.7 of
+a core, the figure now in the "What fits" table above. The picam had 0
+restarts before and after, and nothing was left on the Pi.
+
+**Use:** `python vision/privacy_blur.py --cam 0 --robot yolo IN.jpg OUT.jpg`
+runs the model ([`vision/robotseg/models/epson_t6_seg.onnx`](vision/robotseg/models/epson_t6_seg.onnx),
+11.6 MB) on the robot zone instead of SAM. SAM stays the default for stills.
+
+**To rebuild.** The STEP and the video are fetched, not stored here. The
+unblurred 00:23 stills are in this branch's history at fa312e2; `synth.py`
+tells the cameras apart by `cam0`/`cam1` in the file name.
+
+```
+python reconstruction/epson_cad.py                 # Epson's STEP -> meshes in ~/.cache
+yt-dlp -f 137 -o VIDEO.mp4 https://www.youtube.com/watch?v=moBCWzP9Izw   # from a residential IP
+cd vision/robotseg
+python fit_pose.py                                  # -> ../out/epson_pose.json
+python label_video.py VIDEO.mp4 VLABELS             # SAM 2.1 labels for both T6 shots
+S="python synth.py --raw raw0023_cam0.jpg raw0023_cam1.jpg --video VIDEO.mp4"
+$S --out V1 -n 1600 --seed 1 && $S --out V1VAL -n 160 --seed 2
+python train.py --syn-train V1 --syn-val V1VAL --work W1 --epochs 10
+$S --out V2 -n 2000 --seed 11 --textured 0.55 --virtual 0.4
+$S --out V2VAL -n 200 --seed 12 --textured 0.55 --virtual 0.4
+python train.py --syn-train V2 --syn-val V2VAL --work W2 --epochs 8 --init W1/train/weights/best.pt
+python evaluate.py --stills raw0023_cam0.jpg --video-labels VLABELS
+```
+
+**Limits:**
+
+- **No frame of Overhead 1 with the arm away from its parked pose exists
+  yet.** The first live footage of the arm moving is the real test.
+  `pull_feed.py 0 record` can capture it. `evaluate.py`'s SAM prompts assume
+  the parked pose, so those frames need their own.
+- **A camera that comes back in another place** needs
+  `calibrate_two_view.py`, the inside masks and `fit_pose.py` redone, then new
+  training images and a retrain: about 30 min on four cores.
+- **The end effector** is a stand-in box; the real tool is not modelled.
 
 ### Chip tray
 
@@ -739,9 +899,10 @@ for the YouTube relay.
 4. **Upload:** about 11 Mbit/s for both cameras over RTMPS, accepted. The
    watchdog change under [Why RTMPS](#why-rtmps-and-what-it-costs) would bring
    it to about 9 Mbit/s.
-5. **Blurring the live streams,** if wanted: feasible at 720p with a YOLO
-   model trained on the Epson, which needs a few minutes of footage of the arm
-   moving (see [Live blur on the Pi 5](#live-blur-on-the-pi-5-measured-2026-11-19)).
+5. **Blurring the live streams,** if wanted: feasible at 720p (see
+   [Live blur on the Pi 5](#live-blur-on-the-pi-5-measured-2026-11-19)). The
+   Epson model now exists; it still needs checking on footage of the arm
+   moving, and the relay would need the decode, blur and re-encode stage.
 6. **Scale and the chamber model:** two tape readings would pin the scale to
    about 1 %. One is the chip tray's long side (the fit gives a 9.5 mm pocket
    pitch, about 95 mm for 10 pockets). The other is the glovebox's inside
@@ -752,8 +913,11 @@ for the YouTube relay.
 7. **The black unit on the Epson's arm 2**, out of focus at Overhead 2's
    lower right, is placed by the robot fit but not identified.
 8. **CAD fidelity:** the parts are primitives at the right size, place and
-   colour. Vendor STEP files (Epson T6-B, Thorlabs breadboards and stages, the
-   ASI stage) could replace them part by part in `reconstruction/scene.py`.
+   colour. Vendor STEP files (Thorlabs breadboards and stages, the ASI stage)
+   could replace them part by part in `reconstruction/scene.py`. Epson's T6-B
+   STEP is now meshed and articulated by `reconstruction/epson_cad.py` and
+   fitted in Overhead 1 (`vision/out/epson_pose.json`), but `scene.py` still
+   draws the hand-built robot.
 9. **Relay restart limit:** a relay that can't reach its camera exits, and
    systemd allows 3 starts an hour (`StartLimitBurst`), so a camera that is
    off for more than about four minutes leaves its relay `failed` until the
@@ -762,6 +926,8 @@ for the YouTube relay.
    with
    `sudo systemctl reset-failed amcrest-relay@0 && sudo systemctl start amcrest-relay@0`.
    A relay that waits for its camera, instead of exiting, would avoid it.
+   It happened again to both relays after the 2026-11-20 13:00 MST reboot,
+   with both cameras off.
 
 ## Files
 
@@ -782,6 +948,14 @@ for the YouTube relay.
   registration (`register_chamber.py`) and the joint two-camera calibration
   (`calibrate_two_view.py`), and the Pi 5 live-blur benchmark
   (`live_bench.py`), with results in `vision/out/`.
+- [`vision/robotseg/`](vision/robotseg/): the Epson segmentation model: CAD
+  rendering through the calibrated cameras (`epson_render.py`), its pose fit
+  (`fit_pose.py`), mixed-reality training data (`synth.py`), video labels
+  (`label_video.py`), training (`train.py`), held-out evaluation
+  (`evaluate.py`, ground truth in `gt/`), onnxruntime inference
+  (`yolo_onnx.py`), the Pi 5 timing (`bench_pi.py`) and the model
+  (`models/epson_t6_seg.onnx`).
 - [`reconstruction/`](reconstruction/): the CAD reconstruction of the glovebox
-  interior, its exports and renders.
+  interior, its exports and renders, and Epson's own T6-B602S CAD, articulated
+  (`epson_cad.py`).
 - [`captures/`](captures/): the stills above, blurred.

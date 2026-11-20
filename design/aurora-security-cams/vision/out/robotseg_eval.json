@@ -1,0 +1,269 @@
+{
+ "model": "epson_t6_seg.onnx",
+ "overhead1": {
+  "summary": {
+   "iou": 0.873,
+   "precision": 0.907,
+   "recall": 0.96,
+   "fp_share_of_frame": 0.018,
+   "frames": 4
+  },
+  "frames": [
+   {
+    "iou": 0.8441404983739582,
+    "precision": 0.8695174493752693,
+    "recall": 0.9665816540345079,
+    "fp_share_of_frame": 0.025638095238095238,
+    "frame": "2026-11-19_0023Z_cam0_192.168.3.150.jpg",
+    "published": true
+   },
+   {
+    "iou": 0.8539098532494759,
+    "precision": 0.8836808192133295,
+    "recall": 0.9620440025036314,
+    "fp_share_of_frame": 0.022694179894179895,
+    "frame": "2026-11-19_1638Z_cam0_192.168.3.150.jpg",
+    "published": true
+   },
+   {
+    "iou": 0.9133403979748028,
+    "precision": 0.9704794438581795,
+    "recall": 0.9394403723829985,
+    "fp_share_of_frame": 0.005742857142857142,
+    "frame": "2026-11-19_1822Z_cam0_192.168.3.150.jpg",
+    "published": true
+   },
+   {
+    "iou": 0.8812191727553673,
+    "precision": 0.9027765401489697,
+    "recall": 0.973617266642547,
+    "fp_share_of_frame": 0.019627513227513226,
+    "frame": "raw0023_cam0.jpg",
+    "published": false
+   }
+  ],
+  "note": "robot zone 1350 x 700 px; arm parked; ground truth SAM 2.1 with point prompts"
+ },
+ "video_transfer": {
+  "summary": {
+   "iou": 0.032,
+   "precision": 0.066,
+   "recall": 0.033,
+   "fp_share_of_frame": 0.0,
+   "frames": 30
+  },
+  "frames": [
+   {
+    "iou": 0.0,
+    "precision": 0.0,
+    "recall": 0.0,
+    "fp_share_of_frame": 0.0,
+    "frame": 604
+   },
+   {
+    "iou": 0.0,
+    "precision": 0.0,
+    "recall": 0.0,
+    "fp_share_of_frame": 0.0,
+    "frame": 606
+   },
+   {
+    "iou": 0.0,
+    "precision": 0.0,
+    "recall": 0.0,
+    "fp_share_of_frame": 0.0,
+    "frame": 608
+   },
+   {
+    "iou": 0.0,
+    "precision": 0.0,
+    "recall": 0.0,
+    "fp_share_of_frame": 0.0,
+    "frame": 610
+   },
+   {
+    "iou": 0.0,
+    "precision": 0.0,
+    "recall": 0.0,
+    "fp_share_of_frame": 0.0,
+    "frame": 612
+   },
+   {
+    "iou": 0.0,
+    "precision": 0.0,
+    "recall": 0.0,
+    "fp_share_of_frame": 0.0,
+    "frame": 614
+   },
+   {
+    "iou": 0.0,
+    "precision": 0.0,
+    "recall": 0.0,
+    "fp_share_of_frame": 0.0,
+    "frame": 616
+   },
+   {
+    "iou": 0.0,
+    "precision": 0.0,
+    "recall": 0.0,
+    "fp_share_of_frame": 0.0,
+    "frame": 618
+   },
+   {
+    "iou": 0.0,
+    "precision": 0.0,
+    "recall": 0.0,
+    "fp_share_of_frame": 0.0,
+    "frame": 620
+   },
+   {
+    "iou": 0.48951716009429064,
+    "precision": 0.9899107214995556,
+    "recall": 0.4919717115136549,
+    "fp_share_of_frame": 0.00048177083333333335,
+    "frame": 622
+   },
+   {
+    "iou": 0.48080169516147614,
+    "precision": 0.9821339036294985,
+    "recall": 0.4850440416209742,
+    "fp_share_of_frame": 0.0008420138888888889,
+    "frame": 624
+   },
+   {
+    "iou": 0.0,
+    "precision": 0.0,
+    "recall": 0.0,
+    "fp_share_of_frame": 0.0,
+    "frame": 626
+   },
+   {
+    "iou": 0.0,
+    "precision": 0.0,
+    "recall": 0.0,
+    "fp_share_of_frame": 0.0,
+    "frame": 628
+   },
+   {
+    "iou": 0.0,
+    "precision": 0.0,
+    "recall": 0.0,
+    "fp_share_of_frame": 0.0,
+    "frame": 630
+   },
+   {
+    "iou": 0.0,
+    "precision": 0.0,
+    "recall": 0.0,
+    "fp_share_of_frame": 0.0,
+    "frame": 632
+   },
+   {
+    "iou": 0.0,
+    "precision": 0.0,
+    "recall": 0.0,
+    "fp_share_of_frame": 0.0,
+    "frame": 634
+   },
+   {
+    "iou": 0.0,
+    "precision": 0.0,
+    "recall": 0.0,
+    "fp_share_of_frame": 0.0,
+    "frame": 636
+   },
+   {
+    "iou": 0.0,
+    "precision": 0.0,
+    "recall": 0.0,
+    "fp_share_of_frame": 0.0,
+    "frame": 638
+   },
+   {
+    "iou": 0.0,
+    "precision": 0.0,
+    "recall": 0.0,
+    "fp_share_of_frame": 0.0,
+    "frame": 640
+   },
+   {
+    "iou": 0.0,
+    "precision": 0.0,
+    "recall": 0.0,
+    "fp_share_of_frame": 0.0,
+    "frame": 642
+   },
+   {
+    "iou": 0.0,
+    "precision": 0.0,
+    "recall": 0.0,
+    "fp_share_of_frame": 0.0,
+    "frame": 644
+   },
+   {
+    "iou": 0.0,
+    "precision": 0.0,
+    "recall": 0.0,
+    "fp_share_of_frame": 0.0,
+    "frame": 646
+   },
+   {
+    "iou": 0.0,
+    "precision": 0.0,
+    "recall": 0.0,
+    "fp_share_of_frame": 0.0,
+    "frame": 648
+   },
+   {
+    "iou": 0.0,
+    "precision": 0.0,
+    "recall": 0.0,
+    "fp_share_of_frame": 0.0,
+    "frame": 650
+   },
+   {
+    "iou": 0.0,
+    "precision": 0.0,
+    "recall": 0.0,
+    "fp_share_of_frame": 0.0,
+    "frame": 652
+   },
+   {
+    "iou": 0.0,
+    "precision": 0.0,
+    "recall": 0.0,
+    "fp_share_of_frame": 0.0,
+    "frame": 654
+   },
+   {
+    "iou": 0.0,
+    "precision": 0.0,
+    "recall": 0.0,
+    "fp_share_of_frame": 0.0,
+    "frame": 656
+   },
+   {
+    "iou": 0.0,
+    "precision": 0.0,
+    "recall": 0.0,
+    "fp_share_of_frame": 0.0,
+    "frame": 658
+   },
+   {
+    "iou": 0.0,
+    "precision": 0.0,
+    "recall": 0.0,
+    "fp_share_of_frame": 0.0,
+    "frame": 660
+   },
+   {
+    "iou": 0.0,
+    "precision": 0.0,
+    "recall": 0.0,
+    "fp_share_of_frame": 0.0,
+    "frame": 662
+   }
+  ],
+  "note": "AURORA video, transfer shot (this glovebox's T6), every 2nd frame, held out; ground truth SAM 2.1 video predictor"
+ }
+}

@@ -28,11 +28,21 @@ an Ethernet switch on its `eth0`. This follows the 2026-11-06 analysis in issue
   together; and a CAD reconstruction of the interior, part by part. See
   [Vision](#vision).
 - **No pan/tilt/zoom.** See [Angle and image controls](#angle-and-image-controls).
-- **2026-11-20: both cameras offline.** Neither `.150` nor `.151` has answered
-  since the Pi's 13:00 MST reboot (no ARP reply; `eth0` up with `.199`). The
-  lab took at least one down to fit other equipment. Both relays hit
-  systemd's restart limit and are `failed` (open item 9). The picam is
-  unaffected.
+- **Camera outage, 2026-11-19 to 2026-11-23.**
+  - **Exfoliation Overhead 1 (`.150`)** has not answered since 2026-11-19
+    21:54 UTC (no ARP reply; `eth0` up with `.199`). It is probably the camera
+    the lab took down to fit other equipment. Its relay stays `failed`
+    (open item 9).
+  - **Exfoliation Overhead 2 (`.151`)** dropped on 2026-11-20; its relay
+    ended the broadcast at 18:12 UTC. It came back on 2026-11-23 at 20:36 UTC
+    (13:36 MST), after one NTP request at 20:20 UTC and a few minutes off
+    again. It is aimed as before: features in a new frame sit a median 1.5 px
+    from `vision/masks/reference_cam1.jpg`. Its clock is right. Its relay was
+    restarted by hand at 20:43 UTC and streams again, with health "good".
+  - **The scene in Overhead 2 has changed:** the chip tray is off the gantry
+    stage, a clear acrylic rack stands on the deck, and the Epson's arm 2 is
+    parked in the frame's upper right.
+  - The picam was unaffected throughout.
 - **A segmentation model for the Epson,** for live blurring, trained here on
   mixed-reality images from Epson's own CAD. See
   [Epson segmentation model](#epson-segmentation-model-trained-2026-11-20).
@@ -927,7 +937,8 @@ for the YouTube relay.
    `sudo systemctl reset-failed amcrest-relay@0 && sudo systemctl start amcrest-relay@0`.
    A relay that waits for its camera, instead of exiting, would avoid it.
    It happened again to both relays after the 2026-11-20 13:00 MST reboot,
-   with both cameras off.
+   with both cameras off. On 2026-11-23, `.151` came back 35 minutes after
+   the 13:00 MST reboot, and its relay was restarted by hand at 13:43 MST.
 
 ## Files
 

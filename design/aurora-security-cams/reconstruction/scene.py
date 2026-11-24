@@ -397,7 +397,9 @@ def riser_block(j1, back_dir, base_underside_z, h):
                 ALU, "epson")
 
 
-def build(cal, robot=None):
+def build_outline(cal, robot=None):
+    """The first, primitive-only reconstruction (boxes, cylinders and hulls; the Epson as a hand-built
+    outline). build() in scene_detail.py replaces it part by part."""
     r = dict(ROBOT, **(robot or {}))
     parts = []
     parts += shell()
@@ -425,10 +427,28 @@ def build(cal, robot=None):
     return parts
 
 
+def build(cal, robot=None, **kw):
+    """The detailed reconstruction (scene_detail.build)."""
+    import scene_detail
+    return scene_detail.build(cal, robot, **kw)
+
+
 def export(parts, path_glb):
+    """glTF binary: one node per part, each with its finish as a PBR material (and texture for decals)."""
+    import materials
     sc = trimesh.Scene()
     for i, p in enumerate(parts):
-        sc.add_geometry(p.mesh, node_name=f"{i:03d} {p.name}", geom_name=f"{i:03d} {p.name}")
+        m = p.mesh.copy()
+        if getattr(p, "image", None) is not None:
+            m.visual = trimesh.visual.TextureVisuals(uv=p.uv, material=materials.pbr("decal", image=p.image))
+        else:
+            mat = getattr(p, "material", None) or "paint"
+            spec = materials.M.get(mat, materials.M["paint"])
+            col = p.color if p.color.lower() != spec["color"] else None
+            m = materials.smooth(m)
+            m.visual = trimesh.visual.TextureVisuals(material=materials.pbr(mat if mat in materials.M else "paint",
+                                                                            color=col))
+        sc.add_geometry(m, node_name=f"{i:03d} {p.name}", geom_name=f"{i:03d} {p.name}")
     sc.export(path_glb)
 
 

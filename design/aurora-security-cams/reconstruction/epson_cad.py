@@ -29,12 +29,15 @@ LINKS = ("base", "arm1", "arm2", "shaft", "cable")
 COLORS = dict(base="#d4dad5", arm1="#d4dad5", arm2="#d4dad5", shaft="#c8ccce", cable="#202020",
               unit="#151515")
 FACES = dict(base=9000, arm1=3000, arm2=6000, shaft=800, cable=1200)   # decimation targets
+FACES_HI = dict(base=90000, arm1=30000, arm2=60000, shaft=8000, cable=20000)   # for renders (hi=True)
 
 
-def fetch(cache=CACHE):
-    """Download the STEP (once) and mesh each link into cache/<link>.stl. Returns the cache path."""
+def fetch(cache=CACHE, hi=False):
+    """Download the STEP (once) and mesh each link into cache/<link>.stl (cache/<link>_hi.stl with
+    hi=True: finer curvature-driven meshing for renders). Returns the cache path."""
     os.makedirs(cache, exist_ok=True)
-    if all(os.path.exists(os.path.join(cache, f"{k}.stl")) for k in LINKS):
+    sfx = "_hi" if hi else ""
+    if all(os.path.exists(os.path.join(cache, f"{k}{sfx}.stl")) for k in LINKS):
         return cache
     step = os.path.join(cache, "T6-B602S.stp")
     if not os.path.exists(step):
@@ -45,8 +48,8 @@ def fetch(cache=CACHE):
     gmsh.option.setNumber("Geometry.OCCImportLabels", 1)
     gmsh.model.occ.importShapes(step)
     gmsh.model.occ.synchronize()
-    for k, v in (("Mesh.MeshSizeMin", 1.0), ("Mesh.MeshSizeMax", 25.0), ("Mesh.MeshSizeFromCurvature", 10),
-                 ("Mesh.Algorithm", 6)):
+    for k, v in (("Mesh.MeshSizeMin", 0.5 if hi else 1.0), ("Mesh.MeshSizeMax", 8.0 if hi else 25.0),
+                 ("Mesh.MeshSizeFromCurvature", 28 if hi else 10), ("Mesh.Algorithm", 6)):
         gmsh.option.setNumber(k, v)
     names = {}
     for d, t in gmsh.model.getEntities(3):
@@ -71,22 +74,23 @@ def fetch(cache=CACHE):
         local = np.c_[-(P[:, 0] - J1_XS), P[:, 2], P[:, 1]]     # STEP (x, y up, z) -> local (X fwd, Y, Z up)
         m = trimesh.Trimesh(local, lut[np.vstack(faces)], process=True)
         m.merge_vertices()
-        if len(m.faces) > FACES.get(key, 4000):
-            m = m.simplify_quadric_decimation(face_count=FACES.get(key, 4000))
-        m.export(os.path.join(cache, f"{key}.stl"))
+        target = (FACES_HI if hi else FACES).get(key, 4000)
+        if len(m.faces) > target:
+            m = m.simplify_quadric_decimation(face_count=target)
+        m.export(os.path.join(cache, f"{key}{sfx}.stl"))
     gmsh.finalize()
     return cache
 
 
-_links = None
+_links = {}
 
 
-def links(cache=CACHE):
-    global _links
-    if _links is None:
-        fetch(cache)
-        _links = {k: trimesh.load(os.path.join(cache, f"{k}.stl")) for k in LINKS}
-    return _links
+def links(cache=CACHE, hi=False):
+    if hi not in _links:
+        fetch(cache, hi)
+        sfx = "_hi" if hi else ""
+        _links[hi] = {k: trimesh.load(os.path.join(cache, f"{k}{sfx}.stl")) for k in LINKS}
+    return _links[hi]
 
 
 def rz(deg, about=(0.0, 0.0)):
@@ -122,13 +126,13 @@ def unit_box():
     return b
 
 
-def posed(pose, j1, j2, z=0.0, u=0.0, ceiling=None, with_unit=True):
+def posed(pose, j1, j2, z=0.0, u=0.0, ceiling=None, with_unit=True, hi=False):
     """{name: trimesh} in the chamber frame. ceiling: squash the user duct to stay below this height
     (the duct's free arc is 245 mm tall, more than the glovebox leaves above the base)."""
     B = base_transform(pose)
     L = link_transforms(j1, j2, z, u)
     out = {}
-    for k, m in links().items():
+    for k, m in links(hi=hi).items():
         m = m.copy()
         if k == "cable" and ceiling is not None:
             top = ceiling - pose["z0"] - 8.0

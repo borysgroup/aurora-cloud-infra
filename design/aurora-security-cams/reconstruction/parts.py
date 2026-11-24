@@ -11,9 +11,16 @@ def _rgba(hexcol, alpha=255):
 
 
 class Part:
-    def __init__(self, name, mesh, color, group, source=""):
-        mesh.visual.face_colors = _rgba(color)
+    """A named mesh with a colour (used by the quick pyvista renders), a finish from materials.M (used by
+    the glTF export and Blender) and, for decals, a texture image with per-vertex uv."""
+
+    def __init__(self, name, mesh, color, group, source="", material=None, image=None, uv=None):
+        if image is None:
+            mesh.visual.face_colors = _rgba(color)
         self.name, self.mesh, self.color, self.group, self.source = name, mesh, color, group, source
+        from materials import for_colour
+        self.material = material or for_colour(color) or "paint"
+        self.image, self.uv = image, uv
 
 
 def _frame(origin, z_axis=Z, yaw_deg=0.0):

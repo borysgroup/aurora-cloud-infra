@@ -120,6 +120,17 @@ for k, (x, y, z, rx) in enumerate(((0.6, -0.9, 2.2, -25.0), (0.6, 2.0, 2.2, 25.0
     lo.rotation_euler = (math.radians(rx), 0, 0)
     scn.collection.objects.link(lo)
 
+# light that reaches the interior through the ceiling's fittings and the sloped windows, as one soft
+# panel just under the ceiling (the frames show the deck and the robot's top lit from above)
+ld = bpy.data.lights.new("interior fill", "AREA")
+ld.shape = "RECTANGLE"
+ld.size, ld.size_y = 1.0, 0.8
+ld.energy = float(opts.get("fill_w", 20.0))
+ld.color = (1.0, 0.98, 0.95)
+lo = bpy.data.objects.new("interior fill", ld)
+lo.location = (0.62, 0.56, 0.775)
+scn.collection.objects.link(lo)
+
 scn.render.engine = "CYCLES"
 scn.cycles.device = "CPU"
 scn.cycles.samples = int(opts["samples"])
@@ -165,8 +176,9 @@ def look_at(pos, target, up=(0, 0, 1)):
     return M
 
 
-def render(path, M, lens_mm=None, fov_deg=None, res=(1920, 1080), hide=()):
+def render(path, M, lens_mm=None, fov_deg=None, res=(1920, 1080), hide=(), exposure=0.0):
     set_hidden(hide)
+    scn.view_settings.exposure = float(opts.get("exposure", 0.0)) + exposure
     cam_ob.matrix_world = M
     cam_data.sensor_fit = "HORIZONTAL"
     cam_data.sensor_width = 36.0
@@ -193,19 +205,20 @@ for v in VIEWS:
         M = Matrix((R[0], -R[1], -R[2])).transposed().to_4x4()
         M.translation = centre * MM
         cw, ch = int(round(2 * W * s)), int(round(2 * H * s))
-        render(os.path.join(OUT, f"{v}_pinhole.png"), M, lens_mm=CAL["f_px"] * 36.0 / (2 * W), res=(cw, ch))
+        render(os.path.join(OUT, f"{v}_pinhole.png"), M, lens_mm=CAL["f_px"] * 36.0 / (2 * W), res=(cw, ch),
+               hide=(f"Amcrest camera {v}",), exposure=float(opts.get("cam_exposure", 0.8)))
     elif v == "open_side":
         render(os.path.join(OUT, "open_side.png"), look_at((560, -1350, 1250), (640, 560, 230)), fov_deg=40,
-               res=(1920, 1200), hide=HIDE_OUTSIDE)
+               res=(1600, 1000), hide=HIDE_OUTSIDE)
     elif v == "far_end":
         render(os.path.join(OUT, "far_end.png"), look_at((2350, 300, 1150), (620, 560, 230)), fov_deg=38,
-               res=(1920, 1200), hide=HIDE_OUTSIDE + ("far-end",))
+               res=(1600, 1000), hide=HIDE_OUTSIDE + ("far-end",))
     elif v == "epson":
         render(os.path.join(OUT, "epson.png"), look_at((640, 200, 600), (1000, 700, 330)), fov_deg=62,
-               res=(1920, 1200), hide=("ceiling",))
+               res=(1600, 1000), hide=("ceiling",))
     elif v == "gantry":
         render(os.path.join(OUT, "gantry.png"), look_at((900, 150, 620), (470, 430, 230)), fov_deg=58,
-               res=(1920, 1200), hide=("ceiling",))
+               res=(1600, 1000), hide=("ceiling",))
     elif v == "top":
         render(os.path.join(OUT, "top.png"), look_at((600, 560, 3000), (600, 560, 0), up=(1, 0, 0)), fov_deg=30,
                res=(1600, 1600), hide=HIDE_OUTSIDE + ("far side",))

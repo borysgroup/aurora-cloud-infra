@@ -752,33 +752,121 @@ reading of the tray would pin the scale at about 1 %.
 [`reconstruction/`](reconstruction/) models the glovebox interior as
 individual parts in the same frame. Each part takes its size from a
 datasheet or standard size where one exists, its position from the two
-calibrated cameras, and its colour from the frames.
-[`reconstruction/scene.py`](reconstruction/scene.py) holds every number;
+calibrated cameras, and its colour from the frames. It is built in two
+layers:
+
+- [`reconstruction/scene.py`](reconstruction/scene.py) holds the
+  positions, sizes and sources of every part (the first, primitive-only
+  model is still there as `build_outline`).
+- [`reconstruction/scene_detail.py`](reconstruction/scene_detail.py) draws
+  each part in detail at those positions, from the part library in
+  [`reconstruction/detail.py`](reconstruction/detail.py), and gives it a
+  finish ([`reconstruction/materials.py`](reconstruction/materials.py)) and
+  its printed marks ([`reconstruction/decals.py`](reconstruction/decals.py)).
+
 [`reconstruction/out/parts.json`](reconstruction/out/parts.json) lists each
-part with its bounds, colour and source.
+part with its finish, bounds, face count and source.
 
-![The model from the open side, both cameras in red](reconstruction/out/overview_open_side.png)
+![The model from the open side (ceiling and open-side window hidden), Blender Cycles](reconstruction/out/render_open_side.jpg)
 
-![An orbit around the model](reconstruction/out/turntable.gif)
-
-| Overhead 1: published frame, and the model seen from the camera | Overhead 2 |
+| Overhead 1: published frame, and the model through the same camera and lens | Overhead 2 |
 |---|---|
 | ![](reconstruction/out/view_cam0.jpg) | ![](reconstruction/out/view_cam1.jpg) |
 
-The model blended over each frame, with its edges in yellow:
+| Inside, towards the Epson and microscope | Inside, towards the gantry and exfoliator |
+|---|---|
+| ![](reconstruction/out/render_epson.jpg) | ![](reconstruction/out/render_gantry.jpg) |
+
+From the far end: [`render_far_end.jpg`](reconstruction/out/render_far_end.jpg);
+from above: [`render_top.jpg`](reconstruction/out/render_top.jpg). The model
+blended over each frame, with its edges in yellow (the geometric check):
 [Overhead 1](reconstruction/out/overlay_cam0.jpg),
-[Overhead 2](reconstruction/out/overlay_cam1.jpg). The renders apply the
+[Overhead 2](reconstruction/out/overlay_cam1.jpg). The camera views apply the
 cameras' measured lens distortion
-([`reconstruction/render.py`](reconstruction/render.py)), so they compare
-pixel for pixel with the photos.
+([`reconstruction/build_reconstruction.py`](reconstruction/build_reconstruction.py)),
+so they compare pixel for pixel with the photos. The camera renders are
+exposed about 0.8 stop brighter than the outside views, as the cameras' auto
+exposure does.
+
+**Detail (2026-11-24):**
+
+- **Epson T6-B602S:** Epson's own STEP (base with the controller box, both
+  arms, the shaft and the user duct), meshed finely by gmsh
+  (`epson_cad.links(hi=True)`: about 210k faces), with the EPSON wordmark on
+  both sides of arm 2, a badge, the warning triangle and a rating label as
+  decals, on a machined aluminium riser. The badge and labels' positions are
+  read off Overhead 1 by eye.
+- **Breadboards:** a skin with every M6 hole cut (25 mm grid, 12.5 mm from
+  the edges), 2 mm corner radii, steel posts.
+- **Steppers:** NEMA 17/23 to the flange drawings: chamfered die-cast end
+  caps, the laminated stack with its grooves, the boss, a D-flat shaft, the
+  four mounting holes, the cable exit with four leads, and the round labels
+  on the motors that show one.
+- **Linear axes:** threaded SFU1605 screws (16 mm, 5 mm lead, a rounded
+  groove), flanged ball nuts, BK12/BF12 end supports, HGR15 rails with
+  their profile and four blocks with end seals, the carriage plate, and
+  couplings to the motors.
+- **Drag chains:** link by link (side plates and crossbars, 17 mm pitch)
+  along the old paths.
+- **Ducts:** Panduit Type G with its base, finger walls on a 12.7 mm pitch
+  and cover lips, cover off as in the frames.
+- **Tape reels:** revolved flanges and tape, the hub with a 12-spline bore.
+- **Exfoliator:** machined housing with screws, the pin-fin drive (with
+  its label rectified from Overhead 1), the EXFOLIATOR label on its stage.
+- **Microscope:** revolved objective (front lens, taper, green 20x band,
+  knurled grip), nosepiece, the BX3-URA filter drum with its scale, filleted
+  module housings, the camera, the ASI stage as two carriages with the
+  acrylic insert and its screws, the mounting plate with its relief cut,
+  the light source's fins, the THORLABS mark on the Thorlabs box, slotted
+  docking fixtures with cap screws.
+- **Chip tray:** 60 real pockets, each chip as a thin chamfered square
+  (rotated where `chip_tray.json` says so), and the handwritten edge as a
+  texture rectified from Overhead 1.
+- **Shell:** window panes, flanges, outer clamp bars and acorn nuts on the
+  studs (every ~95 mm, from the chamber model), the dished antechamber
+  door with its hub, clamp bar and centre screw, and the QR sign's visible
+  lower part as a texture rectified from Overhead 2.
+- **Cameras:** both Amcrest balls at their calibrated poses (mounts not
+  modelled).
+- **Finishes:** brushed stainless (deck, walls, frames, door),
+  bead-blasted and machined aluminium, ground steel, black oxide and
+  anodising, painted housings, plastics, rubber, glass. They are PBR
+  materials in the glTF; Blender adds the brushed grain and the glass.
+- **Printed marks:** EPSON, THORLABS and EXFOLIATOR are typeset in Liberation
+  Sans, which is close to the printed lettering but not the vendors' logo
+  artwork. Marks too small or specific to typeset (the QR sign, the
+  handwriting, the drive's label) are textures taken from the published
+  stills through the calibrated camera and lens.
+
+**What the detail changed:**
+
+- **The Epson's pose.** Fitted to Overhead 1's silhouette alone, Epson's CAD
+  reaches IoU 0.78 (`vision/out/epson_pose.json`, used for the segmentation
+  training data), but that pose parks J3 at x = 1416 mm, past the far end of
+  the 1200 mm box: Overhead 1 looks along the box and can't see the arm's
+  depth. `fit_epson_cad.py` keeps J2 and J3 near the two-view fit of the
+  outline (which also used Overhead 2's view of arm 2) and refits: IoU 0.633
+  in Overhead 1 (the outline had 0.64), base underside at 182 mm, J3 at
+  (1188, 359) mm, 81 mm from the outline's J3. The base pose in
+  `epson_pose.json` still projects correctly into Overhead 1, so the training
+  data is unaffected.
+- **No glove ports.** The chamber model assumes 8-inch ports at x = 348 and
+  852 mm, z = 400 mm on both long sides. All four spots show the room through
+  clear window in the unblurred 00:23 UTC frames, so none are modelled.
+
+**Still approximate:** the microscope modules, stage, docking fixtures and
+drive are built to their sizes and the frames, not from vendor CAD; the
+backs of parts no camera sees are inferred; cables, tubing and wiring are
+not modelled.
 
 **How each part is placed:**
 
 - **Two views:** the chip tray (its lattice in both views, with every chip
   drawn in its pocket from `chip_tray.json`: 3 empty, 1 rotated) and the two
   tape reels (ray intersections).
-- **Silhouette fit, two views:** the Epson T6-B602S. Its shape is from
-  Epson's dimensioned T-B drawing (T-B manual Rev.13, pp. 43, 45, 52 and 162):
+- **Silhouette fit, two views:** the Epson T6-B602S. The first model's shape
+  was a hand-built outline from Epson's dimensioned T-B drawing (T-B manual
+  Rev.13, pp. 43, 45, 52 and 162; kept as `scene.build_outline`):
   - base flange and sloped column
   - controller box (226 x 130 x 193 mm, underside at 272 mm), fixed to the
     base on a rear column, with its top-rear chamfer
@@ -794,6 +882,9 @@ pixel for pixel with the photos.
   J1 ±132° and J2 ±150°. Overlap: IoU 0.64 in Overhead 1 and 0.82 in
   Overhead 2. The fit puts the base's underside at 161 mm (the chamber model
   reads 150 to 180) and parks J3 63 mm from the microscope objective.
+  - **Epson's own CAD:** the detailed model draws the robot from Epson's
+    STEP instead (below), posed by
+    [`reconstruction/fit_epson_cad.py`](reconstruction/fit_epson_cad.py).
   - **The black object in Overhead 2:** this fit identifies the out-of-focus
     black object at its lower right. The model alone matches Overhead 2's
     white housing plus that object at IoU 0.77, so the object rides on
@@ -823,7 +914,9 @@ pixel for pixel with the photos.
 
 - **Parts placed from both views** reproject closely in both frames. The tray
   is within 0.4 px, and the two reels within 2 and 9 px.
-- **The Epson** overlaps its masks at the IoU above (0.64 and 0.82).
+- **The Epson** overlaps its masks at the IoU above (0.64 and 0.82) as the
+  outline. Epson's CAD overlaps Overhead 1's mask at IoU 0.633; Overhead 2's
+  mask of arm 2 wasn't kept, so the CAD isn't scored there.
 - **Parts placed from one view** sit right in that view, but their depth along
   the ray rests on an assumed height. In the other view they can be off by 20
   to 50 mm.
@@ -831,12 +924,21 @@ pixel for pixel with the photos.
   the far end, and the backs of parts.
 - **Not modelled:** cables, tubing and wiring.
 
-**Files:** `out/glovebox.glb` (all 124 parts, coloured, one node per part; opens
-in any glTF viewer), `out/stl/<group>.stl` (one per group: glovebox, ducts,
-breadboards, epson, gantry, exfoliator, microscope, deck), the renders above,
-an orbit (`out/turntable.gif`) and `out/parts.json`. Rebuild with
-`xvfb-run -a python reconstruction/build_reconstruction.py` (numpy, opencv,
-trimesh, pyvista, scipy).
+**Files:** `out/glovebox.glb` (every part as its own node, with PBR
+finishes and textured decals; opens in any glTF viewer),
+`out/stl/<group>.stl` (one per group, decimated to at most 40k faces for
+GitHub's STL viewer), the renders above and `out/parts.json`. The GLB and
+`stl/epson.stl` contain a tessellation of Epson's published T6-B602S CAD; the
+STEP itself is downloaded at build time and not stored here. Rebuild with
+
+```
+python reconstruction/fit_epson_cad.py              # optional: refit the Epson (writes out/epson_cad_pose.json)
+BLENDER=/path/to/blender-4.2/blender xvfb-run -a python reconstruction/build_reconstruction.py
+```
+
+(numpy, opencv, trimesh, shapely, pyvista, scipy, gmsh, fast-simplification;
+Blender 4.2 LTS for the Cycles renders, about 10 minutes on 4 CPU cores.
+Without Blender the build still writes the model and the overlays.)
 
 ## Earlier findings
 
@@ -967,6 +1069,9 @@ for the YouTube relay.
   (`yolo_onnx.py`), the Pi 5 timing (`bench_pi.py`) and the model
   (`models/epson_t6_seg.onnx`).
 - [`reconstruction/`](reconstruction/): the CAD reconstruction of the glovebox
-  interior, its exports and renders, and Epson's own T6-B602S CAD, articulated
-  (`epson_cad.py`).
+  interior: positions and sources (`scene.py`), the detailed parts
+  (`scene_detail.py`, `detail.py`), finishes (`materials.py`), printed marks
+  (`decals.py`), Epson's own T6-B602S CAD, articulated (`epson_cad.py`) and
+  posed (`fit_epson_cad.py`), the Cycles renders (`blender_render.py`), and
+  its exports and renders in `out/`.
 - [`captures/`](captures/): the stills above, blurred.

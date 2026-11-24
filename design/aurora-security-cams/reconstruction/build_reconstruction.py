@@ -57,12 +57,14 @@ def distort_canvas(canvas, s, size=(1920, 1080)):
     return cv2.remap(canvas, mx, my, cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT)
 
 
-def blender_renders(blender, glb, photos, samples):
+def blender_renders(blender, glb, photos, samples, views=()):
     tmp = os.path.join(OUT, "_blender")
     os.makedirs(tmp, exist_ok=True)
     subprocess.run([blender, "-b", "--factory-startup", "-P", os.path.join(HERE, "blender_render.py"), "--", glb, tmp,
-                    "--samples", str(samples)], check=True)
+                    *views, "--samples", str(samples)], check=True)
     for cam in (CAM0, CAM1):
+        if not os.path.exists(os.path.join(tmp, f"{cam.name}_pinhole.png")):
+            continue
         canvas = cv2.imread(os.path.join(tmp, f"{cam.name}_pinhole.png"))
         img = distort_canvas(canvas, 0.5)
         photo = cv2.resize(cv2.imread(os.path.join(photos, STILLS[cam.name])), (img.shape[1], img.shape[0]))
@@ -79,7 +81,12 @@ def main():
     ap.add_argument("--photos", default=os.path.join(HERE, "..", "captures"))
     ap.add_argument("--blender", default=os.environ.get("BLENDER", shutil.which("blender")))
     ap.add_argument("--samples", type=int, default=32)
+    ap.add_argument("--views", nargs="*", default=[], help="Blender views to render (default: all)")
+    ap.add_argument("--renders-only", action="store_true", help="re-render out/glovebox.glb without rebuilding it")
     a = ap.parse_args()
+    if a.renders_only:
+        blender_renders(a.blender, os.path.join(OUT, "glovebox.glb"), a.photos, a.samples, a.views)
+        return
     os.makedirs(os.path.join(OUT, "stl"), exist_ok=True)
     parts = scene.build(CAL)
 
@@ -116,12 +123,12 @@ def main():
     # quick OpenGL renders over the published (blurred) frames: the geometric check
     for cam in (CAM0, CAM1):
         photo = cv2.imread(os.path.join(a.photos, STILLS[cam.name]))
-        img, m = render.render_camera(parts, cam)
+        img, m = render.render_camera([p for p in parts if p.group != "cameras"], cam)
         ov = render.overlay(photo, img, m, alpha=0.5)
         cv2.imwrite(os.path.join(OUT, f"overlay_{cam.name}.jpg"), cv2.resize(ov, (1280, 720)),
                     [cv2.IMWRITE_JPEG_QUALITY, 88])
     if a.blender:
-        blender_renders(a.blender, glb, a.photos, a.samples)
+        blender_renders(a.blender, glb, a.photos, a.samples, a.views)
     else:
         print("Blender not found (--blender or $BLENDER): skipped the Cycles renders")
     print(f"{len(parts)} parts, {sum(len(p.mesh.faces) for p in parts)} faces; wrote {OUT}")

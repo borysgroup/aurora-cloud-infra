@@ -117,7 +117,7 @@ def shell():
         "180-190 mm, matching the 15-inch antechamber (datasheet 190 mm)")
     # QR sign on the wall: US Letter sheet with the QR panel, texture rectified from Overhead 2
     c = np.array([1.5, 827.5, 372.0])
-    img = DC.from_photo(CAM1, c, (0, 1, 0), (1, 0, 0), 245, 196, 4.0)
+    img = DC.from_photo(CAM1, c, (0, 1, 0), (1, 0, 0), 245, 196, 4.0, fill=(236, 236, 230))
     out.append(decal("QR sign (photo texture, Overhead 2)", "glovebox", c, (0, 1, 0), (1, 0, 0), 245, 196, img, 0.5))
     src("QR sign", "one-view", "bottom edge back-projected onto the wall from Overhead 2; the top is out of view; "
         "texture rectified from the 18:22 UTC Overhead 2 still (only its lower part is in view)")
@@ -500,6 +500,29 @@ def epson_vendor(r):
     return out, pose, (j1, j2)
 
 
+def amcrest_cameras(cal):
+    """The two Amcrest IP5M-T1179EW turret cameras: the ball (85 mm) with its lens and IR window, at each
+    calibrated centre and view direction. Their mounts are out of both views and not modelled."""
+    out = []
+    for k in ("cam0", "cam1"):
+        c = cal["cameras"][k]
+        R = np.array(c["R"])
+        centre = -R.T @ np.array(c["t"])
+        f, right = R[2], R[0]
+        T = D.frame(centre - f * 30, right, f)
+        ball = D.revolve([(0, -30)] + [(42.5 * np.cos(a), 42.5 * np.sin(a)) for a in np.linspace(-np.pi / 2 + 0.3,
+                                                                                                    np.pi / 2 - 0.5, 14)]
+                         + [(0, 42.5 * np.sin(np.pi / 2 - 0.5))], T, 64)
+        out.append(mk(f"Amcrest camera {k} housing", ball, "cameras", "epson_paint", "#e6e8e6"))
+        out.append(mk(f"Amcrest camera {k} face", D.revolve([(0, 20.5), (36, 20.5), (36, 22), (0, 22)], T, 64),
+                      "cameras", "black_plastic", "#101010"))
+        out.append(mk(f"Amcrest camera {k} lens", D.revolve([(0, 27), (9, 26.5), (11, 22), (0, 22)], T, 48), "cameras",
+                      "lens_glass"))
+    src("cameras", "two-view", "Amcrest IP5M-T1179EW ball (85 mm, datasheet) at each camera's calibrated centre, "
+        "facing its view direction; the turret base and mount are out of view and not modelled")
+    return out
+
+
 def build(cal, robot=None, vendor_epson=True):
     r = dict(S.ROBOT, **(robot or {}))
     parts = []
@@ -511,6 +534,7 @@ def build(cal, robot=None, vendor_epson=True):
     parts += exfoliator()
     parts += microscope()
     parts += deck_items()
+    parts += amcrest_cameras(cal)
     if vendor_epson:
         try:
             ep, _, _ = epson_vendor(r)

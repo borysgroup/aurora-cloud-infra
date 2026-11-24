@@ -104,9 +104,10 @@ def warning_triangle(side_mm, px_per_mm=16):
     return img
 
 
-def from_photo(cam, center, x_axis, normal, w_mm, h_mm, px_per_mm=4.0, still=None):
+def from_photo(cam, center, x_axis, normal, w_mm, h_mm, px_per_mm=4.0, still=None, fill=None, margin=6):
     """Rectify the w x h mm patch of a plane (centre, x along its width, outward normal) out of the
-    published still of `cam`, through the calibrated pose and lens distortion. Returns an RGB image."""
+    published still of `cam`, through the calibrated pose and lens distortion. Returns an RGB image.
+    fill: colour for the part of the patch outside the frame (default: stretch the frame's edge)."""
     img = cv2.imread(still or STILLS[cam.name])
     nrm = np.asarray(normal, float) / np.linalg.norm(normal)
     x = np.asarray(x_axis, float)
@@ -120,4 +121,8 @@ def from_photo(cam, center, x_axis, normal, w_mm, h_mm, px_per_mm=4.0, still=Non
     mx = uv[:, 0].reshape(H, W).astype(np.float32)
     my = uv[:, 1].reshape(H, W).astype(np.float32)
     out = cv2.remap(img, mx, my, cv2.INTER_CUBIC, borderMode=cv2.BORDER_REPLICATE)
+    if fill is not None:
+        h, w = img.shape[:2]
+        off = (mx < margin) | (my < margin) | (mx > w - 1 - margin) | (my > h - 1 - margin)
+        out[off] = fill[::-1]
     return Image.fromarray(out[:, :, ::-1])

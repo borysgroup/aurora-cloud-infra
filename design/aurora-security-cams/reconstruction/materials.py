@@ -29,6 +29,7 @@ M = {
     "grey_pvc": dict(color="#8f8c88", metallic=0.0, roughness=0.6),
     "epson_paint": dict(color="#d4dad5", metallic=0.0, roughness=0.38),
     "epson_grey": dict(color="#aeb4b2", metallic=0.0, roughness=0.45),
+    "epson_print": dict(color="#1d2f73", metallic=0.0, roughness=0.5),
     "olympus_paint": dict(color="#d2d8d2", metallic=0.0, roughness=0.4),
     "red_plastic": dict(color="#b3150d", metallic=0.0, roughness=0.42),
     "yellow_pla": dict(color="#e6d200", metallic=0.0, roughness=0.5),
@@ -36,7 +37,7 @@ M = {
     "tape_white": dict(color="#e4ebec", metallic=0.0, roughness=0.55),
     "tape_blue": dict(color="#6a90cf", metallic=0.0, roughness=0.5),
     "tray_white": dict(color="#dfe3e2", metallic=0.0, roughness=0.55),
-    "chip": dict(color="#3a1f3f", metallic=0.3, roughness=0.25),
+    "chip": dict(color="#2c1832", metallic=0.0, roughness=0.3),
     "label_paper": dict(color="#ecece6", metallic=0.0, roughness=0.7),
     "green_anod": dict(color="#2f9a4a", metallic=0.6, roughness=0.35),
     "lens_glass": dict(color="#20262a", metallic=0.0, roughness=0.02),
@@ -46,7 +47,7 @@ M = {
     "wire_green": dict(color="#20a040", metallic=0.0, roughness=0.5),
     "wire_black": dict(color="#101010", metallic=0.0, roughness=0.5),
     "tube_blue": dict(color="#2a62c4", metallic=0.0, roughness=0.25, transmission=0.3),
-    "decal": dict(color="#ffffff", metallic=0.0, roughness=0.5),
+    "decal": dict(color="#ffffff", metallic=0.0, roughness=0.6),
     "paint": dict(color="#888888", metallic=0.0, roughness=0.5),
 }
 
@@ -89,7 +90,7 @@ def pbr(key, color=None, image=None):
             metallicFactor=spec["metallic"], roughnessFactor=spec["roughness"], baseColorTexture=image,
             alphaMode="BLEND" if alpha < 1 else ("MASK" if image is not None and image.mode == "RGBA" else None),
             alphaCutoff=0.5 if image is not None and image.mode == "RGBA" and alpha >= 1 else None,
-            doubleSided=image is not None or alpha < 1)
+            doubleSided=alpha < 1)
     return _cache[ck]
 
 

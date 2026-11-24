@@ -206,7 +206,7 @@ for v in VIEWS:
         M.translation = centre * MM
         cw, ch = int(round(2 * W * s)), int(round(2 * H * s))
         render(os.path.join(OUT, f"{v}_pinhole.png"), M, lens_mm=CAL["f_px"] * 36.0 / (2 * W), res=(cw, ch),
-               hide=(f"Amcrest camera {v}",), exposure=float(opts.get("cam_exposure", 0.8)))
+               hide=(f"Amcrest camera {v}",), exposure=float(opts.get("cam_exposure", 0.3)))
     elif v == "open_side":
         render(os.path.join(OUT, "open_side.png"), look_at((560, -1350, 1250), (640, 560, 230)), fov_deg=40,
                res=(1600, 1000), hide=HIDE_OUTSIDE)
@@ -214,11 +214,11 @@ for v in VIEWS:
         render(os.path.join(OUT, "far_end.png"), look_at((2350, 300, 1150), (620, 560, 230)), fov_deg=38,
                res=(1600, 1000), hide=HIDE_OUTSIDE + ("far-end",))
     elif v == "epson":
-        render(os.path.join(OUT, "epson.png"), look_at((640, 200, 600), (1000, 700, 330)), fov_deg=62,
-               res=(1600, 1000), hide=("ceiling",))
+        render(os.path.join(OUT, "epson.png"), look_at((470, 250, 700), (1000, 640, 300)), fov_deg=58,
+               res=(1600, 1000), hide=("ceiling",), exposure=-1.0)
     elif v == "gantry":
         render(os.path.join(OUT, "gantry.png"), look_at((900, 150, 620), (470, 430, 230)), fov_deg=58,
-               res=(1600, 1000), hide=("ceiling",))
+               res=(1600, 1000), hide=("ceiling",), exposure=-0.8)
     elif v == "top":
         render(os.path.join(OUT, "top.png"), look_at((600, 560, 3000), (600, 560, 0), up=(1, 0, 0)), fov_deg=30,
-               res=(1600, 1600), hide=HIDE_OUTSIDE + ("far side",))
+               res=(1600, 1600), hide=HIDE_OUTSIDE + ("far side",), exposure=-1.2)

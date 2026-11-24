@@ -784,18 +784,20 @@ blended over each frame, with its edges in yellow (the geometric check):
 [Overhead 2](reconstruction/out/overlay_cam1.jpg). The camera views apply the
 cameras' measured lens distortion
 ([`reconstruction/build_reconstruction.py`](reconstruction/build_reconstruction.py)),
-so they compare pixel for pixel with the photos. The camera renders are
-exposed about 0.8 stop brighter than the outside views, as the cameras' auto
-exposure does.
+so they compare pixel for pixel with the photos. Each view has its own
+exposure, as the cameras' auto exposure does: the camera views are 0.3 stop
+brighter than the outside views, the views with the ceiling removed 0.8 to
+1.2 stops darker.
 
 **Detail (2026-11-24):**
 
 - **Epson T6-B602S:** Epson's own STEP (base with the controller box, both
   arms, the shaft and the user duct), meshed finely by gmsh
-  (`epson_cad.links(hi=True)`: about 210k faces), with the EPSON wordmark on
-  both sides of arm 2, a badge, the warning triangle and a rating label as
-  decals, on a machined aluminium riser. The badge and labels' positions are
-  read off Overhead 1 by eye.
+  (`epson_cad.links(hi=True)`: about 200k faces), on a machined aluminium
+  riser. The STEP models the EPSON wordmark in relief on both sides of arm 2
+  (81 x 18 mm); those faces get the print's blue. A badge, the warning
+  triangle and a rating label on the base are decals, placed by eye from
+  Overhead 1 (within about 40 px of the photo).
 - **Breadboards:** a skin with every M6 hole cut (25 mm grid, 12.5 mm from
   the edges), 2 mm corner radii, steel posts.
 - **Steppers:** NEMA 17/23 to the flange drawings: chamfered die-cast end
@@ -832,11 +834,12 @@ exposure does.
   bead-blasted and machined aluminium, ground steel, black oxide and
   anodising, painted housings, plastics, rubber, glass. They are PBR
   materials in the glTF; Blender adds the brushed grain and the glass.
-- **Printed marks:** EPSON, THORLABS and EXFOLIATOR are typeset in Liberation
-  Sans, which is close to the printed lettering but not the vendors' logo
-  artwork. Marks too small or specific to typeset (the QR sign, the
-  handwriting, the drive's label) are textures taken from the published
-  stills through the calibrated camera and lens.
+- **Printed marks:** the arm's EPSON wordmarks are Epson's own relief. The
+  badge, THORLABS and EXFOLIATOR are typeset in Liberation Sans, which is
+  close to the printed lettering but not the vendors' logo artwork. Marks
+  too small or specific to typeset (the QR sign, the handwriting, the
+  drive's label) are textures taken from the published stills through the
+  calibrated camera and lens.
 
 **What the detail changed:**
 
@@ -847,9 +850,10 @@ exposure does.
   depth. `fit_epson_cad.py` keeps J2 and J3 near the two-view fit of the
   outline (which also used Overhead 2's view of arm 2) and refits: IoU 0.633
   in Overhead 1 (the outline had 0.64), base underside at 182 mm, J3 at
-  (1188, 359) mm, 81 mm from the outline's J3. The base pose in
-  `epson_pose.json` still projects correctly into Overhead 1, so the training
-  data is unaffected.
+  (1188, 359) mm, 81 mm from the outline's J3. The segmentation training
+  data (`vision/robotseg/`) was rendered on the base pose in
+  `epson_pose.json`, which sits 34 mm (across) and 47 mm (in height) from
+  this one.
 - **No glove ports.** The chamber model assumes 8-inch ports at x = 348 and
   852 mm, z = 400 mm on both long sides. All four spots show the room through
   clear window in the unblurred 00:23 UTC frames, so none are modelled.
@@ -937,7 +941,7 @@ BLENDER=/path/to/blender-4.2/blender xvfb-run -a python reconstruction/build_rec
 ```
 
 (numpy, opencv, trimesh, shapely, pyvista, scipy, gmsh, fast-simplification;
-Blender 4.2 LTS for the Cycles renders, about 10 minutes on 4 CPU cores.
+Blender 4.2 LTS for the Cycles renders, about 15 minutes on 4 CPU cores.
 Without Blender the build still writes the model and the overlays.)
 
 ## Earlier findings

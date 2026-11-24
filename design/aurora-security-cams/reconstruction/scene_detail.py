@@ -18,7 +18,7 @@ import detail as D
 import scene as S
 from cameras import CAM0, CAM1
 from parts import Part
-from scene import GB_D, GB_H, GB_W, SOURCES, WALL_T, src
+from scene import GB_D, GB_H, GB_W, WALL_T, src
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 EPSON_POSE = os.path.join(HERE, "out", "epson_cad_pose.json")
@@ -463,26 +463,17 @@ def epson_vendor(r):
     h = pose["z0"] - 75.7
     Rb = B @ trimesh.transformations.translation_matrix((-71.0, 0, -h / 2))
     out.append(mk("Epson riser block", D.round_box((288, 179, h), 2.5, Rb), "epson", "alu_machined"))
-    # printed marks: EPSON on both sides of arm 2 near the tip, a badge and labels on the base
-    arm2 = meshes["arm2"]
-    A2 = B @ Lt["arm2"]
-    hits = []
-    for side in (1, -1):
-        o_loc = np.array([520.0, side * 150.0, 415.0, 1])
-        d_loc = np.array([0, -side, 0.0, 0])
-        o, dvec = (A2 @ o_loc)[:3], (A2 @ d_loc)[:3]
-        loc, idx, _ = arm2.ray.intersects_location([o], [dvec], multiple_hits=False)
-        if len(loc):
-            n = arm2.face_normals[idx[0]]
-            x_dir = np.cross((0, 0, 1.0), n)
-            out.append(decal(f"EPSON wordmark, arm 2 ({'left' if side > 0 else 'right'})", "epson", loc[0], x_dir, n,
-                             72, 15, DC.typeset("EPSON", 72, 15, (18, 42, 120), None, pad=0.02, spacing=0.04), 0.3))
-            hits.append(loc[0])
+    # printed marks: Epson's CAD models the EPSON wordmark in relief on both sides of arm 2, so those
+    # faces get the print colour; a badge and labels on the base are decals
+    lg = E.logo()
+    if lg is not None:
+        out.append(mk("EPSON wordmarks, arm 2 (Epson CAD relief)", lg.apply_transform(B @ Lt["arm2"]), "epson",
+                      "epson_print"))
     base = meshes["base"]
     for nm, o_loc, d_loc, w, hgt, img in (
-            ("EPSON badge, base", (40.0, 200.0, 40.0), (0, -1, 0), 34, 9,
+            ("EPSON badge, base", (20.0, -200.0, 45.0), (0, 1, 0), 34, 9,
              DC.typeset("EPSON", 34, 9, (25, 40, 110), (226, 230, 228), pad=0.12)),
-            ("warning label, base", (-20.0, 200.0, 150.0), (0, -1, 0), 26, 23, DC.warning_triangle(26)),
+            ("warning label, base", (0.0, 200.0, 85.0), (0, -1, 0), 26, 23, DC.warning_triangle(26)),
             ("rating label, base", (-120.0, -200.0, 120.0), (0, 1, 0), 40, 60,
              DC.label([("EPSON", 0.1, True), ("SCARA ROBOT", 0.06, False), ("MODEL: T6-B602S", 0.06, False),
                        ("MANIPULATOR WITH CONTROLLER", 0.05, False)], 40, 60, border=(120, 120, 120)))):
@@ -491,12 +482,13 @@ def epson_vendor(r):
         loc, idx, _ = base.ray.intersects_location([o], [dvec], multiple_hits=False)
         if len(loc):
             n = base.face_normals[idx[0]]
+            n = -n if n @ dvec > 0 else n
             xd = np.cross((0, 0, 1), n)
             out.append(decal(nm, "epson", loc[0], xd, n, w, hgt, img, 0.3))
     src("epson", "datasheet", "Epson's own T6-B602S CAD (STEP from Epson's support page, meshed per link; fetched "
         "at build time, not redistributed as STEP), posed by fit_epson_cad.py: Overhead 1 silhouette with J2/J3 "
-        "held near the two-view outline fit; EPSON wordmarks, badge and labels as decals (typeset, positions "
-        "estimated from Overhead 1); the black unit on arm 2 is placed from Overhead 2, make unknown")
+        "held near the two-view outline fit; the EPSON wordmarks are Epson's own relief, coloured; badge and labels "
+        "as decals (typeset, positions estimated from Overhead 1); the black unit on arm 2 is placed from Overhead 2, make unknown")
     return out, pose, (j1, j2)
 
 

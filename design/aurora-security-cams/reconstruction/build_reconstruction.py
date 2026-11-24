@@ -23,7 +23,6 @@ import subprocess
 
 import cv2
 import numpy as np
-import pyvista as pv
 import trimesh
 
 import render
@@ -34,16 +33,6 @@ from lensmodel import undistort_px
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, "out")
 STILLS = {"cam0": "2026-11-19_1822Z_cam0_192.168.3.150.jpg", "cam1": "2026-11-19_1822Z_cam1_192.168.3.151.jpg"}
-
-
-def camera_glyph(cam, size=60.0):
-    """A small pyramid for a camera: apex at the centre, base along its view direction."""
-    c, R = cam.centre, cam.R
-    f, r, d = R[2], R[0], R[1]
-    base = [c + size * (1.4 * f + sx * 0.8 * r + sy * 0.45 * d) for sx, sy in ((-1, -1), (1, -1), (1, 1), (-1, 1))]
-    V = np.array([c] + base)
-    F = np.array([[0, 1, 2], [0, 2, 3], [0, 3, 4], [0, 4, 1], [1, 3, 2], [1, 4, 3]])
-    return trimesh.Trimesh(V, F)
 
 
 def distort_canvas(canvas, s, size=(1920, 1080)):

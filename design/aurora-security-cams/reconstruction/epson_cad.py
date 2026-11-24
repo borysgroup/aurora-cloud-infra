@@ -59,27 +59,55 @@ def fetch(cache=CACHE, hi=False):
             continue
         names[t] = n.replace("_T6-B601S", "").strip(" _").replace(" ", "_")
     gmsh.model.mesh.generate(2)
+
+    def to_local(P):
+        return np.c_[-(P[:, 0] - J1_XS), P[:, 2], P[:, 1]]      # STEP (x, y up, z) -> local (X fwd, Y, Z up)
+
     for t, key in names.items():
-        nodes, faces = {}, []
+        nodes, faces, logo = {}, [], []
         for _, s in gmsh.model.getBoundary([(3, t)], oriented=False, recursive=False):
             nt, nc, _ = gmsh.model.mesh.getNodes(2, s, includeBoundary=True)
             nodes.update({int(g): nc[3 * i:3 * i + 3] for i, g in enumerate(nt)})
+            dest = faces
+            if hi and key == "arm2" and is_logo_surface(s, to_local):
+                dest = logo
             for typ, conn in zip(*gmsh.model.mesh.getElements(2, s)[::2]):
                 if typ == 2:
-                    faces.append(np.asarray(conn, np.int64).reshape(-1, 3))
+                    dest.append(np.asarray(conn, np.int64).reshape(-1, 3))
         tags = np.array(sorted(nodes))
         lut = np.zeros(tags.max() + 1, np.int64)
         lut[tags] = np.arange(len(tags))
-        P = np.array([nodes[g] for g in tags])
-        local = np.c_[-(P[:, 0] - J1_XS), P[:, 2], P[:, 1]]     # STEP (x, y up, z) -> local (X fwd, Y, Z up)
+        local = to_local(np.array([nodes[g] for g in tags]))
         m = trimesh.Trimesh(local, lut[np.vstack(faces)], process=True)
         m.merge_vertices()
         target = (FACES_HI if hi else FACES).get(key, 4000)
         if len(m.faces) > target:
             m = m.simplify_quadric_decimation(face_count=target)
         m.export(os.path.join(cache, f"{key}{sfx}.stl"))
+        if logo:
+            lm = trimesh.Trimesh(local, lut[np.vstack(logo)], process=True)
+            lm.remove_unreferenced_vertices()
+            lm.export(os.path.join(cache, f"{key}_logo{sfx}.stl"))
     gmsh.finalize()
     return cache
+
+
+def is_logo_surface(s, to_local):
+    """The EPSON wordmark is modelled in relief on both sides of arm 2: about 135 small B-rep faces per
+    side, centred near (420, +/-60, 360) mm in the link frame. Picked by size and position."""
+    import gmsh
+    if gmsh.model.occ.getMass(2, s) > 250:
+        return False
+    bb = np.array(gmsh.model.getBoundingBox(2, s))
+    c = to_local(((bb[:3] + bb[3:]) / 2)[None])[0]
+    return abs(c[0] - 420) < 75 and 40 < abs(c[1]) < 80 and abs(c[2] - 360) < 60
+
+
+def logo(cache=CACHE):
+    """The relief EPSON wordmarks on arm 2 (hi-detail meshing only), in arm 2's frame, or None."""
+    fetch(cache, hi=True)
+    p = os.path.join(cache, "arm2_logo_hi.stl")
+    return trimesh.load(p) if os.path.exists(p) else None
 
 
 _links = {}

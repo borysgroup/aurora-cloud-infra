@@ -61,9 +61,8 @@ def label(lines, w_mm, h_mm, bg=(236, 236, 230), fg=(30, 30, 30), px_per_mm=16, 
     d = ImageDraw.Draw(img)
     if border:
         d.rectangle([1, 1, W - 2, H - 2], outline=tuple(border) + (255,), width=max(2, W // 60))
-    n = len(lines)
     y = H * 0.12
-    for i, (txt, rel, bold) in enumerate(lines):
+    for txt, rel, bold in lines:
         f = _font(FONTS if bold else FONTS_REG, max(6, int(H * rel)))
         tw = d.textlength(txt, font=f)
         d.text(((W - tw) / 2, y), txt, font=f, fill=tuple(fg) + (255,))

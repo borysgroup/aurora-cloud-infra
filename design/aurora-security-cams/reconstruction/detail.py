@@ -8,7 +8,7 @@ igus-style chain links); sizes are given next to each function.
 import numpy as np
 import trimesh
 from shapely import affinity
-from shapely.geometry import LineString, Point, Polygon
+from shapely.geometry import Point, Polygon
 from shapely.geometry import box as sbox
 from shapely.ops import unary_union
 
@@ -237,7 +237,6 @@ def breadboard(x0, y0, sx, sy, z_top, t=12.7, pitch=25.0, edge=12.5, hole_r=3.0,
     top = extrude(skin_poly, skin, z0=z_top - skin)
     core = extrude(outline, t - skin, z0=z_top - t)
     floors = cat([extrude(circ(hole_r * 0.98, x, y, 12), 0.2, z0=z_top - skin) for x in xs for y in ys])
-    # Thorlabs mark: a chamfered edge band on the top perimeter
     return cat([top, core]), floors
 
 

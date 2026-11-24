@@ -116,7 +116,7 @@
   },
   "epson": {
    "source": "datasheet",
-   "note": "Epson's own T6-B602S CAD (STEP from Epson's support page, meshed per link; fetched at build time, not redistributed as STEP), posed by fit_epson_cad.py: Overhead 1 silhouette with J2/J3 held near the two-view outline fit; EPSON wordmarks, badge and labels as decals (typeset, positions estimated from Overhead 1); the black unit on arm 2 is placed from Overhead 2, make unknown"
+   "note": "Epson's own T6-B602S CAD (STEP from Epson's support page, meshed per link; fetched at build time, not redistributed as STEP), posed by fit_epson_cad.py: Overhead 1 silhouette with J2/J3 held near the two-view outline fit; the EPSON wordmarks are Epson's own relief, coloured; badge and labels as decals (typeset, positions estimated from Overhead 1); the black unit on arm 2 is placed from Overhead 2, make unknown"
   }
  },
  "parts": [
@@ -814,7 +814,7 @@
    "name": "chips",
    "group": "gantry",
    "finish": "chip",
-   "colour": "#3a1f3f",
+   "colour": "#2c1832",
    "faces": 1596,
    "bounds_mm": [
     [
@@ -4924,7 +4924,7 @@
    ],
    "source": {
     "source": "datasheet",
-    "note": "Epson's own T6-B602S CAD (STEP from Epson's support page, meshed per link; fetched at build time, not redistributed as STEP), posed by fit_epson_cad.py: Overhead 1 silhouette with J2/J3 held near the two-view outline fit; EPSON wordmarks, badge and labels as decals (typeset, positions estimated from Overhead 1); the black unit on arm 2 is placed from Overhead 2, make unknown"
+    "note": "Epson's own T6-B602S CAD (STEP from Epson's support page, meshed per link; fetched at build time, not redistributed as STEP), posed by fit_epson_cad.py: Overhead 1 silhouette with J2/J3 held near the two-view outline fit; the EPSON wordmarks are Epson's own relief, coloured; badge and labels as decals (typeset, positions estimated from Overhead 1); the black unit on arm 2 is placed from Overhead 2, make unknown"
    }
   },
   {
@@ -4947,7 +4947,7 @@
    ],
    "source": {
     "source": "datasheet",
-    "note": "Epson's own T6-B602S CAD (STEP from Epson's support page, meshed per link; fetched at build time, not redistributed as STEP), posed by fit_epson_cad.py: Overhead 1 silhouette with J2/J3 held near the two-view outline fit; EPSON wordmarks, badge and labels as decals (typeset, positions estimated from Overhead 1); the black unit on arm 2 is placed from Overhead 2, make unknown"
+    "note": "Epson's own T6-B602S CAD (STEP from Epson's support page, meshed per link; fetched at build time, not redistributed as STEP), posed by fit_epson_cad.py: Overhead 1 silhouette with J2/J3 held near the two-view outline fit; the EPSON wordmarks are Epson's own relief, coloured; badge and labels as decals (typeset, positions estimated from Overhead 1); the black unit on arm 2 is placed from Overhead 2, make unknown"
    }
   },
   {
@@ -4970,7 +4970,7 @@
    ],
    "source": {
     "source": "datasheet",
-    "note": "Epson's own T6-B602S CAD (STEP from Epson's support page, meshed per link; fetched at build time, not redistributed as STEP), posed by fit_epson_cad.py: Overhead 1 silhouette with J2/J3 held near the two-view outline fit; EPSON wordmarks, badge and labels as decals (typeset, positions estimated from Overhead 1); the black unit on arm 2 is placed from Overhead 2, make unknown"
+    "note": "Epson's own T6-B602S CAD (STEP from Epson's support page, meshed per link; fetched at build time, not redistributed as STEP), posed by fit_epson_cad.py: Overhead 1 silhouette with J2/J3 held near the two-view outline fit; the EPSON wordmarks are Epson's own relief, coloured; badge and labels as decals (typeset, positions estimated from Overhead 1); the black unit on arm 2 is placed from Overhead 2, make unknown"
    }
   },
   {
@@ -4993,7 +4993,7 @@
    ],
    "source": {
     "source": "datasheet",
-    "note": "Epson's own T6-B602S CAD (STEP from Epson's support page, meshed per link; fetched at build time, not redistributed as STEP), posed by fit_epson_cad.py: Overhead 1 silhouette with J2/J3 held near the two-view outline fit; EPSON wordmarks, badge and labels as decals (typeset, positions estimated from Overhead 1); the black unit on arm 2 is placed from Overhead 2, make unknown"
+    "note": "Epson's own T6-B602S CAD (STEP from Epson's support page, meshed per link; fetched at build time, not redistributed as STEP), posed by fit_epson_cad.py: Overhead 1 silhouette with J2/J3 held near the two-view outline fit; the EPSON wordmarks are Epson's own relief, coloured; badge and labels as decals (typeset, positions estimated from Overhead 1); the black unit on arm 2 is placed from Overhead 2, make unknown"
    }
   },
   {
@@ -5016,7 +5016,7 @@
    ],
    "source": {
     "source": "datasheet",
-    "note": "Epson's own T6-B602S CAD (STEP from Epson's support page, meshed per link; fetched at build time, not redistributed as STEP), posed by fit_epson_cad.py: Overhead 1 silhouette with J2/J3 held near the two-view outline fit; EPSON wordmarks, badge and labels as decals (typeset, positions estimated from Overhead 1); the black unit on arm 2 is placed from Overhead 2, make unknown"
+    "note": "Epson's own T6-B602S CAD (STEP from Epson's support page, meshed per link; fetched at build time, not redistributed as STEP), posed by fit_epson_cad.py: Overhead 1 silhouette with J2/J3 held near the two-view outline fit; the EPSON wordmarks are Epson's own relief, coloured; badge and labels as decals (typeset, positions estimated from Overhead 1); the black unit on arm 2 is placed from Overhead 2, make unknown"
    }
   },
   {
@@ -5039,7 +5039,7 @@
    ],
    "source": {
     "source": "datasheet",
-    "note": "Epson's own T6-B602S CAD (STEP from Epson's support page, meshed per link; fetched at build time, not redistributed as STEP), posed by fit_epson_cad.py: Overhead 1 silhouette with J2/J3 held near the two-view outline fit; EPSON wordmarks, badge and labels as decals (typeset, positions estimated from Overhead 1); the black unit on arm 2 is placed from Overhead 2, make unknown"
+    "note": "Epson's own T6-B602S CAD (STEP from Epson's support page, meshed per link; fetched at build time, not redistributed as STEP), posed by fit_epson_cad.py: Overhead 1 silhouette with J2/J3 held near the two-view outline fit; the EPSON wordmarks are Epson's own relief, coloured; badge and labels as decals (typeset, positions estimated from Overhead 1); the black unit on arm 2 is placed from Overhead 2, make unknown"
    }
   },
   {
@@ -5062,53 +5062,53 @@
    ],
    "source": {
     "source": "datasheet",
-    "note": "Epson's own T6-B602S CAD (STEP from Epson's support page, meshed per link; fetched at build time, not redistributed as STEP), posed by fit_epson_cad.py: Overhead 1 silhouette with J2/J3 held near the two-view outline fit; EPSON wordmarks, badge and labels as decals (typeset, positions estimated from Overhead 1); the black unit on arm 2 is placed from Overhead 2, make unknown"
+    "note": "Epson's own T6-B602S CAD (STEP from Epson's support page, meshed per link; fetched at build time, not redistributed as STEP), posed by fit_epson_cad.py: Overhead 1 silhouette with J2/J3 held near the two-view outline fit; the EPSON wordmarks are Epson's own relief, coloured; badge and labels as decals (typeset, positions estimated from Overhead 1); the black unit on arm 2 is placed from Overhead 2, make unknown"
    }
   },
   {
-   "name": "EPSON wordmark, arm 2 (left)",
+   "name": "EPSON wordmarks, arm 2 (Epson CAD relief)",
+   "group": "epson",
+   "finish": "epson_print",
+   "colour": "#1d2f73",
+   "faces": 1854,
+   "bounds_mm": [
+    [
+     990.2,
+     418.6,
+     539.7
+    ],
+    [
+     1130.1,
+     559.6,
+     557.7
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "Epson's own T6-B602S CAD (STEP from Epson's support page, meshed per link; fetched at build time, not redistributed as STEP), posed by fit_epson_cad.py: Overhead 1 silhouette with J2/J3 held near the two-view outline fit; the EPSON wordmarks are Epson's own relief, coloured; badge and labels as decals (typeset, positions estimated from Overhead 1); the black unit on arm 2 is placed from Overhead 2, make unknown"
+   }
+  },
+  {
+   "name": "EPSON badge, base",
    "group": "epson",
    "finish": "decal",
    "colour": "#ffffff",
    "faces": 2,
    "bounds_mm": [
     [
-     1145.3,
-     429.6,
-     589.7
+     863.7,
+     856.1,
+     222.7
     ],
     [
-     1196.3,
-     481.1,
-     604.7
+     872.6,
+     888.9,
+     231.7
     ]
    ],
    "source": {
     "source": "datasheet",
-    "note": "Epson's own T6-B602S CAD (STEP from Epson's support page, meshed per link; fetched at build time, not redistributed as STEP), posed by fit_epson_cad.py: Overhead 1 silhouette with J2/J3 held near the two-view outline fit; EPSON wordmarks, badge and labels as decals (typeset, positions estimated from Overhead 1); the black unit on arm 2 is placed from Overhead 2, make unknown"
-   }
-  },
-  {
-   "name": "EPSON wordmark, arm 2 (right)",
-   "group": "epson",
-   "finish": "decal",
-   "colour": "#ffffff",
-   "faces": 2,
-   "bounds_mm": [
-    [
-     1066.5,
-     352.1,
-     589.7
-    ],
-    [
-     1117.4,
-     403.6,
-     604.7
-    ]
-   ],
-   "source": {
-    "source": "datasheet",
-    "note": "Epson's own T6-B602S CAD (STEP from Epson's support page, meshed per link; fetched at build time, not redistributed as STEP), posed by fit_epson_cad.py: Overhead 1 silhouette with J2/J3 held near the two-view outline fit; EPSON wordmarks, badge and labels as decals (typeset, positions estimated from Overhead 1); the black unit on arm 2 is placed from Overhead 2, make unknown"
+    "note": "Epson's own T6-B602S CAD (STEP from Epson's support page, meshed per link; fetched at build time, not redistributed as STEP), posed by fit_epson_cad.py: Overhead 1 silhouette with J2/J3 held near the two-view outline fit; the EPSON wordmarks are Epson's own relief, coloured; badge and labels as decals (typeset, positions estimated from Overhead 1); the black unit on arm 2 is placed from Overhead 2, make unknown"
    }
   },
   {
@@ -5119,19 +5119,19 @@
    "faces": 2,
    "bounds_mm": [
     [
-     1003.2,
-     865.0,
-     320.7
+     997.4,
+     845.8,
+     255.7
     ],
     [
-     1010.1,
-     890.1,
-     343.7
+     1004.2,
+     870.9,
+     278.7
     ]
    ],
    "source": {
     "source": "datasheet",
-    "note": "Epson's own T6-B602S CAD (STEP from Epson's support page, meshed per link; fetched at build time, not redistributed as STEP), posed by fit_epson_cad.py: Overhead 1 silhouette with J2/J3 held near the two-view outline fit; EPSON wordmarks, badge and labels as decals (typeset, positions estimated from Overhead 1); the black unit on arm 2 is placed from Overhead 2, make unknown"
+    "note": "Epson's own T6-B602S CAD (STEP from Epson's support page, meshed per link; fetched at build time, not redistributed as STEP), posed by fit_epson_cad.py: Overhead 1 silhouette with J2/J3 held near the two-view outline fit; the EPSON wordmarks are Epson's own relief, coloured; badge and labels as decals (typeset, positions estimated from Overhead 1); the black unit on arm 2 is placed from Overhead 2, make unknown"
    }
   },
   {
@@ -5142,19 +5142,19 @@
    "faces": 2,
    "bounds_mm": [
     [
-     900.0,
-     988.5,
+     899.4,
+     988.3,
      272.2
     ],
     [
-     910.5,
-     1027.1,
+     909.9,
+     1027.0,
      332.2
     ]
    ],
    "source": {
     "source": "datasheet",
-    "note": "Epson's own T6-B602S CAD (STEP from Epson's support page, meshed per link; fetched at build time, not redistributed as STEP), posed by fit_epson_cad.py: Overhead 1 silhouette with J2/J3 held near the two-view outline fit; EPSON wordmarks, badge and labels as decals (typeset, positions estimated from Overhead 1); the black unit on arm 2 is placed from Overhead 2, make unknown"
+    "note": "Epson's own T6-B602S CAD (STEP from Epson's support page, meshed per link; fetched at build time, not redistributed as STEP), posed by fit_epson_cad.py: Overhead 1 silhouette with J2/J3 held near the two-view outline fit; the EPSON wordmarks are Epson's own relief, coloured; badge and labels as decals (typeset, positions estimated from Overhead 1); the black unit on arm 2 is placed from Overhead 2, make unknown"
    }
   }
  ]

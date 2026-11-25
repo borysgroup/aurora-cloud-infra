@@ -459,6 +459,7 @@ def epson_vendor(r):
     U = B @ Lt["unit"]
     out.append(mk("black unit on arm 2", D.round_box((120, 100, 45), 6, U @ trimesh.transformations.translation_matrix(
         (E.L1 + 100, 0, 465.3 + 22.5))), "epson", "black_plastic", "#151515"))
+    out += end_effector(B @ Lt["shaft"], B @ Lt["arm2"])
     # riser block under the base flange: machined aluminium, flange footprint plus 5 mm
     h = pose["z0"] - 75.7
     Rb = B @ trimesh.transformations.translation_matrix((-71.0, 0, -h / 2))
@@ -492,6 +493,40 @@ def epson_vendor(r):
     return out, pose, (j1, j2)
 
 
+def end_effector(T_shaft, T_arm2):
+    """The tool on the J3 shaft as the AURORA video's Sample Transfer shot shows it (frames 600-662,
+    2026-07): a dark-blue cone collar where the shaft leaves arm 2, a stainless body clamped on the
+    shaft end with a loop of clear-green 4 mm tubing round its top, and a black pneumatic parallel
+    gripper whose finger plates hold the chip tray's fork. Sizes are scaled from the shaft (ø20 mm) in
+    those frames (estimate); the November stills don't show the tool."""
+    import epson_cad as E
+    x3 = E.L1 + E.L2
+    z_arm = 227.5                    # underside of arm 2 at the shaft (Epson CAD)
+    z_end = 173.5                    # shaft's lower end with J3 fully up (Epson CAD)
+    out = []
+    Ta = T_arm2 @ trimesh.transformations.translation_matrix((x3, 0, 0))
+    cone = D.revolve([(9.5, z_arm - 24), (17.0, z_arm - 24), (29.0, z_arm - 2), (29.0, z_arm), (9.5, z_arm)], Ta, 64)
+    out.append(mk("end effector: shaft collar (video)", cone, "epson", "blue_anod"))
+    Ts = T_shaft @ trimesh.transformations.translation_matrix((x3, 0, 0))
+    body = D.revolve(D.fillet_profile([(0, z_end - 58), (17.5, z_end - 58), (17.5, z_end + 4), (0, z_end + 4)], 1.5),
+                     Ts, 64)
+    out.append(mk("end effector: body (video)", body, "epson", "alu_machined"))
+    ring_pts = [(22.0 * np.cos(a), 22.0 * np.sin(a), z_end - 8 + 3 * np.sin(2 * a)) for a in np.linspace(0, 2 * np.pi, 40)]
+    loop = D.sweep_circle(trimesh.transform_points(np.array(ring_pts), Ts), 2.0, 10)
+    out.append(mk("end effector: tubing loop (video)", loop, "epson", "tube_green"))
+    lead = D.spline(trimesh.transform_points(np.array([(22, 0, z_end - 8), (40, 10, z_end + 10), (60, 25, z_end + 60),
+                                                       (40, 40, z_end + 130)]), Ts), 8)
+    out.append(mk("end effector: tubing lead (video)", D.sweep_circle(lead, 2.0, 10), "epson", "tube_green"))
+    grip = D.round_box((52, 34, 30), 2.0, Ts @ trimesh.transformations.translation_matrix((0, 0, z_end - 58 - 15)))
+    out.append(mk("end effector: parallel gripper (video)", grip, "epson", "black_anodised"))
+    fingers = [D.round_box((10, 30, 34), 1.0, Ts @ trimesh.transformations.translation_matrix((sx * 20, 0, z_end - 58 - 30 - 17)))
+               for sx in (-1, 1)]
+    out.append(mk("end effector: finger plates (video)", D.cat(fingers), "epson", "black_anodised"))
+    src("end effector", "estimate", "from the AURORA video's Sample Transfer shot (2026-07): collar, body, tubing "
+        "loop and parallel gripper, scaled from the ø20 mm J3 shaft; not visible in the November stills")
+    return out
+
+
 def amcrest_cameras(cal):
     """The two Amcrest IP5M-T1179EW turret cameras: the ball (85 mm) with its lens and IR window, at each
     calibrated centre and view direction. Their mounts are out of both views and not modelled."""
@@ -515,9 +550,32 @@ def amcrest_cameras(cal):
     return out
 
 
-def build(cal, robot=None, vendor_epson=True):
+def cables():
+    """Cables and tubing traced in the two stills by colour and lifted onto the model (cables.py writes
+    out/cables.json): blue signal and motor cables, green and clear-green tubing, red wires."""
+    f = os.path.join(HERE, "out", "cables.json")
+    if not os.path.exists(f):
+        return []
+    out = []
+    by = {}
+    for c in json.load(open(f))["cables"]:
+        P = np.array(c["points"], float)
+        if len(P) < 2:
+            continue
+        P = D.spline(P, 4) if len(P) >= 3 else P
+        by.setdefault(c["finish"], []).append(D.sweep_circle(P, c["radius_mm"], 10))
+    for fin, ms in by.items():
+        out.append(mk(f"cables, {fin.replace('_', ' ')} (traced)", D.cat(ms), "cables", fin))
+    src("cables", "one-view", "traced by colour in the published stills and lifted onto the model's depth "
+        "(cables.py): right in the view they were traced from, lying on the surfaces under them from others")
+    return out
+
+
+def build(cal, robot=None, vendor_epson=True, with_cables=True):
     r = dict(S.ROBOT, **(robot or {}))
     parts = []
+    if with_cables:
+        parts += cables()
     parts += shell()
     parts += ducts()
     parts += breadboards()

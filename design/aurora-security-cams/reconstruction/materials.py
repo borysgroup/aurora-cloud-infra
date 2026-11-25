@@ -47,6 +47,12 @@ M = {
     "wire_green": dict(color="#20a040", metallic=0.0, roughness=0.5),
     "wire_black": dict(color="#101010", metallic=0.0, roughness=0.5),
     "tube_blue": dict(color="#2a62c4", metallic=0.0, roughness=0.25, transmission=0.3),
+    "tube_green": dict(color="#3fae7a", metallic=0.0, roughness=0.18, transmission=0.35),
+    "blue_anod": dict(color="#1f3f9a", metallic=0.5, roughness=0.35),
+    "cable_blue": dict(color="#2a5fc0", metallic=0.0, roughness=0.45),
+    "cable_grey": dict(color="#a9aaa6", metallic=0.0, roughness=0.55),
+    "cable_black": dict(color="#151515", metallic=0.0, roughness=0.5),
+    "wire_red_cable": dict(color="#b8231c", metallic=0.0, roughness=0.45),
     "decal": dict(color="#ffffff", metallic=0.0, roughness=0.6),
     "paint": dict(color="#888888", metallic=0.0, roughness=0.5),
 }

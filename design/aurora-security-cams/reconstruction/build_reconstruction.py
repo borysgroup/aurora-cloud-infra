@@ -46,7 +46,7 @@ def distort_canvas(canvas, s, size=(1920, 1080)):
     return cv2.remap(canvas, mx, my, cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT)
 
 
-def blender_renders(blender, glb, photos, samples, views=()):
+def blender_renders(blender, glb, photos, samples, views=(), video_frames=None):
     tmp = os.path.join(OUT, "_blender")
     os.makedirs(tmp, exist_ok=True)
     subprocess.run([blender, "-b", "--factory-startup", "-P", os.path.join(HERE, "blender_render.py"), "--", glb, tmp,
@@ -62,7 +62,32 @@ def blender_renders(blender, glb, photos, samples, views=()):
         p = os.path.join(tmp, f"{v}.png")
         if os.path.exists(p):
             cv2.imwrite(os.path.join(OUT, f"render_{v}.jpg"), cv2.imread(p), [cv2.IMWRITE_JPEG_QUALITY, 90])
+    for v in views:
+        p = os.path.join(tmp, f"{v}_pinhole.png")
+        if v.startswith("video_") and os.path.exists(p):
+            _, shot, kf = v.split("_")
+            vc = json.load(open(os.path.join(OUT, "video_cameras.json")))["shots"][shot]
+            img = distort_video(cv2.imread(p), vc["f_px"], vc["k1"], 0.5)
+            fr = os.path.join(video_frames or "", f"{int(kf):04d}.jpg")
+            if video_frames and os.path.exists(fr):
+                img = np.hstack([cv2.resize(cv2.imread(fr), (img.shape[1], img.shape[0])), img])
+            cv2.imwrite(os.path.join(OUT, f"{v}.jpg"), img, [cv2.IMWRITE_JPEG_QUALITY, 90])
     shutil.rmtree(tmp)
+
+
+def distort_video(canvas, f, k1, s, size=(1920, 1080)):
+    """Pinhole render on a canvas 1.25 x the frame (times s) -> the video camera's SIMPLE_RADIAL frame."""
+    Wo, Ho = int(round(size[0] * s)), int(round(size[1] * s))
+    uu, vv = np.meshgrid((np.arange(Wo) + 0.5) / s - 0.5, (np.arange(Ho) + 0.5) / s - 0.5)
+    xd, yd = (uu - size[0] / 2) / f, (vv - size[1] / 2) / f
+    xu, yu = xd.copy(), yd.copy()
+    for _ in range(8):                       # invert x_d = x_u (1 + k1 r_u^2)
+        r2 = xu * xu + yu * yu
+        xu, yu = xd / (1 + k1 * r2), yd / (1 + k1 * r2)
+    ch, cw = canvas.shape[:2]
+    mx = (xu * f * s + (cw - 1) / 2).astype(np.float32)
+    my = (yu * f * s + (ch - 1) / 2).astype(np.float32)
+    return cv2.remap(canvas, mx, my, cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT)
 
 
 def main():
@@ -72,9 +97,10 @@ def main():
     ap.add_argument("--samples", type=int, default=32)
     ap.add_argument("--views", nargs="*", default=[], help="Blender views to render (default: all)")
     ap.add_argument("--renders-only", action="store_true", help="re-render out/glovebox.glb without rebuilding it")
+    ap.add_argument("--video-frames", help="frames of the AURORA video (NNNN.jpg) to set beside the video_* renders")
     a = ap.parse_args()
     if a.renders_only:
-        blender_renders(a.blender, os.path.join(OUT, "glovebox.glb"), a.photos, a.samples, a.views)
+        blender_renders(a.blender, os.path.join(OUT, "glovebox.glb"), a.photos, a.samples, a.views, a.video_frames)
         return
     os.makedirs(os.path.join(OUT, "stl"), exist_ok=True)
     parts = scene.build(CAL)
@@ -117,7 +143,7 @@ def main():
         cv2.imwrite(os.path.join(OUT, f"overlay_{cam.name}.jpg"), cv2.resize(ov, (1280, 720)),
                     [cv2.IMWRITE_JPEG_QUALITY, 88])
     if a.blender:
-        blender_renders(a.blender, glb, a.photos, a.samples, a.views)
+        blender_renders(a.blender, glb, a.photos, a.samples, a.views, a.video_frames)
     else:
         print("Blender not found (--blender or $BLENDER): skipped the Cycles renders")
     print(f"{len(parts)} parts, {sum(len(p.mesh.faces) for p in parts)} faces; wrote {OUT}")

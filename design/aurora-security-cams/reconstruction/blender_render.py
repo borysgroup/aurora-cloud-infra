@@ -222,3 +222,15 @@ for v in VIEWS:
     elif v == "top":
         render(os.path.join(OUT, "top.png"), look_at((600, 560, 3000), (600, 560, 0), up=(1, 0, 0)), fov_deg=30,
                res=(1600, 1600), hide=HIDE_OUTSIDE + ("far side",), exposure=-1.2)
+    elif v.startswith("video_"):
+        # a frame of the AURORA video, registered by video_register.py: pinhole at the shot's focal
+        # length on a canvas 1.25 x the frame; build_reconstruction.py applies the radial term
+        _, shot, kf = v.split("_")
+        vc = json.load(open(os.path.join(HERE, "out", "video_cameras.json")))["shots"][shot]
+        fr = vc["frames"][kf]
+        R = [Vector(row) for row in fr["R"]]
+        M = Matrix((R[0], -R[1], -R[2])).transposed().to_4x4()
+        M.translation = Vector(fr["centre"]) * MM
+        cw, ch = int(round(1.25 * W * s)), int(round(1.25 * H * s))
+        render(os.path.join(OUT, f"{v}_pinhole.png"), M, lens_mm=vc["f_px"] * 36.0 / (1.25 * W), res=(cw, ch),
+               hide=("open side",), exposure=float(opts.get("video_exposure", 0.0)))

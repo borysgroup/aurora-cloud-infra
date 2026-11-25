@@ -1121,6 +1121,123 @@ Arm 2 and the shaft really do sit by the microscope, so one of these is off:
 the base pose, the box length, or the microscope's placement. A tape-measured
 inside length of the box would decide between the first two.
 
+### Photo textures, a cross-view check, reach and an articulated model (2026-11-25)
+
+**Photo textures** ([`reconstruction/phototexture.py`](reconstruction/phototexture.py),
+`out/glovebox_photo.glb`). Every static part now carries the colours the two
+cameras saw on it: labels, wear, stains, the microscope drum's scale, and the
+cables lying on surfaces.
+
+- **How:**
+  - each group of parts gets texture coordinates from xatlas, at 1.5 mm per texel
+  - a ray through every pixel of each published 18:22 UTC still (lens distortion undone) is cast into the model with Embree, with the windows left out so rays pass through the glass
+  - the first surface each ray hits takes the pixel's colour, weighted by how squarely and how closely the camera saw it
+- **Pixels left out:**
+  - outside the glovebox-interior mask (the blurred room)
+  - on the robot (its SAM mask: the robot moves)
+  - the burned-in clock and title
+  - next to a jump in depth, where a pose error of a few mm would move one part's colour onto its neighbour
+  - views more oblique than 63° (they fade in between 63° and 41°)
+- **Where the cameras disagree:** where both cameras saw a texel and their colours differ by more than about 35 levels, one of them is looking at something the model lacks, and the texel falls back towards the part's finish. The deck takes only texels both cameras saw and agree on, because cables lying above it would otherwise be painted far from where they are.
+- **White balance:** Overhead 2's colours are scaled to Overhead 1's over the texels both saw (gains B 1.15, G 1.05, R 0.99).
+- **Not textured:** the robot, the cables, the camera housings and the decals keep their finishes. The robot's fitted pose (IoU 0.63) isn't tight enough to carry a projected texture.
+- **Limit:** anything the model lacks (black cables, clutter) is painted onto the surface behind it. From the cameras' own viewpoints that looks right; from elsewhere it shows as flat streaks.
+
+**Cross-view check** (`phototexture.py --check`, `out/crossview.jpg`,
+`out/crossview.json`). This tests the geometry without any textures:
+
+1. Each pixel of one camera is traced to the model's surface.
+2. That surface point is looked up in the other camera's photo, if that camera sees it.
+3. With perfect geometry and matte surfaces, the result reproduces the first camera's photo.
+
+The score is the median local normalised cross-correlation (NCC, 15 x 15 px) over textured pixels, per part:
+
+| Parts | Overhead 1 into 2 | Overhead 2 into 1 |
+|---|---|---|
+| Chip tray, holder and chips (placed from both views) | 0.47 to 0.51 | 0.49 to 0.51 |
+| Thorlabs platform | -0.06 | -0.16 |
+| Exfoliator stage carriage | -0.15 | -0.11 |
+| Main breadboard | -0.02 | -0.04 |
+| Exfoliator breadboard | 0.16 | 0.05 |
+| All overlapping pixels | -0.01 | 0.08 |
+
+![Cross-view check: each camera's photo carried through the model into the other camera](reconstruction/out/crossview.jpg)
+
+Only the parts placed from both views pass. The parts placed from one view
+are off in depth by enough that the other camera sees something else where
+the model puts them, which fits the 20 to 50 mm the README already allowed
+for them.
+
+**Can the two photos place those parts?** [`reconstruction/refine.py`](reconstruction/refine.py)
+slides each of the 11 parts or groups placed from one view along its source
+camera's ray, ±100 mm in 10 mm steps. Sliding along that ray keeps the part
+where it is in the source frame and moves it in the other one. At each step
+the script scores how well the two photos agree on the part's pixels, both ways.
+An offset is accepted only if it beats zero by 0.08 and is a single clear
+peak.
+
+- **None is accepted,** so every part stays where it was (`out/refine.png`, `out/refine.json`).
+- **Five can't be tested:** the docking fixtures, the gantry's Y axis, the printed carriage, the tape measure and the loose breadboard. The other camera doesn't see enough of them.
+- **The six tested give jagged curves,** with peaks of 0.10 to 0.20 at several offsets 30 to 130 mm apart.
+- **Why:** the two cameras look at the deck from nearly opposite ends, so few surfaces look alike in both. A third viewpoint, or a few tape readings, would pin these parts.
+
+![Two-camera agreement against the offset along the source camera's ray](reconstruction/out/refine.png)
+
+**Where the Epson can pick and place** ([`reconstruction/reach.py`](reconstruction/reach.py),
+`out/epson_reach.json`). This adds the vertical axis and the stations to
+`motion.py`'s sweep:
+
+- **Height map:** a ray cast straight down every 5 mm gives the top of whatever is on the deck.
+- **Reach map:** inverse kinematics gives both elbow configurations for every 5 mm cell. A configuration counts when:
+  - it is within Epson's limits
+  - the arm clears the box and every part with the shaft up
+  - it lies in the largest free region of joint space (1° grid), so the arm can get there without a collision
+
+  The map then shows how low the gripper's fingertips get coming straight down: the 200 mm stroke, or the tallest part within 35 mm of the shaft, whichever is higher.
+- **Fingertips:** 234 mm above the deck with the shaft up, 34 mm at the end of the stroke.
+
+![Epson reach map and joint space](reconstruction/out/epson_reach.png)
+
+What it finds:
+
+- **Reachable area:** 0.27 m² of the deck. Over the free deck towards the far window, the fingertips get down to 34 mm.
+- **The chip tray, where the stills show it,** is 610 mm from J1, 10 mm beyond the arm's 600 mm reach. The gantry moves the tray. Assuming its carriages keep 70 mm from the ends of their screws, the tray's travel is x = 350 to 605 mm, y = 342 to 432 mm. Of that travel, 10 % is a hand-off zone the J3 axis can reach with the arm clear: x = 535 to 605 mm, y = 377 to 432 mm. The nearest point of it is 12 mm from where the gantry parked the tray. For this check, the tray and its carriage don't count as obstacles, because the gripper takes the tray by its fork at the tray's height.
+- **The ASI stage's sample insert** sits under the microscope, so the gripper can't come down onto it. The stage has to move the insert out first.
+- **The docking fixtures conflict with the model.** Their tops (282 mm) are above the fingertips with the shaft up (234 mm), so the arm can't pass over them. The AURORA video shows the tray carried past them. So either the fixtures are lower than the 280 mm read off Overhead 1, or the tool is shorter than the length scaled from the video. A tape reading of the fixtures' height would settle it.
+- **The AURORA video's poses:**
+  - frame 612 is free, with 10 mm clearance
+  - frame 640 hits the supply reel, as `motion.py` found: the head was rebuilt after July
+
+**Articulated model** ([`reconstruction/urdf_export.py`](reconstruction/urdf_export.py),
+`out/urdf/aurora_glovebox.urdf`). The cell as a URDF, which simulators and motion planners (ROS, MoveIt, PyBullet, Isaac) load directly:
+
+| Link | Joint | Range |
+|---|---|---|
+| `glovebox` | fixed | every static part, one mesh |
+| `epson_base` | fixed, at the fitted base pose | |
+| `epson_arm1` | J1, revolute about z | ±132° |
+| `epson_arm2` | J2, revolute, 325 mm out | ±150° |
+| `epson_shaft` | J3, prismatic, down, 275 mm out | 0 to 200 mm |
+| `epson_tool` | J4, revolute about the shaft | ±360° |
+
+- **Joint values:** the same convention as `epson_cad.py`, so a pose read off the robot's controller can be set directly.
+- **Velocity limits:** Epson's maximum operating speeds from the T-series manual's specification table (T6-602S: J3 1000 mm/s, J4 1800°/s). J1 and J2 have only a composite tool speed there (4180 mm/s), so they carry J4's value as a loose bound.
+- **Check:** the script loads the URDF with yourdfpy and poses it at the parked pose and the two video poses. Every Epson link lands within 0.0001 mm of `epson_cad.posed()`.
+- **Not modelled:** the gantry, exfoliator and stage axes are fixed in the URDF. Which carriage moves what is inferred, not known.
+
+Rebuild (after `build_reconstruction.py`):
+
+```
+cd reconstruction
+xvfb-run -a python phototexture.py --check   # out/glovebox_photo.glb, out/phototex/, out/crossview.*  (~1.5 min)
+python refine.py                             # out/refine.json, out/refine.png
+python reach.py                              # out/epson_reach.*  (~3 min)
+python urdf_export.py                        # out/urdf/
+BLENDER=... xvfb-run -a .../blender -b --factory-startup -P blender_render.py -- out/glovebox_photo.glb DIR open_side gantry epson
+```
+
+(xatlas and embreex in addition to the packages above, and yourdfpy for the URDF check.)
+
 ## Earlier findings
 
 ### The camera segment (2026-11-11)

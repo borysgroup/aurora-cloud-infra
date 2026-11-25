@@ -1,0 +1,184 @@
+{
+ "base_pose": {
+  "j1": [
+   936.7,
+   875.2
+  ],
+  "z0": 182.2,
+  "yaw": 255.18
+ },
+ "cell_mm": 5.0,
+ "gripper_footprint_radius_mm": 35.0,
+ "fingertips_with_shaft_up_mm": 233.7,
+ "fingertips_lowest_mm": 33.7,
+ "joint_grid_deg": 1.0,
+ "free_fraction": 0.24,
+ "largest_free_region": 0.23,
+ "parked_in_largest_region": false,
+ "reachable_area_m2": 0.269,
+ "stations": {
+  "chip tray (gantry)": {
+   "xy_mm": [
+    556.7,
+    398.1
+   ],
+   "top_mm": 290.3,
+   "configs": [
+    {
+     "elbow": "J2 > 0",
+     "reachable": false,
+     "why": "out of the arm's reach"
+    },
+    {
+     "elbow": "J2 < 0",
+     "reachable": false,
+     "why": "out of the arm's reach"
+    }
+   ],
+   "reachable": false
+  },
+  "ASI stage sample insert": {
+   "xy_mm": [
+    1093.0,
+    379.0
+   ],
+   "top_mm": 182.0,
+   "configs": [
+    {
+     "elbow": "J2 > 0",
+     "j1_deg": 5.1,
+     "j2_deg": 60.0,
+     "within_limits": true,
+     "arm_clear_with_shaft_up": false,
+     "connected_to_free_region": false,
+     "stroke_needed_mm": 50.7,
+     "stroke_ok": true,
+     "tallest_under_gripper_mm": 609.0,
+     "reachable": false
+    },
+    {
+     "elbow": "J2 < 0",
+     "j1_deg": 59.5,
+     "j2_deg": -60.0,
+     "within_limits": true,
+     "arm_clear_with_shaft_up": false,
+     "connected_to_free_region": false,
+     "stroke_needed_mm": 50.7,
+     "stroke_ok": true,
+     "tallest_under_gripper_mm": 609.0,
+     "reachable": false
+    }
+   ],
+   "reachable": false
+  },
+  "docking fixture A": {
+   "xy_mm": [
+    930.0,
+    710.0
+   ],
+   "top_mm": 282.0,
+   "configs": [
+    {
+     "elbow": "J2 > 0",
+     "j1_deg": -45.3,
+     "j2_deg": 149.4,
+     "within_limits": true,
+     "arm_clear_with_shaft_up": false,
+     "connected_to_free_region": false,
+     "stroke_needed_mm": -49.3,
+     "stroke_ok": false,
+     "tallest_under_gripper_mm": 282.0,
+     "reachable": false
+    },
+    {
+     "elbow": "J2 < 0",
+     "j1_deg": 70.3,
+     "j2_deg": -149.4,
+     "within_limits": true,
+     "arm_clear_with_shaft_up": false,
+     "connected_to_free_region": false,
+     "stroke_needed_mm": -49.3,
+     "stroke_ok": false,
+     "tallest_under_gripper_mm": 282.0,
+     "reachable": false
+    }
+   ],
+   "reachable": false
+  },
+  "docking fixture B": {
+   "xy_mm": [
+    1046.5,
+    692.5
+   ],
+   "top_mm": 282.0,
+   "configs": [
+    {
+     "elbow": "J2 > 0",
+     "j1_deg": -11.2,
+     "j2_deg": 139.4,
+     "within_limits": true,
+     "arm_clear_with_shaft_up": false,
+     "connected_to_free_region": false,
+     "stroke_needed_mm": -49.3,
+     "stroke_ok": false,
+     "tallest_under_gripper_mm": 282.0,
+     "reachable": false
+    },
+    {
+     "elbow": "J2 < 0",
+     "j1_deg": 102.8,
+     "j2_deg": -139.4,
+     "within_limits": true,
+     "arm_clear_with_shaft_up": false,
+     "connected_to_free_region": false,
+     "stroke_needed_mm": -49.3,
+     "stroke_ok": false,
+     "tallest_under_gripper_mm": 282.0,
+     "reachable": false
+    }
+   ],
+   "reachable": false
+  }
+ },
+ "gantry_handoff": {
+  "tray_travel_x_mm": [
+   350.2,
+   605.2
+  ],
+  "tray_travel_y_mm": [
+   341.6,
+   431.6
+  ],
+  "assumption": "the tray rides on the X and Y axes' carriages, which keep 70 mm from each end of their screws; the gripper takes the tray by its fork at the tray's height, so only the arm (arm 1, arm 2, the unit and the collar) must clear the other parts, and the tray, its holder and carriage are not obstacles",
+  "tray_now_from_j1_mm": 609.9,
+  "arm_reach_mm": 600.0,
+  "reachable_fraction_of_travel": 0.101,
+  "reachable_x_mm": [
+   535.2,
+   605.2
+  ],
+  "reachable_y_mm": [
+   376.6,
+   431.6
+  ],
+  "nearest_reachable_from_now_mm": 12.0
+ },
+ "video_poses": {
+  "video_transfer_612": {
+   "j1_deg": -48.56,
+   "j2_deg": 81.55,
+   "free_in_model": true,
+   "in_largest_free_region": true,
+   "clearance_mm": 10.0,
+   "arm_hits": null
+  },
+  "video_transfer_640": {
+   "j1_deg": -33.01,
+   "j2_deg": 42.48,
+   "free_in_model": false,
+   "in_largest_free_region": false,
+   "clearance_mm": 0.0,
+   "arm_hits": "equipment or box"
+  }
+ }
+}

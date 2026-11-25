@@ -100,6 +100,32 @@ for mat in bpy.data.materials:
     if name.startswith(("epson_paint", "olympus_paint", "yellow", "red_plastic", "black_plastic")):
         b.inputs["Coat Weight"].default_value = 0.15
         b.inputs["Coat Roughness"].default_value = 0.3
+    if name.startswith("photo"):
+        # photo texture (phototexture.py): where the photo covers a surface it already holds the light the
+        # camera saw, so most of that colour is emitted as-is and only a share is lit again by the scene;
+        # where no camera saw the surface, the part's own finish (metallic-roughness texture) is lit as
+        # usual. The photo coverage rides in the metallic-roughness texture's red channel.
+        nt = mat.node_tree
+        out = next((n for n in nt.nodes if n.type == "OUTPUT_MATERIAL"), None)
+        base_tex = next((l.from_node for l in nt.links if l.to_socket == b.inputs["Base Color"]
+                         and l.from_node.type == "TEX_IMAGE"), None)
+        sep = next((n for n in nt.nodes if n.type == "SEPARATE_COLOR"), None)
+        if base_tex is not None and out is not None:
+            em = nt.nodes.new("ShaderNodeEmission")
+            nt.links.new(base_tex.outputs["Color"], em.inputs["Color"])
+            em.inputs["Strength"].default_value = 1.0
+            fac = nt.nodes.new("ShaderNodeMath")
+            fac.operation = "MULTIPLY"
+            fac.inputs[1].default_value = float(opts.get("photo_emit", 0.7))
+            if sep is not None:
+                nt.links.new(sep.outputs["Red"], fac.inputs[0])
+            else:
+                fac.inputs[0].default_value = 1.0
+            mix = nt.nodes.new("ShaderNodeMixShader")
+            nt.links.new(fac.outputs["Value"], mix.inputs["Fac"])
+            nt.links.new(b.outputs["BSDF"], mix.inputs[1])
+            nt.links.new(em.outputs["Emission"], mix.inputs[2])
+            nt.links.new(mix.outputs["Shader"], out.inputs["Surface"])
 
 # ---- room lighting --------------------------------------------------------------------------------------
 scn = bpy.context.scene

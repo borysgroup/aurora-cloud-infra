@@ -1,0 +1,68 @@
+{
+ "texel_mm": {
+  "glovebox": 1.5,
+  "ducts": 1.5,
+  "breadboards": 1.5,
+  "gantry": 1.5,
+  "exfoliator": 1.5,
+  "microscope": 1.5,
+  "deck": 1.5
+ },
+ "atlas_px": {
+  "glovebox": [
+   2656,
+   2684
+  ],
+  "ducts": [
+   1156,
+   1156
+  ],
+  "breadboards": [
+   1760,
+   1760
+  ],
+  "gantry": [
+   1496,
+   1496
+  ],
+  "exfoliator": [
+   1268,
+   1272
+  ],
+  "microscope": [
+   1144,
+   1140
+  ],
+  "deck": [
+   212,
+   212
+  ]
+ },
+ "seen_fraction": {
+  "glovebox": 0.046,
+  "ducts": 0.163,
+  "breadboards": 0.075,
+  "gantry": 0.169,
+  "exfoliator": 0.239,
+  "microscope": 0.13,
+  "deck": 0.261
+ },
+ "cam1_to_cam0_gain_bgr": [
+  1.1460000276565552,
+  1.0509999990463257,
+  0.9900000095367432
+ ],
+ "pixels_used": {
+  "cam0": 736443,
+  "cam1": 976267
+ },
+ "stills": {
+  "cam0": "2026-11-19_1822Z_cam0_192.168.3.150.jpg",
+  "cam1": "2026-11-19_1822Z_cam1_192.168.3.151.jpg"
+ },
+ "skipped_groups": [
+  "epson",
+  "cables",
+  "cameras"
+ ]
+}

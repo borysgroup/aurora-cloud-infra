@@ -1,0 +1,172 @@
+{
+ "deck": {
+  "cam0->cam1": {
+   "ncc": -0.027,
+   "px": 8842
+  },
+  "cam1->cam0": {
+   "ncc": -0.016,
+   "px": 9407
+  }
+ },
+ "main breadboard": {
+  "cam0->cam1": {
+   "ncc": -0.023,
+   "px": 2484
+  },
+  "cam1->cam0": {
+   "ncc": -0.037,
+   "px": 915
+  }
+ },
+ "exfoliator breadboard": {
+  "cam0->cam1": {
+   "ncc": 0.164,
+   "px": 233
+  },
+  "cam1->cam0": {
+   "ncc": 0.053,
+   "px": 1303
+  }
+ },
+ "loose breadboard": {
+  "cam0->cam1": {
+   "ncc": -0.265,
+   "px": 209
+  },
+  "cam1->cam0": {
+   "ncc": 0.04,
+   "px": 430
+  }
+ },
+ "chip tray": {
+  "cam0->cam1": {
+   "ncc": 0.474,
+   "px": 2052
+  },
+  "cam1->cam0": {
+   "ncc": 0.497,
+   "px": 4310
+  }
+ },
+ "chips": {
+  "cam0->cam1": {
+   "ncc": 0.48,
+   "px": 1185
+  },
+  "cam1->cam0": {
+   "ncc": 0.488,
+   "px": 2791
+  }
+ },
+ "chip tray handwriting (photo texture, Overhead 1)": {
+  "cam0->cam1": {
+   "ncc": 0.511,
+   "px": 329
+  },
+  "cam1->cam0": {
+   "ncc": 0.296,
+   "px": 559
+  }
+ },
+ "X axis carriage plate": {
+  "cam0->cam1": {
+   "ncc": -0.055,
+   "px": 1870
+  },
+  "cam1->cam0": {
+   "ncc": -0.018,
+   "px": 4771
+  }
+ },
+ "press stepper end caps": {
+  "cam0->cam1": {
+   "ncc": -0.071,
+   "px": 222
+  }
+ },
+ "press stepper label": {
+  "cam0->cam1": {
+   "ncc": -0.03,
+   "px": 1092
+  },
+  "cam1->cam0": {
+   "ncc": -0.013,
+   "px": 614
+  }
+ },
+ "exfoliator stage carriage plate": {
+  "cam0->cam1": {
+   "ncc": -0.151,
+   "px": 2081
+  },
+  "cam1->cam0": {
+   "ncc": -0.108,
+   "px": 1590
+  }
+ },
+ "Thorlabs platform": {
+  "cam0->cam1": {
+   "ncc": -0.057,
+   "px": 6581
+  },
+  "cam1->cam0": {
+   "ncc": -0.155,
+   "px": 2710
+  }
+ },
+ "docking fixture side": {
+  "cam0->cam1": {
+   "ncc": 0.258,
+   "px": 211
+  }
+ },
+ "_overall": {
+  "cam0->cam1": {
+   "median_ncc": -0.007,
+   "overlap_px": 28362,
+   "step_px": 2
+  },
+  "cam1->cam0": {
+   "median_ncc": 0.076,
+   "overlap_px": 33787,
+   "step_px": 2
+  }
+ },
+ "chip tray holder": {
+  "cam1->cam0": {
+   "ncc": 0.505,
+   "px": 1216
+  }
+ },
+ "X axis rail": {
+  "cam1->cam0": {
+   "ncc": 0.327,
+   "px": 222
+  }
+ },
+ "X axis ball nut": {
+  "cam1->cam0": {
+   "ncc": 0.095,
+   "px": 247
+  }
+ },
+ "Y axis motor stator": {
+  "cam1->cam0": {
+   "ncc": -0.058,
+   "px": 151
+  }
+ },
+ "drag chain 2 links": {
+  "cam1->cam0": {
+   "ncc": 0.055,
+   "px": 1403
+  }
+ },
+ "supply reel (blue tape) flange": {
+  "cam1->cam0": {
+   "ncc": -0.444,
+   "px": 150
+  }
+ }
+}

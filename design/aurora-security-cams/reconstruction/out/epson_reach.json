@@ -12,10 +12,10 @@
  "fingertips_with_shaft_up_mm": 233.7,
  "fingertips_lowest_mm": 33.7,
  "joint_grid_deg": 1.0,
- "free_fraction": 0.24,
- "largest_free_region": 0.23,
+ "free_fraction": 0.248,
+ "largest_free_region": 0.245,
  "parked_in_largest_region": false,
- "reachable_area_m2": 0.269,
+ "reachable_area_m2": 0.268,
  "stations": {
   "chip tray (gantry)": {
    "xy_mm": [
@@ -53,7 +53,7 @@
      "connected_to_free_region": false,
      "stroke_needed_mm": 50.7,
      "stroke_ok": true,
-     "tallest_under_gripper_mm": 609.0,
+     "tallest_under_gripper_mm": 625.8,
      "reachable": false
     },
     {
@@ -65,7 +65,7 @@
      "connected_to_free_region": false,
      "stroke_needed_mm": 50.7,
      "stroke_ok": true,
-     "tallest_under_gripper_mm": 609.0,
+     "tallest_under_gripper_mm": 625.8,
      "reachable": false
     }
    ],

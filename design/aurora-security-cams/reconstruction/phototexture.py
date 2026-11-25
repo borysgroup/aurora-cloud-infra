@@ -3,6 +3,7 @@ saw on it, so the model carries the real labels, stickers, wear, stains and colo
 
     xvfb-run -a python phototexture.py            # -> out/glovebox_photo.glb, out/phototexture.json
     xvfb-run -a python phototexture.py --check    # also the cross-view check -> out/crossview.jpg
+    BLENDER=.../blender xvfb-run -a python phototexture.py --render   # also out/photo_*.jpg (Cycles)
 
 How it works:
 1. Each static part gets texture coordinates from xatlas, one atlas per group at TEXEL mm per texel.
@@ -14,10 +15,16 @@ How it works:
    the surface, so where both cameras see a surface the better view dominates.
 4. Pixels are skipped when they are outside the glovebox-interior mask (the blurred room), on the
    robot (its SAM mask: the robot moves, so its pixels must not be painted onto what is behind it), on
-   the burned-in clock or title, or on a depth edge, where a small pose error would put one part's
-   colour onto its neighbour.
-5. Texels no camera saw keep the part's finish colour; the edge between seen and unseen is feathered.
-   The two cameras' white balance is matched over the texels both saw.
+   the burned-in clock or title, on a depth edge, where a small pose error would put one part's colour
+   onto its neighbour, or where the camera sees the surface more obliquely than about 63 degrees
+   (samples fade in from COS_LO to COS_HI).
+5. The two cameras' white balance is matched over the texels both saw. Where both saw a texel but
+   disagree on its colour, one of them is looking at something the model lacks, and the texel falls
+   back towards the part's finish; the deck takes only texels both saw and agree on.
+6. Texels no camera saw keep the part's finish: its colour in the base-colour texture, its metallic and
+   roughness in the metallic-roughness texture (matte where the photo covers it). That texture's spare
+   red channel carries the photo coverage, which blender_render.py uses to emit the photo's colour
+   rather than light it a second time.
 
 The robot, the cables, the camera housings and the decals keep their own finishes: the robot moves, and
 its fitted pose is not tight enough to carry a projected texture (IoU 0.63 in Overhead 1).
@@ -300,8 +307,13 @@ def export(parts, uvmap, images, mr, path):
     colours), the robot, cables, cameras and decals with their own finishes."""
     from PIL import Image
     sc = trimesh.Scene()
-    pil = {g: Image.fromarray(cv2.cvtColor(im, cv2.COLOR_BGR2RGB)) for g, im in images.items()}
-    pil_mr = {g: Image.fromarray(cv2.cvtColor(im, cv2.COLOR_BGR2RGB)) for g, im in mr.items()}
+    import io
+
+    def jpeg(im, q):
+        # a PIL image that remembers it came from a JPEG, so the glTF embeds it as JPEG rather than PNG
+        return Image.open(io.BytesIO(cv2.imencode(".jpg", im, [cv2.IMWRITE_JPEG_QUALITY, q])[1].tobytes()))
+    pil = {g: jpeg(im, 88) for g, im in images.items()}
+    pil_mr = {g: jpeg(im, 92) for g, im in mr.items()}
     mats = {}
     for i, p in enumerate(parts):
         if i in uvmap:
@@ -399,6 +411,35 @@ def crossview(parts, scene, photos, step=2):
     return np.vstack(rows), scores
 
 
+def renders(blender, glb, views=("open_side", "epson", "gantry", "top", "cam0", "cam1"), samples=24, tmp=None):
+    """Cycles renders of the photo-textured model (blender_render.py) -> out/photo_<view>.jpg; the camera views
+    get the lens distortion and sit beside the published frame, as in build_reconstruction.py."""
+    import shutil
+    import subprocess
+    import tempfile
+    import build_reconstruction as BR
+    own = tmp is None
+    tmp = tmp or tempfile.mkdtemp(prefix="_blender_photo_", dir=OUT)
+    if blender:
+        subprocess.run([blender, "-b", "--factory-startup", "-P", os.path.join(HERE, "blender_render.py"), "--", glb,
+                        tmp, *views, "--samples", str(samples)], check=True)
+    for v in views:
+        if v in ("cam0", "cam1"):
+            f = os.path.join(tmp, f"{v}_pinhole.png")
+            if not os.path.exists(f):
+                continue
+            img = BR.distort_canvas(cv2.imread(f), 0.5)
+            photo = cv2.resize(cv2.imread(os.path.join(HERE, "..", "captures", STILLS[v])), (img.shape[1], img.shape[0]))
+            img = BR.white_balance(img, photo, v)
+            cv2.imwrite(os.path.join(OUT, f"photo_view_{v}.jpg"), np.hstack([photo, img]), [cv2.IMWRITE_JPEG_QUALITY, 90])
+        else:
+            f = os.path.join(tmp, f"{v}.png")
+            if os.path.exists(f):
+                cv2.imwrite(os.path.join(OUT, f"photo_{v}.jpg"), cv2.imread(f), [cv2.IMWRITE_JPEG_QUALITY, 90])
+    if own:
+        shutil.rmtree(tmp)
+
+
 def load_parts():
     import scene
     return scene.build(CAL)
@@ -411,6 +452,8 @@ def main():
     ap.add_argument("--texel", type=float, default=TEXEL)
     ap.add_argument("--out", default=os.path.join(OUT, "glovebox_photo.glb"))
     ap.add_argument("--atlases", help="also write each group's texture and coverage map to this directory")
+    ap.add_argument("--render", action="store_true", help="also render it with Blender ($BLENDER) -> out/photo_*.jpg")
+    ap.add_argument("--samples", type=int, default=24)
     a = ap.parse_args()
     t0 = time.time()
     if a.parts:
@@ -459,6 +502,8 @@ def main():
                stills=STILLS, skipped_groups=list(SKIP_GROUPS))
     json.dump(rep, open(os.path.join(OUT, "phototexture.json"), "w"), indent=1)
     print(json.dumps(rep["seen_fraction"]), f"({time.time() - t0:.0f} s)")
+    if a.render:
+        renders(os.environ.get("BLENDER"), a.out, samples=a.samples)
 
 
 if __name__ == "__main__":

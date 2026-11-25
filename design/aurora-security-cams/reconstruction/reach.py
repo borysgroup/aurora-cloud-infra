@@ -10,8 +10,9 @@ voxel collision test as motion.py, and adds the vertical axis:
   (static parts only; cables included, the robot left out).
 - **Reach map:** for every 5 mm cell, inverse kinematics gives the two arm configurations (elbow to
   either side) that put the J3 axis over it. A configuration counts when it is within Epson's limits,
-  its arm clears the box and every other part with the shaft up, and it lies in the free region of joint
-  space connected to the parked pose, so the arm can get there without a collision. The cell then shows
+  its arm clears the box and every other part with the shaft up, and it lies in the largest connected free
+  region of joint space, so the arm can get there without a collision (the parked pose fitted from
+  Overhead 1 itself overlaps the far end of the box in the model, so it can't anchor the region). The cell then shows
   the lowest height the gripper's fingertips reach coming straight down: the 200 mm stroke, or the top
   of the tallest part under the gripper's footprint (a 35 mm radius round the shaft), whichever is higher.
 - **Stations:** the places the robot serves in the AURORA workflow (the chip tray on the gantry, the
@@ -318,14 +319,16 @@ def plot(xs, ys, Hm, best, st, pose, gant, cs, p, video):
     a.add_patch(Rectangle((gx[0], gy[0]), gx[-1] - gx[0], gy[-1] - gy[0], fill=False, ec="#c0392b", lw=1.5, ls="--"))
     if hand.any():
         GX, GY = np.meshgrid(gx, gy, indexing="ij")
-        a.scatter(GX[hand], GY[hand], s=3, c="#c0392b", lw=0)
-    a.annotate("chip tray travel on the gantry\n(dots: J3 can reach the tray)", (gx[0], gy[0]), xytext=(-10, -34),
-               textcoords="offset points", fontsize=7.5, color="#c0392b")
+        a.scatter(GX[hand], GY[hand], s=9, marker="s", c="#c0392b", lw=0, alpha=0.9)
+    a.annotate("chip tray travel on the gantry (dashed);\nred: hand-off zone the J3 axis can reach", (gx[0], gy[0]),
+               xytext=(-40, -38), textcoords="offset points", fontsize=7.5, color="#c0392b",
+               bbox=dict(boxstyle="round,pad=0.2", fc="w", alpha=0.85, ec="none"))
     for name, r in st.items():
         x, y = r["xy_mm"]
         a.plot(x, y, "o", ms=8, mec="k", color="#2ca02c" if r["reachable"] else "#d62728")
-        a.annotate(name, (x, y), xytext=(6, 5), textcoords="offset points", fontsize=7.5,
-                   bbox=dict(boxstyle="round,pad=0.2", fc="w", alpha=0.85))
+        right = x > 800
+        a.annotate(name, (x, y), xytext=(-7 if right else 7, 7), textcoords="offset points", fontsize=7.5,
+                   ha="right" if right else "left", bbox=dict(boxstyle="round,pad=0.2", fc="w", alpha=0.85))
     a.plot(*pose["j1"], "ks", ms=7)
     a.annotate("J1", pose["j1"], xytext=(6, -10), textcoords="offset points", fontsize=8)
     a.set_xlim(-10, GB_W + 10)
@@ -335,8 +338,8 @@ def plot(xs, ys, Hm, best, st, pose, gant, cs, p, video):
     a.set_ylabel("y (mm, from the open side)")
     a.set_title("Where the gripper can come down, and how low (shaft up to 200 mm stroke)", fontsize=10)
     a = ax[1]
-    img = np.where(region, np.clip(gap, 0, 120), np.nan)
-    im2 = a.imshow(np.ma.masked_invalid(img).T, origin="lower", cmap="YlGn", vmin=0, vmax=120, aspect="auto",
+    img = np.where(region, np.clip(gap, 0, 40), np.nan)
+    im2 = a.imshow(np.ma.masked_invalid(img).T, origin="lower", cmap="YlGn", vmin=0, vmax=40, aspect="auto",
                    extent=[j1s[0] - 0.5, j1s[-1] + 0.5, j2s[0] - 0.5, j2s[-1] + 0.5], interpolation="nearest")
     blocked = np.where(~free, 1.0, np.nan)
     a.imshow(np.ma.masked_invalid(blocked).T, origin="lower", cmap=matplotlib.colors.ListedColormap(["#d9d9d9"]),
@@ -354,7 +357,7 @@ def plot(xs, ys, Hm, best, st, pose, gant, cs, p, video):
     a.plot([], [], "o", mfc="none", mec="#d62728", label="stations (both elbows)")
     a.set_xlabel("J1 (deg)")
     a.set_ylabel("J2 (deg)")
-    a.set_title("Joint space with the shaft up: free poses (green, by clearance), blocked (grey)", fontsize=10)
+    a.set_title("Joint space with the shaft up: free poses by clearance, blocked in grey", fontsize=10)
     a.legend(loc="lower left", fontsize=7.5, framealpha=0.9)
     fig.tight_layout()
     fig.savefig(os.path.join(OUT, "epson_reach.png"), dpi=105)

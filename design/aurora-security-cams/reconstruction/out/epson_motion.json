@@ -40,14 +40,13 @@
   },
   "arm2": {
    "points_outside_box": 259,
-   "points_in_equipment": 386,
+   "points_in_equipment": 442,
    "max_x_mm": 1244.6,
    "near_parts": {
-    "U-DP dual port": 12,
-    "far-end window": 8,
-    "microscope camera": 3,
-    "BX3-URA illuminator drum": 2,
-    "U-TLU tube": 1
+    "U-DP dual port (Evident CAD)": 14,
+    "microscope camera": 6,
+    "far-end window": 4,
+    "U-TLU tube (Evident CAD)": 2
    }
   },
   "unit": {
@@ -57,14 +56,14 @@
   },
   "shaft": {
    "points_outside_box": 84,
-   "points_in_equipment": 1262,
+   "points_in_equipment": 1476,
    "max_x_mm": 1207.3,
    "near_parts": {
-    "far-end window": 17,
-    "microscope mounting plate": 3,
-    "BX3-URA illuminator drum": 2,
-    "illuminator drum scale": 1,
-    "far-end window frame": 1
+    "far-end window": 15,
+    "BX3-URA illuminator (Evident CAD)": 4,
+    "far-end window frame": 3,
+    "U-DP dual port (Evident CAD)": 2,
+    "microscope mounting plate": 1
    }
   },
   "ee_shaft": {
@@ -74,7 +73,7 @@
    "near_parts": {
     "microscope mounting plate": 18,
     "far-end window": 6,
-    "BX3-URA illuminator drum": 1,
+    "BX3-URA illuminator (Evident CAD)": 1,
     "nosepiece": 1
    }
   }
@@ -82,14 +81,14 @@
  "grid_step_deg": 2.0,
  "clearance_mm": 10.0,
  "fraction_of_manual_range": {
-  "free": 0.234,
+  "free": 0.245,
   "walls_or_ceiling": 0.561,
-  "equipment": 0.205,
-  "largest_connected_free_region": 0.225
+  "equipment": 0.193,
+  "largest_connected_free_region": 0.242
  },
  "j1_free_range_deg": [
   -98.0,
-  32.0
+  50.0
  ],
  "j3_reach_xy_mm": {
   "x": [

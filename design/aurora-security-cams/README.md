@@ -861,9 +861,10 @@ brighter than the outside views, the views with the ceiling removed 0.8 to
   852 mm, z = 400 mm on both long sides. All four spots show the room through
   clear window in the unblurred 00:23 UTC frames, so none are modelled.
 
-**Still approximate:** the microscope modules, stage and docking fixtures
-are built to their sizes and the frames, not from vendor CAD; the backs of
-parts no camera sees are inferred. Cables and tubing traced by colour were
+**Still approximate:** the stage and docking fixtures are built to their
+sizes and the frames, not from vendor CAD (the BX3 microscope modules use
+Evident's CAD since 2026-11-25, below); the backs of parts no camera sees are
+inferred. Cables and tubing traced by colour were
 added on 2026-11-25 (below); black and grey cables are still missing.
 
 **How each part is placed:**
@@ -899,7 +900,8 @@ added on 2026-11-25 (below); black and grey cables are still missing.
 - **Datasheet modules:**
   - the microscope is Olympus/Evident BX3 modules on a custom plate: a
     BX3-URA illuminator (drum 180 mm, body 402.5 mm long with the lamp port),
-    a U-DP dual port (88 x 151 x 57 mm) and a U-TLU tube (ø60 x 57.6 mm)
+    a U-DP dual port (88 x 151 x 57 mm) and a U-TLU tube (ø60 x 57.6 mm).
+    Since 2026-11-25 all three are Evident's own CAD (`evident_cad.py`)
   - a 20x objective (green ring)
   - the stage is probably an ASI OE-1250 (228.6 x 215.9 x 45.1 mm)
   - the large black THORLABS box has no connectors, so it is drawn as a
@@ -1075,7 +1077,7 @@ without a login):
 | Load cell | Montalvo X-series, Size 0, standard mount, 50 N / 10 lb (high confidence on series and size) | Body ø55 x 50 mm, M12 4-pin connector (datasheet X-US-12); Montalvo's CAD needs an account |
 | Steppers | StepperOnline NEMA 23 and NEMA 17 | Datasheet PDFs without a login: NEMA 23 flange 57.3 mm, NEMA 17 42.3 mm; STEP needs an account |
 | "400mm" stage | Low confidence: FUYU FSK40/FSL40 (40 mm wide) or a generic SFU1605 stage (80 mm wide) | Measuring the base width would settle it |
-| "THORLABS" box | Probably a Thorlabs Nexus breadboard seen edge-on | Thorlabs serves CAD only through its web app |
+| "THORLABS" box | Probably a Thorlabs Nexus breadboard seen edge-on | STEP per item without a login (found later the same day, see [Vendor CAD](#vendor-cad-what-downloads-freely-and-what-needs-a-sign-in)) |
 | Glovebox | LC Technology Solutions, custom; 15 in round antechamber | No public drawings; LC Tech provides SolidWorks models on request |
 | Amcrest turret | IP5M-T1179EW-AI-V3: ø109.9 x 100.9 mm, mounting holes on ø84 mm | Manual drawing |
 
@@ -1097,8 +1099,8 @@ Quantum Foundry") may show the hardware.
   10 mm voxel grid of every other part.
 - **Left out:** the user duct, which flexes with J2.
 
-- **Result:** 23 % of the manual's J1 x J2 range is free. 56 % puts the arm through a wall, a window or the ceiling, and 20 % through equipment, mostly with the gripper, which hangs to 232 mm above the deck with the shaft up.
-- **J1** is usable from −98° to +32° of its ±132°. Beyond that range, the arm runs into a wall or a window.
+- **Result** (re-run on 2026-11-25 with Evident's microscope CAD): 25 % of the manual's J1 x J2 range is free. 56 % puts the arm through a wall, a window or the ceiling, and 19 % through equipment, mostly with the gripper, which hangs to 234 mm above the deck with the shaft up.
+- **J1** is usable from −98° to +50° of its ±132°. Beyond that range, the arm runs into a wall or a window.
 - **The J3 shaft can reach** x = 337 to 1128 mm and y = 275 to 1013 mm (the green area below).
 
 ![Epson joint space and J3 reach inside the box](reconstruction/out/epson_motion.png)
@@ -1121,6 +1123,57 @@ Arm 2 and the shaft really do sit by the microscope, so one of these is off:
 the base pose, the box length, or the microscope's placement. A tape-measured
 inside length of the box would decide between the first two.
 
+### Vendor CAD: what downloads freely and what needs a sign-in
+
+Checked on 2026-11-25. Two corrections to the table above: Thorlabs offers
+STEP files on each item page without a login, and Evident's BX3 modules
+download directly too.
+
+**Needs a free account:**
+
+| Part | Product page | CAD | Sign-up |
+|---|---|---|---|
+| Montalvo X-series load cell (10 lb / 50 N) | [X-series](https://montalvo.com/products/narrow-web-pulley-load-cells-x-series/) | [standard-mount drawings](https://montalvo.com/download/x-series-load-cell-drawings-standard-mount/), [flange-mount](https://montalvo.com/download/x-series-load-cell-drawings-flange-mount/) (PDF, DWG, SLDPRT) | [create an account](https://montalvo.com/create-an-account/) |
+| StepperOnline NEMA 23, e.g. 23HS22-2804S | [23HS22-2804S](https://www.omc-stepperonline.com/nema-23-bipolar-1-8deg-1-26nm-178-4oz-in-2-8a-2-5v-57x57x56mm-4-wires-23hs22-2804s), [all NEMA 23](https://www.omc-stepperonline.com/nema-23-stepper-motor) | STEP on the product page's Download tab | [register](https://www.omc-stepperonline.com/register) |
+| StepperOnline NEMA 17, e.g. 17HS19-2004S1 | [17HS19-2004S1](https://www.omc-stepperonline.com/nema-17-bipolar-59ncm-84oz-in-2a-42x48mm-4-wires-w-1m-cable-connector-17hs19-2004s1), [all NEMA 17](https://www.omc-stepperonline.com/nema-17-stepper-motor) | same | same |
+| HIWIN HGR15 rail, HGH15CA block | [HG series](https://hiwin.com/products/linear-guideways/hg-series/) | [configurator](https://configure.hiwin.com/?pl=Linear%20Guideways) (or [hiwinsupport.com](https://www.hiwinsupport.com/cad_download/linear_guideway.aspx)) | sign-up at the end of the configurator |
+| FUYU FSK40 stage (one candidate for the "400mm" stage) | [FSK40 in FUYU's CAD library](https://catalogs.fuyumotion.com/#/pages/product/detail?id=10004) | Download button on that page | email or QR-code login |
+
+The motor models are typical ones: which StepperOnline motors these are isn't
+known. The StepperOnline pages refuse automated access, so those two links
+come from a search index and weren't opened.
+
+**On request:** LC Technology Solutions builds its gloveboxes in SolidWorks
+and shares the models per project
+([contact form](https://lctechinc.com/contact/); the
+[LC-1 page](https://lctechinc.com/lc-1-standard-glovebox-systems/) for the
+standard boxes).
+
+**No sign-in:**
+
+| Part | CAD | Status |
+|---|---|---|
+| Evident BX3-URA, U-DP, U-TLU | [BX3-URA](https://adobeassets.evidentscientific.com/content/dam/mis/3d-objectives/BX3-URA.zip), [U-DP](https://adobeassets.evidentscientific.com/content/dam/mis/3d-objectives/U-DP.zip), [U-TLU](https://adobeassets.evidentscientific.com/content/dam/mis/3d-objectives/U-TLU.zip) (from [OEM downloads](https://evidentscientific.com/en/downloads/oem)) | used, below |
+| Thorlabs breadboards, e.g. [MB3030/M](https://www.thorlabs.com/item/mb3030_m), Nexus [B3030A](https://www.thorlabs.com/item/B3030A) | STEP on each item page | not used: the boards in the box are cut to other sizes, and the THORLABS box isn't identified |
+| ASI OE-1250 stage | [technical drawings](https://www.asiimaging.com/support/technical-drawings/) ("OE-1250 ASSEMBLY (CATALOG MODEL).zip") | not fetched: the site's bot check blocks the runner |
+| Panduit G1X2 duct | 2D only (DWG, DXF, PDF on the [product page](https://www.panduit.com/en/products/wire-routing-management-protection/wiring-duct-accessories/wiring-duct-duct-covers/g1x2lg6.html)) | the duct is already built to it |
+
+**Evident's CAD in the model** ([`reconstruction/evident_cad.py`](reconstruction/evident_cad.py)).
+The hand-built BX3-URA, U-DP and U-TLU are replaced by Evident's own STEP
+files: appearance models, meshed by gmsh at build time and not stored here.
+
+- **Placement:** stacked on the optical axis that the hand-built modules
+  used, with the illuminator's body on the nosepiece mount (z = 325 mm).
+  - The BX3-URA is turned so its filter drum points towards the Epson, as in
+    Overhead 1.
+  - The U-DP's quarter turn was chosen by its outline over Overhead 1: at 0°
+    and 180° it is wider than the white block under the tube, at 90° and 270°
+    it matches it, and 270° fits the block's right edge slightly better.
+- **Height:** the vendor stack is 17 mm taller than the hand-built one
+  (215 mm against 198), so the camera on top moved up by that much.
+- **Not changed:** the objective, nosepiece, camera, ASI stage and mounting
+  plate.
+
 ### Photo textures, a cross-view check, reach and an articulated model (2026-11-25)
 
 **Photo textures** ([`reconstruction/phototexture.py`](reconstruction/phototexture.py),
@@ -1141,7 +1194,20 @@ cables lying on surfaces.
 - **Where the cameras disagree:** where both cameras saw a texel and their colours differ by more than about 35 levels, one of them is looking at something the model lacks, and the texel falls back towards the part's finish. The deck takes only texels both cameras saw and agree on, because cables lying above it would otherwise be painted far from where they are.
 - **White balance:** Overhead 2's colours are scaled to Overhead 1's over the texels both saw (gains B 1.15, G 1.05, R 0.99).
 - **Not textured:** the robot, the cables, the camera housings and the decals keep their finishes. The robot's fitted pose (IoU 0.63) isn't tight enough to carry a projected texture.
+- **Unseen surfaces** keep their own finish: the texture's metallic-roughness map holds each part's finish where no camera saw it and turns matte where the photo covers it. Its spare red channel carries the photo coverage, which `blender_render.py` uses to emit the photo's colour there instead of lighting it a second time.
 - **Limit:** anything the model lacks (black cables, clutter) is painted onto the surface behind it. From the cameras' own viewpoints that looks right; from elsewhere it shows as flat streaks.
+
+| From the open side (Cycles) | Inside, towards the Epson and the microscope |
+|---|---|
+| ![](reconstruction/out/photo_open_side.jpg) | ![](reconstruction/out/photo_epson.jpg) |
+
+Towards the gantry: [`photo_gantry.jpg`](reconstruction/out/photo_gantry.jpg);
+from above: [`photo_top.jpg`](reconstruction/out/photo_top.jpg). Through the
+cameras, published frame on the left:
+[Overhead 1](reconstruction/out/photo_view_cam0.jpg),
+[Overhead 2](reconstruction/out/photo_view_cam1.jpg). Those two reproduce the
+photos by construction wherever the model has a surface, so they test
+nothing; the cross-view check below does.
 
 **Cross-view check** (`phototexture.py --check`, `out/crossview.jpg`,
 `out/crossview.json`). This tests the geometry without any textures:
@@ -1178,7 +1244,7 @@ peak.
 
 - **None is accepted,** so every part stays where it was (`out/refine.png`, `out/refine.json`).
 - **Five can't be tested:** the docking fixtures, the gantry's Y axis, the printed carriage, the tape measure and the loose breadboard. The other camera doesn't see enough of them.
-- **The six tested give jagged curves,** with peaks of 0.10 to 0.20 at several offsets 30 to 130 mm apart.
+- **The six tested give jagged curves.** Four have a second peak within 0.06 of the best one, 40 to 180 mm away (the Thorlabs platform's best is -40 mm at 0.20, its rival +90 mm at 0.14). The two breadboards gain less than 0.08 over zero.
 - **Why:** the two cameras look at the deck from nearly opposite ends, so few surfaces look alike in both. A third viewpoint, or a few tape readings, would pin these parts.
 
 ![Two-camera agreement against the offset along the source camera's ray](reconstruction/out/refine.png)
@@ -1229,11 +1295,10 @@ Rebuild (after `build_reconstruction.py`):
 
 ```
 cd reconstruction
-xvfb-run -a python phototexture.py --check   # out/glovebox_photo.glb, out/phototex/, out/crossview.*  (~1.5 min)
+BLENDER=... xvfb-run -a python phototexture.py --check --render   # out/glovebox_photo.glb, out/crossview.*, out/photo_*.jpg
 python refine.py                             # out/refine.json, out/refine.png
 python reach.py                              # out/epson_reach.*  (~3 min)
 python urdf_export.py                        # out/urdf/
-BLENDER=... xvfb-run -a .../blender -b --factory-startup -P blender_render.py -- out/glovebox_photo.glb DIR open_side gantry epson
 ```
 
 (xatlas and embreex in addition to the packages above, and yourdfpy for the URDF check.)
@@ -1322,11 +1387,13 @@ for the YouTube relay.
    conflicts with the door.
 7. **The black unit on the Epson's arm 2**, out of focus at Overhead 2's
    lower right, is placed by the robot fit but not identified.
-8. **CAD fidelity:** the Epson (Epson's STEP) and the ClearPath servo
-   (Teknic's STEP) are vendor CAD; the rest is built to catalogue sizes and
-   the frames. The Montalvo load cell, the StepperOnline motors and the
-   Thorlabs parts have CAD behind a free account (see
-   [Refinement from the AURORA video](#refinement-from-the-aurora-video-vendor-cad-and-motion-2026-11-25)).
+8. **CAD fidelity:** the Epson (Epson's STEP), the ClearPath servo
+   (Teknic's STEP) and the BX3 microscope modules (Evident's STEP) are vendor
+   CAD; the rest is built to catalogue sizes and the frames. The Montalvo load
+   cell, the StepperOnline motors, the HIWIN rails and a FUYU stage have CAD
+   behind a free account, and LC Technology shares the glovebox's model on
+   request (links in
+   [Vendor CAD](#vendor-cad-what-downloads-freely-and-what-needs-a-sign-in)).
    The model's parked Epson pose conflicts with the box length and the
    microscope (same section): a tape-measured inside length would decide it.
 9. **Relay restart limit:** a relay that can't reach its camera exits, and
@@ -1372,8 +1439,11 @@ for the YouTube relay.
   (`scene_detail.py`, `detail.py`), finishes (`materials.py`), printed marks
   (`decals.py`), Epson's own T6-B602S CAD, articulated (`epson_cad.py`) and
   posed (`fit_epson_cad.py`), Teknic's ClearPath CAD (`clearpath_cad.py`),
-  cables traced in the stills (`cables.py`), the AURORA video registered to
-  the chamber (`video_register.py`), the Epson's allowable motion
-  (`motion.py`), the Cycles renders (`blender_render.py`), and its exports
-  and renders in `out/`.
+  Evident's BX3 modules (`evident_cad.py`), cables traced in the stills
+  (`cables.py`), the AURORA video registered to the chamber
+  (`video_register.py`), the Epson's allowable motion (`motion.py`) and
+  pick-and-place reach (`reach.py`), photo textures and the cross-view check
+  (`phototexture.py`), the photo-consistency test (`refine.py`), the URDF
+  (`urdf_export.py`), the Cycles renders (`blender_render.py`), and its
+  exports and renders in `out/`.
 - [`captures/`](captures/): the stills above, blurred.

@@ -112,7 +112,7 @@
   },
   "microscope": {
    "source": "datasheet",
-   "note": "Olympus BX3-URA, U-DP and U-TLU sizes (Evident components guide); ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+   "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
   },
   "tape measure": {
    "source": "one-view",
@@ -3993,7 +3993,7 @@
    ],
    "source": {
     "source": "datasheet",
-    "note": "Olympus BX3-URA, U-DP and U-TLU sizes (Evident components guide); ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
    }
   },
   {
@@ -4016,7 +4016,7 @@
    ],
    "source": {
     "source": "datasheet",
-    "note": "Olympus BX3-URA, U-DP and U-TLU sizes (Evident components guide); ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
    }
   },
   {
@@ -4039,7 +4039,7 @@
    ],
    "source": {
     "source": "datasheet",
-    "note": "Olympus BX3-URA, U-DP and U-TLU sizes (Evident components guide); ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
    }
   },
   {
@@ -4062,7 +4062,7 @@
    ],
    "source": {
     "source": "datasheet",
-    "note": "Olympus BX3-URA, U-DP and U-TLU sizes (Evident components guide); ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
    }
   },
   {
@@ -4085,7 +4085,7 @@
    ],
    "source": {
     "source": "datasheet",
-    "note": "Olympus BX3-URA, U-DP and U-TLU sizes (Evident components guide); ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
    }
   },
   {
@@ -4108,7 +4108,7 @@
    ],
    "source": {
     "source": "datasheet",
-    "note": "Olympus BX3-URA, U-DP and U-TLU sizes (Evident components guide); ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
    }
   },
   {
@@ -4131,7 +4131,7 @@
    ],
    "source": {
     "source": "datasheet",
-    "note": "Olympus BX3-URA, U-DP and U-TLU sizes (Evident components guide); ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
    }
   },
   {
@@ -4154,7 +4154,7 @@
    ],
    "source": {
     "source": "datasheet",
-    "note": "Olympus BX3-URA, U-DP and U-TLU sizes (Evident components guide); ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
    }
   },
   {
@@ -4177,7 +4177,7 @@
    ],
    "source": {
     "source": "datasheet",
-    "note": "Olympus BX3-URA, U-DP and U-TLU sizes (Evident components guide); ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
    }
   },
   {
@@ -4200,145 +4200,76 @@
    ],
    "source": {
     "source": "datasheet",
-    "note": "Olympus BX3-URA, U-DP and U-TLU sizes (Evident components guide); ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
    }
   },
   {
-   "name": "BX3-URA illuminator drum",
+   "name": "BX3-URA illuminator (Evident CAD)",
    "group": "microscope",
    "finish": "olympus_paint",
    "colour": "#d2d8d2",
-   "faces": 2560,
+   "faces": 120000,
    "bounds_mm": [
     [
-     1028.0,
-     340.5,
-     325.0
-    ],
-    [
-     1208.0,
-     520.5,
-     409.0
-    ]
-   ],
-   "source": {
-    "source": "datasheet",
-    "note": "Olympus BX3-URA, U-DP and U-TLU sizes (Evident components guide); ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
-   }
-  },
-  {
-   "name": "illuminator drum scale",
-   "group": "microscope",
-   "finish": "black_plastic",
-   "colour": "#5a5e60",
-   "faces": 576,
-   "bounds_mm": [
-    [
-     1027.8,
-     340.3,
-     383.5
-    ],
-    [
-     1208.2,
-     520.7,
-     390.5
-    ]
-   ],
-   "source": {
-    "source": "datasheet",
-    "note": "Olympus BX3-URA, U-DP and U-TLU sizes (Evident components guide); ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
-   }
-  },
-  {
-   "name": "BX3-URA illuminator body",
-   "group": "microscope",
-   "finish": "olympus_paint",
-   "colour": "#d2d8d2",
-   "faces": 396,
-   "bounds_mm": [
-    [
-     1073.2,
-     158.2,
-     335.0
-    ],
-    [
-     1162.8,
-     398.8,
-     409.0
-    ]
-   ],
-   "source": {
-    "source": "datasheet",
-    "note": "Olympus BX3-URA, U-DP and U-TLU sizes (Evident components guide); ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
-   }
-  },
-  {
-   "name": "BX3-URA lamp port",
-   "group": "microscope",
-   "finish": "olympus_paint",
-   "colour": "#c9ccc9",
-   "faces": 960,
-   "bounds_mm": [
-    [
-     1096.0,
+     1015.8,
      118.0,
-     350.0
+     287.0
     ],
     [
-     1140.0,
-     158.0,
-     394.0
+     1215.3,
+     527.1,
+     413.8
     ]
    ],
    "source": {
     "source": "datasheet",
-    "note": "Olympus BX3-URA, U-DP and U-TLU sizes (Evident components guide); ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
    }
   },
   {
-   "name": "U-DP dual port",
+   "name": "U-DP dual port (Evident CAD)",
    "group": "microscope",
    "finish": "olympus_paint",
    "colour": "#d2d8d2",
-   "faces": 396,
+   "faces": 30000,
    "bounds_mm": [
     [
-     1074.1,
-     279.1,
-     409.0
+     1037.0,
+     328.0,
+     413.8
     ],
     [
-     1161.9,
-     429.9,
-     466.0
+     1188.0,
+     423.0,
+     476.8
     ]
    ],
    "source": {
     "source": "datasheet",
-    "note": "Olympus BX3-URA, U-DP and U-TLU sizes (Evident components guide); ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
    }
   },
   {
-   "name": "U-TLU tube",
+   "name": "U-TLU tube (Evident CAD)",
    "group": "microscope",
    "finish": "black_anodised",
    "colour": "#1b1b1c",
-   "faces": 960,
+   "faces": 8348,
    "bounds_mm": [
     [
      1088.0,
      349.0,
-     466.0
+     476.8
     ],
     [
      1148.0,
      409.0,
-     523.6
+     540.4
     ]
    ],
    "source": {
     "source": "datasheet",
-    "note": "Olympus BX3-URA, U-DP and U-TLU sizes (Evident components guide); ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
    }
   },
   {
@@ -4351,17 +4282,17 @@
     [
      1084.0,
      345.0,
-     523.6
+     540.4
     ],
     [
      1152.0,
      413.0,
-     609.0
+     625.8
     ]
    ],
    "source": {
     "source": "datasheet",
-    "note": "Olympus BX3-URA, U-DP and U-TLU sizes (Evident components guide); ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
    }
   },
   {
@@ -4384,7 +4315,7 @@
    ],
    "source": {
     "source": "datasheet",
-    "note": "Olympus BX3-URA, U-DP and U-TLU sizes (Evident components guide); ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
    }
   },
   {
@@ -4407,7 +4338,7 @@
    ],
    "source": {
     "source": "datasheet",
-    "note": "Olympus BX3-URA, U-DP and U-TLU sizes (Evident components guide); ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
    }
   },
   {
@@ -4430,7 +4361,7 @@
    ],
    "source": {
     "source": "datasheet",
-    "note": "Olympus BX3-URA, U-DP and U-TLU sizes (Evident components guide); ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
    }
   },
   {
@@ -4453,7 +4384,7 @@
    ],
    "source": {
     "source": "datasheet",
-    "note": "Olympus BX3-URA, U-DP and U-TLU sizes (Evident components guide); ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
    }
   },
   {
@@ -4476,7 +4407,7 @@
    ],
    "source": {
     "source": "datasheet",
-    "note": "Olympus BX3-URA, U-DP and U-TLU sizes (Evident components guide); ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
    }
   },
   {
@@ -4499,7 +4430,7 @@
    ],
    "source": {
     "source": "datasheet",
-    "note": "Olympus BX3-URA, U-DP and U-TLU sizes (Evident components guide); ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
    }
   },
   {
@@ -4522,7 +4453,7 @@
    ],
    "source": {
     "source": "datasheet",
-    "note": "Olympus BX3-URA, U-DP and U-TLU sizes (Evident components guide); ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
    }
   },
   {
@@ -4545,7 +4476,7 @@
    ],
    "source": {
     "source": "datasheet",
-    "note": "Olympus BX3-URA, U-DP and U-TLU sizes (Evident components guide); ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
    }
   },
   {
@@ -4568,7 +4499,7 @@
    ],
    "source": {
     "source": "datasheet",
-    "note": "Olympus BX3-URA, U-DP and U-TLU sizes (Evident components guide); ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
    }
   },
   {
@@ -4591,7 +4522,7 @@
    ],
    "source": {
     "source": "datasheet",
-    "note": "Olympus BX3-URA, U-DP and U-TLU sizes (Evident components guide); ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
    }
   },
   {
@@ -4614,7 +4545,7 @@
    ],
    "source": {
     "source": "datasheet",
-    "note": "Olympus BX3-URA, U-DP and U-TLU sizes (Evident components guide); ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
    }
   },
   {
@@ -4637,7 +4568,7 @@
    ],
    "source": {
     "source": "datasheet",
-    "note": "Olympus BX3-URA, U-DP and U-TLU sizes (Evident components guide); ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
    }
   },
   {
@@ -4660,7 +4591,7 @@
    ],
    "source": {
     "source": "datasheet",
-    "note": "Olympus BX3-URA, U-DP and U-TLU sizes (Evident components guide); ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
    }
   },
   {
@@ -4683,7 +4614,7 @@
    ],
    "source": {
     "source": "datasheet",
-    "note": "Olympus BX3-URA, U-DP and U-TLU sizes (Evident components guide); ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
    }
   },
   {
@@ -4706,7 +4637,7 @@
    ],
    "source": {
     "source": "datasheet",
-    "note": "Olympus BX3-URA, U-DP and U-TLU sizes (Evident components guide); ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
    }
   },
   {

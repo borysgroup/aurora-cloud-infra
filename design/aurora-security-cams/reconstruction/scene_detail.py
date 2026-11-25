@@ -370,28 +370,42 @@ def microscope():
                   "microscope", "lens_glass"))
     out.append(mk("nosepiece", D.revolve(D.fillet_profile([(0, 45), (42, 45), (42, 75), (0, 75)], 3), T0(z_tip), 96),
                   "microscope", "olympus_paint", "#d9ddd9"))
-    # BX3-URA reflected-light illuminator: filter drum ahead of the axis, body behind, lamp port
-    drum = D.fillet_profile([(0, 0), (90, 0), (90, 84), (0, 84)], 8)
-    out.append(mk("BX3-URA illuminator drum", D.revolve(drum, D.frame((ox, oy + 51.5, z_mount), (1, 0, 0), (0, 0, 1)), 128),
-                  "microscope", "olympus_paint"))
-    ticks = []
-    for k in range(48):
-        a = 2 * np.pi * k / 48
-        p = np.array([ox + 89.6 * np.cos(a), oy + 51.5 + 89.6 * np.sin(a), z_mount + 62])
-        ticks.append(trimesh.creation.box(extents=(0.9, 1.2, 7 if k % 4 == 0 else 4),
-                                          transform=D.frame(p, (-np.sin(a), np.cos(a), 0), (0, 0, 1))))
-    out.append(mk("illuminator drum scale", D.cat(ticks), "microscope", "black_plastic", "#5a5e60"))
-    out.append(mk("BX3-URA illuminator body", D.round_box((90, 241, 74), 10, D.frame((ox, oy - 100.5, z_mount + 47),
-                                                                                    (1, 0, 0), (0, 0, 1))),
-                  "microscope", "olympus_paint"))
-    out.append(mk("BX3-URA lamp port", D.rounded_cylinder((ox, oy - 221, z_mount + 47), (ox, oy - 261, z_mount + 47), 22,
-                                                          2), "microscope", "olympus_paint", "#c9ccc9"))
-    zt = z_mount + 84
-    out.append(mk("U-DP dual port", D.round_box((88, 151, 57), 6, D.frame((ox, oy - 24.5, zt + 28.5), (1, 0, 0), (0, 0, 1))),
-                  "microscope", "olympus_paint"))
-    out.append(mk("U-TLU tube", D.rounded_cylinder((ox, oy, zt + 57), (ox, oy, zt + 114.6), 30, 1.5), "microscope",
-                  "black_anodised", "#1b1b1c"))
-    out.append(mk("microscope camera", D.rounded_cylinder((ox, oy, zt + 114.6), (ox, oy, zt + 200), 34, 3), "microscope",
+    # BX3-URA illuminator, U-DP dual port and U-TLU tube: Evident's own CAD (evident_cad.py), stacked on the
+    # optical axis with the illuminator's body on the nosepiece mount; the hand-built modules below are the
+    # fallback when the CAD can't be fetched
+    cam_z0 = None
+    try:
+        import evident_cad as EV
+        mods, cam_z0 = EV.stack(ox, oy, z_mount)
+        out.append(mk("BX3-URA illuminator (Evident CAD)", mods["BX3-URA"], "microscope", "olympus_paint"))
+        out.append(mk("U-DP dual port (Evident CAD)", mods["U-DP"], "microscope", "olympus_paint"))
+        out.append(mk("U-TLU tube (Evident CAD)", mods["U-TLU"], "microscope", "black_anodised", "#1b1b1c"))
+    except Exception as e:     # no network / no gmsh
+        print("Evident CAD unavailable, using the hand-built BX3 modules:", e)
+    if cam_z0 is None:
+        # BX3-URA reflected-light illuminator: filter drum ahead of the axis, body behind, lamp port
+        drum = D.fillet_profile([(0, 0), (90, 0), (90, 84), (0, 84)], 8)
+        out.append(mk("BX3-URA illuminator drum", D.revolve(drum, D.frame((ox, oy + 51.5, z_mount), (1, 0, 0), (0, 0, 1)), 128),
+                      "microscope", "olympus_paint"))
+        ticks = []
+        for k in range(48):
+            a = 2 * np.pi * k / 48
+            p = np.array([ox + 89.6 * np.cos(a), oy + 51.5 + 89.6 * np.sin(a), z_mount + 62])
+            ticks.append(trimesh.creation.box(extents=(0.9, 1.2, 7 if k % 4 == 0 else 4),
+                                              transform=D.frame(p, (-np.sin(a), np.cos(a), 0), (0, 0, 1))))
+        out.append(mk("illuminator drum scale", D.cat(ticks), "microscope", "black_plastic", "#5a5e60"))
+        out.append(mk("BX3-URA illuminator body", D.round_box((90, 241, 74), 10, D.frame((ox, oy - 100.5, z_mount + 47),
+                                                                                        (1, 0, 0), (0, 0, 1))),
+                      "microscope", "olympus_paint"))
+        out.append(mk("BX3-URA lamp port", D.rounded_cylinder((ox, oy - 221, z_mount + 47), (ox, oy - 261, z_mount + 47), 22,
+                                                              2), "microscope", "olympus_paint", "#c9ccc9"))
+        zt = z_mount + 84
+        out.append(mk("U-DP dual port", D.round_box((88, 151, 57), 6, D.frame((ox, oy - 24.5, zt + 28.5), (1, 0, 0), (0, 0, 1))),
+                      "microscope", "olympus_paint"))
+        out.append(mk("U-TLU tube", D.rounded_cylinder((ox, oy, zt + 57), (ox, oy, zt + 114.6), 30, 1.5), "microscope",
+                      "black_anodised", "#1b1b1c"))
+        cam_z0 = zt + 114.6
+    out.append(mk("microscope camera", D.rounded_cylinder((ox, oy, cam_z0), (ox, oy, cam_z0 + 85.4), 34, 3), "microscope",
                   "black_anodised", "#151515"))
     # the custom plate the modules hang from: aluminium, with a large relief cut-out
     plate = D.rrect(240, z_mount + 40 - 75.7, 6, 0, 0).difference(D.rrect(150, 120, 40, 0, -30))
@@ -431,7 +445,8 @@ def microscope():
                 h, hx = D.cap_screw(((x0 + x1) / 2 + dx * (x1 - x0), (y0 + y1) / 2 + dy * (y1 - y0), 282), (0, 0, 1), 6.0)
                 hs.append(h)
         out.append(mk("docking fixture screws", D.cat(hs), "microscope", "steel_ground"))
-    src("microscope", "datasheet", "Olympus BX3-URA, U-DP and U-TLU sizes (Evident components guide); ASI "
+    src("microscope", "datasheet", "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from "
+        "Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI "
         "OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard "
         "back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective "
         "profile and the THORLABS mark from the Overhead 1 frame (estimate)")

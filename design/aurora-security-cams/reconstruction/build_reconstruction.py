@@ -47,8 +47,8 @@ def distort_canvas(canvas, s, size=(1920, 1080)):
 
 
 def blender_renders(blender, glb, photos, samples, views=(), video_frames=None):
-    tmp = os.path.join(OUT, "_blender")
-    os.makedirs(tmp, exist_ok=True)
+    import tempfile
+    tmp = tempfile.mkdtemp(prefix="_blender_", dir=OUT)
     subprocess.run([blender, "-b", "--factory-startup", "-P", os.path.join(HERE, "blender_render.py"), "--", glb, tmp,
                     *views, "--samples", str(samples)], check=True)
     for cam in (CAM0, CAM1):
@@ -57,6 +57,7 @@ def blender_renders(blender, glb, photos, samples, views=(), video_frames=None):
         canvas = cv2.imread(os.path.join(tmp, f"{cam.name}_pinhole.png"))
         img = distort_canvas(canvas, 0.5)
         photo = cv2.resize(cv2.imread(os.path.join(photos, STILLS[cam.name])), (img.shape[1], img.shape[0]))
+        img = white_balance(img, photo, cam.name)
         cv2.imwrite(os.path.join(OUT, f"view_{cam.name}.jpg"), np.hstack([photo, img]), [cv2.IMWRITE_JPEG_QUALITY, 90])
     for v in ("open_side", "far_end", "epson", "gantry", "top"):
         p = os.path.join(tmp, f"{v}.png")
@@ -73,6 +74,19 @@ def blender_renders(blender, glb, photos, samples, views=(), video_frames=None):
                 img = np.hstack([cv2.resize(cv2.imread(fr), (img.shape[1], img.shape[0])), img])
             cv2.imwrite(os.path.join(OUT, f"{v}.jpg"), img, [cv2.IMWRITE_JPEG_QUALITY, 90])
     shutil.rmtree(tmp)
+
+
+def white_balance(img, photo, cam_name):
+    """The camera's white balance, which the model can't know: per-channel gains that bring the render's
+    colour balance (not its exposure) over the glovebox interior to the photo's."""
+    m = cv2.imread(os.path.join(HERE, "..", "vision", "masks", f"inside_{cam_name}.png"), 0)
+    if m is None:
+        return img
+    m = cv2.resize(m, (img.shape[1], img.shape[0]), interpolation=cv2.INTER_NEAREST) > 127
+    a = photo[m].reshape(-1, 3).astype(float).mean(0)
+    b = img[m].reshape(-1, 3).astype(float).mean(0) + 1e-6
+    g = (a / a.mean()) / (b / b.mean())
+    return np.clip(img.astype(float) * g, 0, 255).astype(np.uint8)
 
 
 def distort_video(canvas, f, k1, s, size=(1920, 1080)):

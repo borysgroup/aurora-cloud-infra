@@ -53,6 +53,7 @@ M = {
     "cable_grey": dict(color="#a9aaa6", metallic=0.0, roughness=0.55),
     "cable_black": dict(color="#151515", metallic=0.0, roughness=0.5),
     "wire_red_cable": dict(color="#b8231c", metallic=0.0, roughness=0.45),
+    "lamp_orange": dict(color="#ff8a1e", metallic=0.0, roughness=0.2, transmission=0.4),
     "decal": dict(color="#ffffff", metallic=0.0, roughness=0.6),
     "paint": dict(color="#888888", metallic=0.0, roughness=0.5),
 }

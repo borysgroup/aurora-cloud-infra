@@ -4,7 +4,8 @@ intersected with the space the box and the other equipment leave it.
     python motion.py            # -> out/epson_motion.json, out/epson_motion.png
 
 Every (J1, J2) pair on a 2 degree grid within the manual's limits is posed with Epson's own CAD
-(arm 1, arm 2 with the black unit, the J3 shaft fully up) on the fitted base pose
+(arm 1, arm 2 with the black unit, the J3 shaft fully up, and the end effector seen in the AURORA
+video) on the fitted base pose
 (out/epson_cad_pose.json). A pose is free when no point sampled on those links comes within one voxel
 (10 mm) of the walls, the ceiling or any other part of the model. The shaft's lowered positions are
 not swept: the shaft is meant to reach the deck items. The user duct (the corrugated hose from the base to
@@ -72,6 +73,12 @@ def link_samples(n=2500):
         out[k] = pts
     u = E.unit_box()
     out["unit"] = trimesh.sample.sample_surface(u, 600, seed=2)[0]
+    # the end effector seen in the video (scene_detail.end_effector), in the links' own frames; the
+    # tubing into the shaft top is flexible and left out like the duct
+    ee = [q for q in SD.end_effector(np.eye(4), np.eye(4)) if "tubing" not in q.name]
+    out["ee_arm2"] = np.vstack([trimesh.sample.sample_surface(q.mesh, 300, seed=3)[0] for q in ee if "collar" in q.name])
+    out["ee_shaft"] = np.vstack([trimesh.sample.sample_surface(q.mesh, 400, seed=4)[0] for q in ee
+                                 if "collar" not in q.name])
     return out
 
 
@@ -93,7 +100,9 @@ def sweep(pose, occ, samples, ceiling_squash=True):
             P = np.vstack([trimesh.transform_points(samples["arm1"], B @ T["arm1"]),
                            trimesh.transform_points(samples["arm2"], B @ T["arm2"]),
                            trimesh.transform_points(samples["unit"], B @ T["unit"]),
-                           trimesh.transform_points(samples["shaft"], B @ T["shaft"])])
+                           trimesh.transform_points(samples["shaft"], B @ T["shaft"]),
+                           trimesh.transform_points(samples["ee_arm2"], B @ T["arm2"]),
+                           trimesh.transform_points(samples["ee_shaft"], B @ T["shaft"])])
             if outside_box(P).any():
                 state[a, b] = 1
             else:
@@ -146,8 +155,8 @@ def conflicts(pose, parked, occ, parts):
     T = E.link_transforms(parked["j1"], parked["j2"])
     out = {}
     names = [p for p in parts if len(p.mesh.faces) < 300000]
-    for k in ("arm1", "arm2", "unit", "shaft"):
-        P = trimesh.transform_points(S[k], B @ T[k])
+    for k in ("arm1", "arm2", "unit", "shaft", "ee_shaft"):
+        P = trimesh.transform_points(S[k], B @ T["shaft" if k == "ee_shaft" else k])
         ob = outside_box(P)
         ijk = np.clip(np.floor(P / VOX).astype(int) + 1, 0, np.array(occ.shape) - 1)
         hit = occ[tuple(ijk.T)] & ~ob

@@ -4,17 +4,22 @@
 
 The model had no cables, the most visible gap in both views. Here:
   1. Pixels of each cable colour are segmented in each published still (HSV thresholds, inside the
-     glovebox mask only): blue signal/motor cables, green and clear-green tubing, red wires, and the
-     grey/white sensor cables. Black cables are not segmented: they can't be told from the black
-     anodised parts by colour.
+     glovebox mask only): blue signal/motor cables, green and clear-green tubing, and red wires. Black
+     and grey cables are not segmented: they can't be told from black anodised parts or bare
+     aluminium by colour.
   2. Each mask is thinned to its skeleton and split at junctions into runs; short runs are dropped.
   3. Each run is lifted to 3D along its camera's rays. A cable lies on or in front of what is behind
      it, so its depth is the nearest model surface within a window along the run (a front envelope),
-     less its radius, smoothed. Its radius comes from the run's width in pixels at that depth.
+     less its radius, smoothed. Its radius comes from the run's width in pixels at that depth (1.5 to
+     4 mm). A run that comes out over 2.5 times longer in 3D than its image length allows at that depth
+     was traced along the line of sight and is dropped.
+
+  4. Two-view check: where the other camera should see a lifted run (in its frame, inside the glovebox,
+     not behind the model), it must see the same colour on at least 30 % of those points, or the run is
+     dropped as lifted to the wrong depth.
 
 So a cable is right in the view it was traced from and lies on the surfaces under it from any other
-view; cables in free air between two parts drop onto the nearer part. Two views would fix that, but
-cables can't be matched between them by colour alone.
+view; cables in free air between two parts drop onto the nearer part.
 """
 import json
 import os
@@ -88,13 +93,47 @@ def lift_run(cam, depth, run, width_px):
     # front envelope over a +-12 px window, then smooth
     from scipy.ndimage import minimum_filter1d, uniform_filter1d
     zf = uniform_filter1d(minimum_filter1d(z, 25, mode="nearest"), 15, mode="nearest")
-    r_mm = float(np.clip(np.median(width_px) / 2 * np.median(zf) / cam.f, 1.5, 6.0))
+    r_mm = float(np.clip(np.median(width_px) / 2 * np.median(zf) / cam.f, 1.5, 4.0))
     d = (P - cam.centre)
     d[~ok] = np.nan
     rays = cam.ray(run)
     Q = cam.centre + rays * (zf - r_mm)[:, None]
+    # a run traced along the line of sight gets depth jumps and comes out far longer in 3D than its
+    # length in the image allows at that depth: unreliable, dropped
+    L3 = np.linalg.norm(np.diff(Q, axis=0), axis=1).sum()
+    Lpx = np.linalg.norm(np.diff(run, axis=0), axis=1).sum() * np.median(zf) / cam.f
+    if L3 > 2.5 * Lpx + 20:
+        return None
     step = max(1, len(Q) // 40)
     return Q[::step].tolist() + [Q[-1].tolist()], r_mm
+
+
+def consistent(run, depths, colour, insides):
+    """Two-view check of a lifted run: where the other camera should see it (in frame, inside the glovebox,
+    not behind the model's surface), that camera must see the same cable colour on at least 30 % of those
+    points. A run with fewer than 8 such points can't be checked and is kept."""
+    from video_register import lift  # noqa: F401  (same canvas conventions)
+    import render
+    from lensmodel import undistort_px
+    from cameras import C, LAM
+    other = CAM1 if run["camera"] == "cam0" else CAM0
+    P = np.array(run["points"], float)
+    uv, z = other.project(P)
+    ok = (z > 50) & (uv[:, 0] >= 0) & (uv[:, 0] < 1920) & (uv[:, 1] >= 0) & (uv[:, 1] < 1080)
+    if ok.sum() < 8:
+        return True
+    ui = np.round(uv[ok]).astype(int)
+    ins = insides[other.name][ui[:, 1], ui[:, 0]] > 0
+    u = undistort_px(uv[ok], C, LAM)
+    cw, ch = render.CANVAS
+    cx = np.clip(np.round(u[:, 0] - C[0] + (cw - 1) / 2).astype(int), 0, cw - 1)
+    cy = np.clip(np.round(u[:, 1] - C[1] + (ch - 1) / 2).astype(int), 0, ch - 1)
+    dz = depths[other.name][cy, cx]
+    vis = ins & ~(z[ok] > np.nan_to_num(dz, nan=1e9) + 20.0)
+    if vis.sum() < 8:
+        return True
+    hit = colour[(other.name, run["finish"])][ui[vis, 1], ui[vis, 0]] > 0
+    return hit.mean() >= 0.3
 
 
 def main():
@@ -102,16 +141,19 @@ def main():
     from video_register import model_depth
     parts = [p for p in SD.build(CAL, with_cables=False) if getattr(p, "image", None) is None and p.group != "cameras"]
     out = []
+    depths, colour, insides = {}, {}, {}
     for cam in (CAM0, CAM1):
         img = cv2.imread(os.path.join(CAPS, STILLS[cam.name]))
         inside = cv2.imread(os.path.join(MASKS, f"inside_{cam.name}.png"), 0)
         inside = cv2.erode((inside > 127).astype(np.uint8), np.ones((9, 9), np.uint8))
         hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
         depth = model_depth(parts, cam)
+        depths[cam.name], insides[cam.name] = depth, inside
         for kind, (lo, hi) in KINDS.items():
             m = cv2.inRange(hsv, np.array(lo), np.array(hi)) & (inside * 255)
             for x0, y0, x1, y1 in EXCLUDE.get((cam.name, kind), []):
                 m[y0:y1, x0:x1] = 0
+            colour[(cam.name, kind)] = cv2.dilate(m, np.ones((15, 15), np.uint8))
             m = cv2.morphologyEx(m, cv2.MORPH_OPEN, np.ones((3, 3), np.uint8))
             m = cv2.morphologyEx(m, cv2.MORPH_CLOSE, np.ones((5, 5), np.uint8))
             n, lab, st, _ = cv2.connectedComponentsWithStats(m)
@@ -130,6 +172,8 @@ def main():
                 out.append(dict(camera=cam.name, finish=kind, radius_mm=round(rad, 2),
                                 points=np.round(pts, 1).tolist()))
         print(cam.name, sum(1 for o in out if o["camera"] == cam.name), "runs", flush=True)
+    out = [o for o in out if consistent(o, depths, colour, insides)]
+    print("kept after the two-view check:", {c: sum(1 for o in out if o["camera"] == c) for c in ("cam0", "cam1")})
     json.dump(dict(source="traced in the published 18:22 UTC stills by colour, lifted onto the model's depth "
                           "(front envelope), see cables.py", cables=out),
               open(os.path.join(OUT, "cables.json"), "w"))

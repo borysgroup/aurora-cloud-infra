@@ -291,18 +291,35 @@ def exfoliator():
             heads.append(h)
     out.append(mk("housing screws", D.cat(heads), "exfoliator", "steel_ground"))
     out += stepper_parts("press stepper", (745, 230, 330), (0, 0, -1), 23, 80, "exfoliator", label_on_back=True)
-    # pin-fin heatsink drive in front of the supply reel (the unit with the QR label in Overhead 1)
+    # the pin-fin unit with the QR label in front of the supply reel is a Teknic ClearPath NEMA 23
+    # integrated servo (pin-fin rear cap, QR label and status LED, as in the video and Teknic's CAD): Teknic's
+    # own STEP, rear cap towards Overhead 1, shaft along +x into the housing, connector side up
     body_c = np.array([640.0, 300.0, 290.0])
-    out.append(mk("roller drive body", D.round_box((60, 66, 80), 4, D.frame(body_c, (1, 0, 0), (0, 0, 1))), "exfoliator",
-                  "alu_blasted"))
-    pins = [D.rounded_cylinder(body_c + (-30, y, z), body_c + (-42, y, z), 2.0, 0.6, 12)
-            for y in np.arange(-27, 28, 6.0) for z in np.arange(-36, 10, 6.0)]
-    out.append(mk("roller drive pin fins", D.cat(pins), "exfoliator", "alu_blasted"))
-    out.append(mk("roller drive connector", D.round_box((26, 20, 14), 2, D.frame(body_c + (0, 0, 47), (1, 0, 0), (0, 0, 1))),
+    try:
+        import clearpath_cad
+        cp = clearpath_cad.mesh().copy()
+        T = np.eye(4)
+        T[:3, :3] = [[0, 0, -1], [0, -1, 0], [-1, 0, 0]]     # Teknic z (rear) -> -x, Teknic -x (connectors) -> +z
+        T[:3, 3] = (626.8, 300.0, 279.0)
+        cp.apply_transform(T)
+        out.append(mk("ClearPath CPM NEMA 23 servo (Teknic CAD)", cp, "exfoliator", "alu_blasted"))
+        lbl_x = float(cp.bounds[0][0]) - 0.3
+        src("ClearPath", "datasheet", "Teknic's STEP for the CPM-231x (keyed shaft), from teknic.com without a login; "
+            "identified by its pin-fin rear cap, QR label and status LED; placed where the hand-built unit was "
+            "(back-projected from Overhead 1); the stack length (231x) is assumed")
+    except Exception as e:          # no network or no gmsh: the hand-built block
+        print("ClearPath CAD unavailable, using the block:", e)
+        out.append(mk("roller drive body", D.round_box((60, 66, 80), 4, D.frame(body_c, (1, 0, 0), (0, 0, 1))),
+                      "exfoliator", "alu_blasted"))
+        pins = [D.rounded_cylinder(body_c + (-30, y, z), body_c + (-42, y, z), 2.0, 0.6, 12)
+                for y in np.arange(-27, 28, 6.0) for z in np.arange(-36, 10, 6.0)]
+        out.append(mk("roller drive pin fins", D.cat(pins), "exfoliator", "alu_blasted"))
+        lbl_x = body_c[0] - 30.6
+    out.append(mk("ClearPath connector", D.round_box((26, 20, 14), 2, D.frame(body_c + (10, 0, 48), (1, 0, 0), (0, 0, 1))),
                   "exfoliator", "black_plastic"))
-    img = DC.from_photo(CAM0, body_c + (-30.6, 0, 26), (0, -1, 0), (-1, 0, 0), 60, 26, 6.0)
-    out.append(decal("roller drive label (photo texture, Overhead 1)", "exfoliator", body_c + (-30.6, 0, 26), (0, -1, 0),
-                     (-1, 0, 0), 60, 26, img, 0.3))
+    img = DC.from_photo(CAM0, np.r_[lbl_x, body_c[1:] + (0, 26)], (0, -1, 0), (-1, 0, 0), 60, 26, 6.0)
+    out.append(decal("ClearPath label (photo texture, Overhead 1)", "exfoliator", np.r_[lbl_x, body_c[1:] + (0, 26)],
+                     (0, -1, 0), (-1, 0, 0), 60, 26, img, 0.3))
     for pn, m, mat in D.axis_module("exfoliator stage", (690, 482), (767, 253), 178.0, carriage_at=0.45):
         out.append(mk(pn, m, "exfoliator", mat))
     # 'EXFOLIATOR' label on the stage base's open-side face (seen from Overhead 1)
@@ -466,6 +483,11 @@ def epson_vendor(r):
     out.append(mk("Epson riser block", D.round_box((288, 179, h), 2.5, Rb), "epson", "alu_machined"))
     # printed marks: Epson's CAD models the EPSON wordmark in relief on both sides of arm 2, so those
     # faces get the print colour; a badge and labels on the base are decals
+    lamp_T = B @ trimesh.transformations.translation_matrix((45.0, -52.0, 484.0))
+    out.append(mk("Epson status lamp base (photo)", D.revolve([(0, 0), (10.5, 0), (10.5, 6), (0, 6)], lamp_T, 32),
+                  "epson", "black_plastic"))
+    out.append(mk("Epson status lamp lens (photo)", D.revolve(D.fillet_profile([(0, 6), (8, 6), (8, 19), (0, 19)], 3.0),
+                                                              lamp_T, 32), "epson", "lamp_orange"))
     lg = E.logo()
     if lg is not None:
         out.append(mk("EPSON wordmarks, arm 2 (Epson CAD relief)", lg.apply_transform(B @ Lt["arm2"]), "epson",
@@ -522,8 +544,17 @@ def end_effector(T_shaft, T_arm2):
     fingers = [D.round_box((10, 30, 34), 1.0, Ts @ trimesh.transformations.translation_matrix((sx * 20, 0, z_end - 58 - 30 - 17)))
                for sx in (-1, 1)]
     out.append(mk("end effector: finger plates (video)", D.cat(fingers), "epson", "black_anodised"))
-    src("end effector", "estimate", "from the AURORA video's Sample Transfer shot (2026-07): collar, body, tubing "
-        "loop and parallel gripper, scaled from the ø20 mm J3 shaft; not visible in the November stills")
+    # three clear-teal tubes from arm 2's duct fitting into the top of the hollow shaft (Borys lab photo
+    # of this T6), kept under the glovebox ceiling
+    tubes = []
+    for dy in (-6.0, 0.0, 6.0):
+        P = D.spline([(352, dy, 478), (420, dy * 1.4, 560), (520, dy * 1.2, 592), (594, dy * 0.6, 590),
+                      (600, dy * 0.4, 584)], 8)
+        tubes.append(D.sweep_circle(trimesh.transform_points(P, T_arm2), 2.0, 10))
+    out.append(mk("Epson tubing into the shaft top (photo)", D.cat(tubes), "epson", "tube_green"))
+    src("end effector", "estimate", "from the AURORA video's Sample Transfer shot (2026-07) and a Borys lab photo "
+        "of this T6: collar, body, tubing loop and parallel gripper, scaled from the ø20 mm J3 shaft; tubing into "
+        "the hollow shaft's top; not visible in the November stills")
     return out
 
 

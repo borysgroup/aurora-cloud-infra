@@ -2,6 +2,7 @@
 estimate the video camera's intrinsics from all of them.
 
     python video_register.py FRAMES_DIR [--shots transfer,exfol]  # -> out/video_cameras.json
+    python video_register.py FRAMES_DIR --robot-poses              # -> out/video_robot_poses.json
 
 The video (https://www.youtube.com/watch?v=moBCWzP9Izw, 2026-07-22) is not redistributed. FRAMES_DIR
 holds its frames as NNNN.jpg (frame index at 29.97 fps, 1920 x 1080), e.g. dumped with OpenCV.
@@ -41,9 +42,21 @@ TITLE = (855, 10, 1890, 165)          # the video's title box (x0, y0, x1, y1)
 W, H = 1920, 1080
 
 
-def model_depth(parts, cam):
+def model_depth(parts, cam, tries=3):
     """z-depth (mm along the view axis) of the model on render.CANVAS, a pinhole canvas with the
-    camera's focal length centred on its principal point."""
+    camera's focal length centred on its principal point. Retried: a loaded X server sometimes refuses
+    the first connection."""
+    for k in range(tries):
+        try:
+            return _model_depth(parts, cam)
+        except RuntimeError:
+            if k == tries - 1:
+                raise
+            import time
+            time.sleep(5)
+
+
+def _model_depth(parts, cam):
     pl = render._plotter(parts, render.CANVAS, bg="black")
     fwd, down = cam.R[2], cam.R[1]
     pl.camera.position = cam.centre.tolist()
@@ -162,8 +175,13 @@ def main():
     ap.add_argument("frames")
     ap.add_argument("--shots", default="transfer,exfol")
     ap.add_argument("--stride", type=int, default=1)
+    ap.add_argument("--stride-exfol", type=int, default=6, help="the exfoliation shot barely matches the stills")
     ap.add_argument("--f0", type=float, default=1550.0)
+    ap.add_argument("--robot-poses", action="store_true", help="only write out/video_robot_poses.json")
     a = ap.parse_args()
+    if a.robot_poses:
+        write_robot_poses()
+        return
     import scene_detail as SD
     parts = [p for p in SD.build(CAL) if getattr(p, "image", None) is None and p.group != "cameras"]
     depth = {c.name: model_depth(parts, c) for c in (CAM0, CAM1)}
@@ -174,13 +192,15 @@ def main():
                   shots={})
     for shot in a.shots.split(","):
         lo, hi = SHOTS[shot]
-        obs = {}
-        for kf in range(lo, hi + 1, a.stride):
+        obs, tried = {}, []
+        for kf in range(lo, hi + 1, a.stride_exfol if shot == "exfol" else a.stride):
             fr = cv2.imread(os.path.join(a.frames, f"{kf:04d}.jpg"))
             if fr is None:
                 continue
             Xs, xs, src = [], [], {}
             for cn, still in stills.items():
+                if shot == "transfer" and cn == "cam1":
+                    continue      # Overhead 2 sees this shot's scene from the far end: about 10 matches a frame
                 pa, pb = loftr_match(fr, still)
                 if len(pa) == 0:
                     continue
@@ -194,6 +214,7 @@ def main():
             X, x = np.vstack(Xs), np.vstack(xs)
             if len(X) < 25:
                 print(shot, kf, "too few matches", src, flush=True)
+                tried.append(dict(frame=kf, matches=src))
                 continue
             best = None
             for f in (a.f0 * s for s in (0.75, 0.85, 1.0, 1.15, 1.3)):
@@ -202,12 +223,15 @@ def main():
                     best = (f, r)
             if best is None or len(best[1][2]) < 25:
                 print(shot, kf, "PnP failed", src, flush=True)
+                tried.append(dict(frame=kf, matches=src, pnp="failed"))
                 continue
             f, (rv, tv, inl) = best
             obs[kf] = dict(X=X[inl], x=x[inl], rvec=rv, tvec=tv, n_matches=src, f_scan=f)
             print(shot, kf, "matches", src, "inliers", len(inl), "f scan", round(f), flush=True)
         if len(obs) < 3:
-            result["shots"][shot] = dict(registered=len(obs), note="too few frames registered")
+            result["shots"][shot] = dict(frames_in_shot=hi - lo + 1, frames_tried=len(tried) + len(obs),
+                                         registered=len(obs), unregistered=tried,
+                                         note="too few matches with the November stills to place the frames")
             continue
         f0 = float(np.median([o["f_scan"] for o in obs.values()]))
         f, k, sf, sk, r = refine(obs, f0, 0.0)
@@ -242,9 +266,6 @@ def main():
               round(float(np.median(e)), 2), flush=True)
     json.dump(result, open(os.path.join(OUT, "video_cameras.json"), "w"), indent=1)
 
-
-if __name__ == "__main__":
-    main()
 
 
 # ---- the robot's pose in a registered frame ------------------------------------------------------------
@@ -299,6 +320,27 @@ def robot_pose_in_frame(shot, kf, collar_px, j2_px, z_stroke=0.0):
     return dict(j1=round(j1, 2), j2=round(j2, 2), z=z_stroke, u=0.0, j3_xy=np.round(P[:2], 1).tolist())
 
 
+# the robot in the rendered frames: shaft collar's top centre and J2's axis, picked by eye on the 1920 x 1080
+# frames, and the J3 stroke judged from the gap between the collar and the tool body
+PICKS = {("transfer", 612): ((900, 256), (470, 230), 10.0),
+         ("transfer", 640): ((955, 345), (620, 280), 10.0)}
+
+
+def write_robot_poses():
+    """out/video_robot_poses.json: the Epson's pose in each rendered frame and the per-link transforms that
+    blender_render.py applies to move the robot there from its parked pose."""
+    p = json.load(open(os.path.join(OUT, "epson_cad_pose.json")))
+    pose = dict(j1=tuple(p["base"]["j1"]), z0=p["base"]["z0"], yaw=p["base"]["yaw"])
+    out = {}
+    for (shot, kf), (collar, j2px, zs) in PICKS.items():
+        rp = robot_pose_in_frame(shot, kf, collar, j2px, zs)
+        out[f"video_{shot}_{kf}"] = dict(pose=rp, picked=dict(collar_px=collar, j2_px=j2px),
+                                         deltas=robot_deltas(pose, p["parked"], rp))
+    json.dump(dict(note="Epson pose in each rendered video frame: J3 from the shaft collar picked by eye, lifted "
+                        "onto the plane of arm 2's underside, then inverse kinematics on the fitted base; J2 picks "
+                        "the elbow side", **out), open(os.path.join(OUT, "video_robot_poses.json"), "w"), indent=1)
+
+
 def robot_deltas(pose, parked, new):
     """4x4 chamber-frame transforms that move each robot link group from the parked pose to `new`."""
     import epson_cad as E
@@ -306,3 +348,26 @@ def robot_deltas(pose, parked, new):
     a = E.link_transforms(parked["j1"], parked["j2"], parked.get("z", 0.0), parked.get("u", 0.0))
     b = E.link_transforms(new["j1"], new["j2"], new.get("z", 0.0), new.get("u", 0.0))
     return {g: (B @ b[g] @ np.linalg.inv(B @ a[g])).tolist() for g in ("arm1", "arm2", "shaft")}
+
+
+class VideoCam:
+    """A registered video frame as a camera, with cameras.Cam's project()."""
+
+    def __init__(self, shot, kf, vc=None):
+        vc = vc or json.load(open(os.path.join(OUT, "video_cameras.json")))
+        s = vc["shots"][shot]
+        fr = s["frames"][str(kf)]
+        self.name = f"video_{shot}_{kf}"
+        self.R, self.t, self.f, self.k = np.array(fr["R"]), np.array(fr["t"]), s["f_px"], s["k1"]
+        self.centre = -self.R.T @ self.t
+
+    def project(self, X, distorted=True):
+        X = np.atleast_2d(np.asarray(X, float))
+        Xc = X @ self.R.T + self.t
+        xn = Xc[:, :2] / Xc[:, 2:3]
+        r2 = (xn ** 2).sum(1, keepdims=True) if distorted else 0.0
+        return xn * (1 + self.k * r2) * self.f + np.array([W / 2, H / 2]), Xc[:, 2]
+
+
+if __name__ == "__main__":
+    main()

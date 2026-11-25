@@ -158,6 +158,12 @@ scn.collection.objects.link(cam_ob)
 scn.camera = cam_ob
 
 HIDE_OUTSIDE = ("ceiling", "open side")
+# robot parts by the link that carries them (object names start with these), for posing the robot
+ROBOT_GROUPS = dict(arm1=("Epson arm1", "Epson cable"),
+                    arm2=("Epson arm2", "EPSON wordmarks, arm 2", "black unit on arm 2", "end effector: shaft collar",
+                          "Epson tubing"),
+                    shaft=("Epson shaft", "end effector: body", "end effector: tubing", "end effector: parallel",
+                           "end effector: finger"))
 
 
 def set_hidden(names):
@@ -224,7 +230,8 @@ for v in VIEWS:
                res=(1600, 1600), hide=HIDE_OUTSIDE + ("far side",), exposure=-1.2)
     elif v.startswith("video_"):
         # a frame of the AURORA video, registered by video_register.py: pinhole at the shot's focal
-        # length on a canvas 1.25 x the frame; build_reconstruction.py applies the radial term
+        # length on a canvas 1.25 x the frame; build_reconstruction.py applies the radial term. The
+        # robot is moved to its pose in that frame (out/video_robot_poses.json) and back afterwards.
         _, shot, kf = v.split("_")
         vc = json.load(open(os.path.join(HERE, "out", "video_cameras.json")))["shots"][shot]
         fr = vc["frames"][kf]
@@ -232,5 +239,18 @@ for v in VIEWS:
         M = Matrix((R[0], -R[1], -R[2])).transposed().to_4x4()
         M.translation = Vector(fr["centre"]) * MM
         cw, ch = int(round(1.25 * W * s)), int(round(1.25 * H * s))
+        saved = {}
+        rp = os.path.join(HERE, "out", "video_robot_poses.json")
+        deltas = json.load(open(rp)).get(v, {}).get("deltas", {}) if os.path.exists(rp) else {}
+        S = Matrix.Scale(MM, 4)
+        for g, D in deltas.items():
+            Dm = S @ Matrix(D) @ S.inverted()
+            for ob in scn.objects:
+                base = ob.name.split(" ", 1)[1] if ob.name[:3].isdigit() else ob.name   # nodes are "NNN name"
+                if ob.type == "MESH" and any(base.startswith(k) for k in ROBOT_GROUPS[g]):
+                    saved[ob.name] = ob.matrix_world.copy()
+                    ob.matrix_world = Dm @ ob.matrix_world
         render(os.path.join(OUT, f"{v}_pinhole.png"), M, lens_mm=vc["f_px"] * 36.0 / (1.25 * W), res=(cw, ch),
                hide=("open side",), exposure=float(opts.get("video_exposure", 0.0)))
+        for name, mw in saved.items():
+            scn.objects[name].matrix_world = mw

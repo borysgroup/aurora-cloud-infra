@@ -619,7 +619,9 @@ python evaluate.py --stills raw0023_cam0.jpg --video-labels VLABELS
 - **A camera that comes back in another place** needs
   `calibrate_two_view.py`, the inside masks and `fit_pose.py` redone, then new
   training images and a retrain: about 30 min on four cores.
-- **The end effector** is a stand-in box; the real tool is not modelled.
+- **The end effector** in the training renders is a stand-in box. The real
+  tool, as the AURORA video shows it, is in the CAD reconstruction since
+  2026-11-25 but not yet in these renders.
 
 ### Chip tray
 
@@ -813,8 +815,9 @@ brighter than the outside views, the views with the ceiling removed 0.8 to
 - **Ducts:** Panduit Type G with its base, finger walls on a 12.7 mm pitch
   and cover lips, cover off as in the frames.
 - **Tape reels:** revolved flanges and tape, the hub with a 12-spline bore.
-- **Exfoliator:** machined housing with screws, the pin-fin drive (with
-  its label rectified from Overhead 1), the EXFOLIATOR label on its stage.
+- **Exfoliator:** machined housing with screws, the Teknic ClearPath servo
+  (Teknic's CAD since 2026-11-25, with its label rectified from Overhead 1),
+  the EXFOLIATOR label on its stage.
 - **Microscope:** revolved objective (front lens, taper, green 20x band,
   knurled grip), nosepiece, the BX3-URA filter drum with its scale, filleted
   module housings, the camera, the ASI stage as two carriages with the
@@ -838,7 +841,7 @@ brighter than the outside views, the views with the ceiling removed 0.8 to
   badge, THORLABS and EXFOLIATOR are typeset in Liberation Sans, which is
   close to the printed lettering but not the vendors' logo artwork. Marks
   too small or specific to typeset (the QR sign, the handwriting, the
-  drive's label) are textures taken from the published stills through the
+  servo's label) are textures taken from the published stills through the
   calibrated camera and lens.
 
 **What the detail changed:**
@@ -858,10 +861,10 @@ brighter than the outside views, the views with the ceiling removed 0.8 to
   852 mm, z = 400 mm on both long sides. All four spots show the room through
   clear window in the unblurred 00:23 UTC frames, so none are modelled.
 
-**Still approximate:** the microscope modules, stage, docking fixtures and
-drive are built to their sizes and the frames, not from vendor CAD; the
-backs of parts no camera sees are inferred; cables, tubing and wiring are
-not modelled.
+**Still approximate:** the microscope modules, stage and docking fixtures
+are built to their sizes and the frames, not from vendor CAD; the backs of
+parts no camera sees are inferred. Cables and tubing traced by colour were
+added on 2026-11-25 (below); black and grey cables are still missing.
 
 **How each part is placed:**
 
@@ -926,23 +929,197 @@ not modelled.
   to 50 mm.
 - **Hidden geometry is inferred:** the breadboards' extents behind equipment,
   the far end, and the backs of parts.
-- **Not modelled:** cables, tubing and wiring.
+- **Cables:** blue cables, green tubing and red wires traced in the stills since
+  2026-11-25 (below); black and grey cables are not modelled.
 
 **Files:** `out/glovebox.glb` (every part as its own node, with PBR
 finishes and textured decals; opens in any glTF viewer),
 `out/stl/<group>.stl` (one per group, decimated to at most 40k faces for
 GitHub's STL viewer), the renders above and `out/parts.json`. The GLB and
-`stl/epson.stl` contain a tessellation of Epson's published T6-B602S CAD; the
-STEP itself is downloaded at build time and not stored here. Rebuild with
+`stl/epson.stl` contain a tessellation of Epson's published T6-B602S CAD, and
+the GLB and `stl/exfoliator.stl` one of Teknic's ClearPath CAD; both STEP files
+are downloaded at build time and not stored here. Rebuild with
 
 ```
-python reconstruction/fit_epson_cad.py              # optional: refit the Epson (writes out/epson_cad_pose.json)
-BLENDER=/path/to/blender-4.2/blender xvfb-run -a python reconstruction/build_reconstruction.py
+cd reconstruction
+python fit_epson_cad.py                    # optional: refit the Epson (writes out/epson_cad_pose.json)
+xvfb-run -a python cables.py               # optional: re-trace the cables (out/cables.json)
+BLENDER=/path/to/blender-4.2/blender xvfb-run -a python build_reconstruction.py
+python motion.py                           # the Epson's allowable motion (out/epson_motion.*)
+# the AURORA video (frames dumped as FRAMES/NNNN.jpg, from a residential IP):
+xvfb-run -a python video_register.py FRAMES          # out/video_cameras.json, about 15 min on 4 cores
+BLENDER=... xvfb-run -a python build_reconstruction.py --renders-only --video-frames FRAMES \
+    --views video_transfer_612 video_transfer_640    # needs out/video_robot_poses.json
 ```
 
-(numpy, opencv, trimesh, shapely, pyvista, scipy, gmsh, fast-simplification;
+(numpy, opencv, trimesh, shapely, pyvista, scipy, scikit-image, gmsh,
+fast-simplification; torch and kornia for LoFTR in `video_register.py`;
 Blender 4.2 LTS for the Cycles renders, about 15 minutes on 4 CPU cores.
 Without Blender the build still writes the model and the overlays.)
+
+### Refinement from the AURORA video, vendor CAD and motion (2026-11-25)
+
+**The video.** The [AURORA video](https://www.youtube.com/watch?v=moBCWzP9Izw)
+(2026-07-22, 60 s, 1080p at 29.97 fps) was downloaded again through the Pi 5
+at 800 KB/s (YouTube blocks the runner) and gone through frame by frame. Two
+shots show this glovebox:
+
+- **Sample Transfer, frames 600 to 662:** the Epson carries the chip tray past
+  the docking fixtures, under a handheld camera.
+- **Exfoliation, frames 675 to 746:** a close-up of the exfoliator head: a
+  Montalvo X-series load cell (50 N / 10 lb), a blue tape reel, STEPPERONLINE
+  NEMA 23 steppers, a ball-screw stage marked "400mm", a drag chain, and blue
+  tubing in yellow printed clips.
+
+The other shots are other stations: the Utah sample-retrieval T6, optical
+cataloging on an ASI stage, archival, and the Arkansas 2D-QMaP glovebox.
+
+**Structure from motion doesn't work on this footage.** COLMAP 4.2 (pycolmap)
+was run on every frame of both shots:
+
+- The default mapper finds no initial pair.
+- With relaxed thresholds, the self-calibrated focal length runs off: fx 3700
+  against fy 1460 px with an OPENCV model, and 2500 to 17,000 px with
+  SIMPLE_RADIAL.
+- The handheld camera pans more than it moves, so the scene gives too little
+  parallax to calibrate itself.
+
+**Registration against the calibrated cameras instead**
+([`reconstruction/video_register.py`](reconstruction/video_register.py)).
+Each frame is placed in the chamber frame through the published stills, whose
+cameras are calibrated:
+
+1. LoFTR (kornia, outdoor weights) matches the frame against the Overhead 1
+   still. On frame 604 it finds 108 consistent matches. SIFT finds 31, nearly
+   all on the Epson's base labels: the change of viewpoint and scale is too
+   large for it.
+2. MAGSAC on the fundamental matrix keeps the consistent matches.
+3. Each matched still pixel is lifted to 3D through Overhead 1's pose and lens
+   onto the model's depth.
+4. PnP with RANSAC places the frame.
+5. One focal length and one radial term for the shot (SIMPLE_RADIAL,
+   principal point at the centre) and every frame's pose are refined together
+   by robust least squares over all frames.
+
+| Shot | Frames | Placed | Focal length (px) | k1 | Horizontal FOV | Median error | Inliers a frame |
+|---|---|---|---|---|---|---|---|
+| Sample Transfer | 63 | 63 | 1064 ± 4 | −0.008 | 84.1° | 4.4 px | 79 |
+| Exfoliation | 72 (every sixth tried) | 0 | | | | | |
+
+- **The video camera** has a focal length of 1064 px at 1920 x 1080 (about 21 mm full-frame equivalent).
+  - **Distortion:** almost none is left (k1 −0.008 ± 0.004), as expected of a phone's corrected video.
+  - **Position:** about (375, 185, 531) mm, 185 mm in from the open side and 531 mm above the deck. The open-side window must have been off in July.
+  - **Movement:** 134 mm between the first and last frame, mostly a pan. Per-frame positions scatter by about 13 mm around a 9-frame mean.
+  - **The first pass,** on every third frame, agrees: 1072 ± 6 px.
+- **The Exfoliation shot doesn't register.** None of the 12 frames tried (every sixth) could be placed. LoFTR finds only 23 to 30 matches a frame against both stills, against about 130 a frame in the transfer shot. That is too few for PnP, which needs 25 inliers.
+  The head has been rebuilt since July: the reels are red in November, not
+  blue.
+- **What the 3D points rest on:** the model. Parts that moved between July and
+  November drop out as outliers rather than bending the pose, which is why
+  only about 60 % of the matches are inliers.
+
+The model from two registered frames, rendered with Cycles through the video
+camera (its focal length and radial term), with the robot posed as in each
+frame. The pose comes from the shaft collar and J2 picked in the frame, then
+inverse kinematics on the fitted base
+([`out/video_robot_poses.json`](reconstruction/out/video_robot_poses.json)).
+The frame is on the left. The chip tray stays on the gantry in the model,
+while in the video the gripper is carrying it:
+
+![Frame 612 of the AURORA video (left) and the model through the registered camera (right)](reconstruction/out/video_transfer_612.jpg)
+
+![Frame 640 (left) and the model (right)](reconstruction/out/video_transfer_640.jpg)
+
+
+
+**What the video and the references added to the model:**
+
+- **Teknic ClearPath servo.** The pin-fin unit with the QR label is a Teknic
+  ClearPath CPM NEMA 23 integrated servo. The evidence:
+  - its pin-fin rear cap, QR label and green status LED in the video
+  - Teknic's own CAD has the same rear cap
+
+  The scene now uses Teknic's STEP for the CPM-231x (keyed shaft), from
+  [teknic.com](https://teknic.com/files/downloads/CPM-231x.zip) without a login
+  ([`clearpath_cad.py`](reconstruction/clearpath_cad.py), meshed by gmsh,
+  60k faces). Its rear cap faces Overhead 1, as in the still. The stack length
+  is assumed. The STEP is fetched at build time and not stored here.
+- **The Epson's end effector,** from the Sample Transfer shot and a
+  [Borys lab photo](https://www.boryslab.com/) of this T6:
+  - a dark-blue collar where the shaft leaves arm 2
+  - a stainless body on the shaft end, with a loop of clear-green tubing
+  - a black parallel gripper with finger plates
+  - three teal tubes from arm 2 into the hollow shaft's top
+  - the orange status lamp on the base
+
+  Sizes are scaled from the ø20 mm shaft. The November stills don't show the
+  tool.
+- **Cables and tubing**
+  ([`reconstruction/cables.py`](reconstruction/cables.py), `out/cables.json`).
+  They were the most visible gap in both views.
+  - **Traced by colour** in both published stills, inside the glovebox mask:
+    21 runs of blue cable, 6 runs of green tubing, 5 runs of red wire.
+  - **Lifted onto the model's depth:** the nearest surface behind each run,
+    less the cable's radius.
+  - **Limit:** a cable is right in the view it was traced from, and lies on
+    the surfaces under it from any other view.
+  - **Not traced:** black cables, which can't be told from black anodised
+    parts by colour, and grey ones.
+
+**Equipment identified** (desk research; vendor CAD only where it downloads
+without a login):
+
+| Part | Identification | CAD or drawing |
+|---|---|---|
+| Pin-fin servo | Teknic ClearPath CPM NEMA 23 (medium confidence on the frame size; stack length unknown) | STEP, no login; [dimensional drawing](https://teknic.com/files/downloads/23xx%20CPM%20Dimensional%20Drawing.pdf): 59.1 mm flange, ø38.10 mm pilot, ø9.53 mm keyed shaft |
+| Load cell | Montalvo X-series, Size 0, standard mount, 50 N / 10 lb (high confidence on series and size) | Body ø55 x 50 mm, M12 4-pin connector (datasheet X-US-12); Montalvo's CAD needs an account |
+| Steppers | StepperOnline NEMA 23 and NEMA 17 | Datasheet PDFs without a login: NEMA 23 flange 57.3 mm, NEMA 17 42.3 mm; STEP needs an account |
+| "400mm" stage | Low confidence: FUYU FSK40/FSL40 (40 mm wide) or a generic SFU1605 stage (80 mm wide) | Measuring the base width would settle it |
+| "THORLABS" box | Probably a Thorlabs Nexus breadboard seen edge-on | Thorlabs serves CAD only through its web app |
+| Glovebox | LC Technology Solutions, custom; 15 in round antechamber | No public drawings; LC Tech provides SolidWorks models on request |
+| Amcrest turret | IP5M-T1179EW-AI-V3: ø109.9 x 100.9 mm, mounting holes on ø84 mm | Manual drawing |
+
+Further references, not used yet: the
+[MonArk Foundry site](https://www.monarkfoundry.org/) has photos of the
+exfoliator outside the box and of the optical cataloger. Montana State's
+YouTube video `LR3gITOB_OI` ("Shaping the Future of Science at the MonArk
+Quantum Foundry") may show the hardware.
+
+**Allowable motion**
+([`reconstruction/motion.py`](reconstruction/motion.py),
+[`out/epson_motion.json`](reconstruction/out/epson_motion.json)):
+
+- **Method:** every (J1, J2) pair within the manual's limits (J1 ±132°,
+  J2 ±150°), on a 2° grid, is posed with Epson's CAD on the fitted base, with
+  the shaft up.
+- **Collision test:** points on arm 1, arm 2, the unit on arm 2 and the shaft
+  are tested against the box (walls, sloped windows, ceiling) and against a
+  10 mm voxel grid of every other part.
+- **Left out:** the user duct, which flexes with J2.
+
+- **Result:** 23 % of the manual's J1 x J2 range is free. 56 % puts the arm through a wall, a window or the ceiling, and 20 % through equipment, mostly with the gripper, which hangs to 232 mm above the deck with the shaft up.
+- **J1** is usable from −98° to +32° of its ±132°. Beyond that range, the arm runs into a wall or a window.
+- **The J3 shaft can reach** x = 337 to 1128 mm and y = 275 to 1013 mm (the green area below).
+
+![Epson joint space and J3 reach inside the box](reconstruction/out/epson_motion.png)
+
+**Checked against the video.** The two robot poses read off the video
+(below), frames 612 (J1 −48.6°, J2 81.6°) and 640 (J1 −33.0°, J2 42.5°), are
+within Epson's limits:
+
+- **Frame 612** is collision-free in the model.
+- **Frame 640** puts arm 2 through the November supply reel (z = 386 to
+  460 mm). That fits the head having been rebuilt since July.
+
+**A conflict in the model, found by the sweep.** At the parked pose fitted to
+Overhead 1 (J1 25.1°, J2 34.2°), arm 2:
+
+- reaches x = 1245 mm, 45 mm past the far-end window of the 1200 mm box
+- overlaps the microscope's U-DP dual port and camera
+
+Arm 2 and the shaft really do sit by the microscope, so one of these is off:
+the base pose, the box length, or the microscope's placement. A tape-measured
+inside length of the box would decide between the first two.
 
 ## Earlier findings
 
@@ -1028,12 +1205,13 @@ for the YouTube relay.
    conflicts with the door.
 7. **The black unit on the Epson's arm 2**, out of focus at Overhead 2's
    lower right, is placed by the robot fit but not identified.
-8. **CAD fidelity:** the parts are primitives at the right size, place and
-   colour. Vendor STEP files (Thorlabs breadboards and stages, the ASI stage)
-   could replace them part by part in `reconstruction/scene.py`. Epson's T6-B
-   STEP is now meshed and articulated by `reconstruction/epson_cad.py` and
-   fitted in Overhead 1 (`vision/out/epson_pose.json`), but `scene.py` still
-   draws the hand-built robot.
+8. **CAD fidelity:** the Epson (Epson's STEP) and the ClearPath servo
+   (Teknic's STEP) are vendor CAD; the rest is built to catalogue sizes and
+   the frames. The Montalvo load cell, the StepperOnline motors and the
+   Thorlabs parts have CAD behind a free account (see
+   [Refinement from the AURORA video](#refinement-from-the-aurora-video-vendor-cad-and-motion-2026-11-25)).
+   The model's parked Epson pose conflicts with the box length and the
+   microscope (same section): a tape-measured inside length would decide it.
 9. **Relay restart limit:** a relay that can't reach its camera exits, and
    systemd allows 3 starts an hour (`StartLimitBurst`), so a camera that is
    off for more than about four minutes leaves its relay `failed` until the
@@ -1076,6 +1254,9 @@ for the YouTube relay.
   interior: positions and sources (`scene.py`), the detailed parts
   (`scene_detail.py`, `detail.py`), finishes (`materials.py`), printed marks
   (`decals.py`), Epson's own T6-B602S CAD, articulated (`epson_cad.py`) and
-  posed (`fit_epson_cad.py`), the Cycles renders (`blender_render.py`), and
-  its exports and renders in `out/`.
+  posed (`fit_epson_cad.py`), Teknic's ClearPath CAD (`clearpath_cad.py`),
+  cables traced in the stills (`cables.py`), the AURORA video registered to
+  the chamber (`video_register.py`), the Epson's allowable motion
+  (`motion.py`), the Cycles renders (`blender_render.py`), and its exports
+  and renders in `out/`.
 - [`captures/`](captures/): the stills above, blurred.

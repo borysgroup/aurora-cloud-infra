@@ -70,6 +70,10 @@
   }
  },
  "sources": {
+  "cables": {
+   "source": "one-view",
+   "note": "traced by colour in the published stills and lifted onto the model's depth (cables.py): right in the view they were traced from, lying on the surfaces under them from others"
+  },
   "glovebox": {
    "source": "chamber",
    "note": "1200 x 1120 x 790 mm interior, sloped long windows (57 and 60 mm lean); window openings 1100 x 710 mm with welded studs every ~95 mm (acorn nuts outside); no glove ports where the chamber model assumes them (the frames show clear window there)"
@@ -98,6 +102,10 @@
    "source": "one-view",
    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
   },
+  "ClearPath": {
+   "source": "datasheet",
+   "note": "Teknic's STEP for the CPM-231x (keyed shaft), from teknic.com without a login; identified by its pin-fin rear cap, QR label and status LED; placed where the hand-built unit was (back-projected from Overhead 1); the stack length (231x) is assumed"
+  },
   "exfoliator": {
    "source": "two-view",
    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance; reel hubs with a 12-spline bore and the pin-fin drive from Overhead 2 and Overhead 1 close-ups (estimate)"
@@ -114,12 +122,85 @@
    "source": "two-view",
    "note": "Amcrest IP5M-T1179EW ball (85 mm, datasheet) at each camera's calibrated centre, facing its view direction; the turret base and mount are out of view and not modelled"
   },
+  "end effector": {
+   "source": "estimate",
+   "note": "from the AURORA video's Sample Transfer shot (2026-07) and a Borys lab photo of this T6: collar, body, tubing loop and parallel gripper, scaled from the \u00f820 mm J3 shaft; tubing into the hollow shaft's top; not visible in the November stills"
+  },
   "epson": {
    "source": "datasheet",
    "note": "Epson's own T6-B602S CAD (STEP from Epson's support page, meshed per link; fetched at build time, not redistributed as STEP), posed by fit_epson_cad.py: Overhead 1 silhouette with J2/J3 held near the two-view outline fit; the EPSON wordmarks are Epson's own relief, coloured; badge and labels as decals (typeset, positions estimated from Overhead 1); the black unit on arm 2 is placed from Overhead 2, make unknown"
   }
  },
  "parts": [
+  {
+   "name": "cables, cable blue (traced)",
+   "group": "cables",
+   "finish": "cable_blue",
+   "colour": "#2a5fc0",
+   "faces": 87540,
+   "bounds_mm": [
+    [
+     -1.1,
+     43.9,
+     -0.1
+    ],
+    [
+     1201.0,
+     1089.1,
+     456.2
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "traced by colour in the published stills and lifted onto the model's depth (cables.py): right in the view they were traced from, lying on the surfaces under them from others"
+   }
+  },
+  {
+   "name": "cables, tube green (traced)",
+   "group": "cables",
+   "finish": "tube_green",
+   "colour": "#3fae7a",
+   "faces": 22840,
+   "bounds_mm": [
+    [
+     506.6,
+     244.6,
+     87.1
+    ],
+    [
+     774.5,
+     1116.7,
+     277.7
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "traced by colour in the published stills and lifted onto the model's depth (cables.py): right in the view they were traced from, lying on the surfaces under them from others"
+   }
+  },
+  {
+   "name": "cables, wire red (traced)",
+   "group": "cables",
+   "finish": "wire_red",
+   "colour": "#c02020",
+   "faces": 20420,
+   "bounds_mm": [
+    [
+     -0.8,
+     121.8,
+     5.9
+    ],
+    [
+     653.8,
+     1005.0,
+     444.2
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "traced by colour in the published stills and lifted onto the model's depth (cables.py): right in the view they were traced from, lying on the surfaces under them from others"
+   }
+  },
   {
    "name": "deck",
    "group": "glovebox",
@@ -3479,95 +3560,72 @@
    }
   },
   {
-   "name": "roller drive body",
+   "name": "ClearPath CPM NEMA 23 servo (Teknic CAD)",
    "group": "exfoliator",
    "finish": "alu_blasted",
    "colour": "#cfd4d3",
-   "faces": 396,
-   "bounds_mm": [
-    [
-     610.1,
-     267.1,
-     250.0
-    ],
-    [
-     669.9,
-     332.9,
-     330.0
-    ]
-   ],
-   "source": {
-    "source": "two-view",
-    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance; reel hubs with a 12-spline bore and the pin-fin drive from Overhead 2 and Overhead 1 close-ups (estimate)"
-   }
-  },
-  {
-   "name": "roller drive pin fins",
-   "group": "exfoliator",
-   "finish": "alu_blasted",
-   "colour": "#cfd4d3",
-   "faces": 19200,
+   "faces": 60000,
    "bounds_mm": [
     [
      598.0,
-     271.0,
-     252.0
+     270.1,
+     249.2
     ],
     [
-     610.0,
-     329.0,
-     298.0
+     703.7,
+     329.9,
+     331.1
     ]
    ],
    "source": {
-    "source": "two-view",
-    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance; reel hubs with a 12-spline bore and the pin-fin drive from Overhead 2 and Overhead 1 close-ups (estimate)"
+    "source": "datasheet",
+    "note": "Teknic's STEP for the CPM-231x (keyed shaft), from teknic.com without a login; identified by its pin-fin rear cap, QR label and status LED; placed where the hand-built unit was (back-projected from Overhead 1); the stack length (231x) is assumed"
    }
   },
   {
-   "name": "roller drive connector",
+   "name": "ClearPath connector",
    "group": "exfoliator",
    "finish": "black_plastic",
    "colour": "#1e1c1a",
    "faces": 396,
    "bounds_mm": [
     [
-     627.0,
+     637.0,
      290.0,
-     330.0
+     331.0
     ],
     [
-     653.0,
+     663.0,
      310.0,
-     344.0
+     345.0
     ]
    ],
    "source": {
-    "source": "two-view",
-    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance; reel hubs with a 12-spline bore and the pin-fin drive from Overhead 2 and Overhead 1 close-ups (estimate)"
+    "source": "datasheet",
+    "note": "Teknic's STEP for the CPM-231x (keyed shaft), from teknic.com without a login; identified by its pin-fin rear cap, QR label and status LED; placed where the hand-built unit was (back-projected from Overhead 1); the stack length (231x) is assumed"
    }
   },
   {
-   "name": "roller drive label (photo texture, Overhead 1)",
+   "name": "ClearPath label (photo texture, Overhead 1)",
    "group": "exfoliator",
    "finish": "decal",
    "colour": "#ffffff",
    "faces": 2,
    "bounds_mm": [
     [
-     609.1,
+     597.4,
      270.0,
      303.0
     ],
     [
-     609.1,
+     597.4,
      330.0,
      329.0
     ]
    ],
    "source": {
-    "source": "two-view",
-    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance; reel hubs with a 12-spline bore and the pin-fin drive from Overhead 2 and Overhead 1 close-ups (estimate)"
+    "source": "datasheet",
+    "note": "Teknic's STEP for the CPM-231x (keyed shaft), from teknic.com without a login; identified by its pin-fin rear cap, QR label and status LED; placed where the hand-built unit was (back-projected from Overhead 1); the stack length (231x) is assumed"
    }
   },
   {
@@ -5043,6 +5101,167 @@
    }
   },
   {
+   "name": "end effector: shaft collar (video)",
+   "group": "epson",
+   "finish": "blue_anod",
+   "colour": "#1f3f9a",
+   "faces": 512,
+   "bounds_mm": [
+    [
+     1158.7,
+     330.3,
+     385.7
+    ],
+    [
+     1216.7,
+     388.3,
+     409.7
+    ]
+   ],
+   "source": {
+    "source": "estimate",
+    "note": "from the AURORA video's Sample Transfer shot (2026-07) and a Borys lab photo of this T6: collar, body, tubing loop and parallel gripper, scaled from the \u00f820 mm J3 shaft; tubing into the hollow shaft's top; not visible in the November stills"
+   }
+  },
+  {
+   "name": "end effector: body (video)",
+   "group": "epson",
+   "finish": "alu_machined",
+   "colour": "#d7dcdb",
+   "faces": 1280,
+   "bounds_mm": [
+    [
+     1170.2,
+     341.8,
+     297.7
+    ],
+    [
+     1205.2,
+     376.8,
+     359.7
+    ]
+   ],
+   "source": {
+    "source": "estimate",
+    "note": "from the AURORA video's Sample Transfer shot (2026-07) and a Borys lab photo of this T6: collar, body, tubing loop and parallel gripper, scaled from the \u00f820 mm J3 shaft; tubing into the hollow shaft's top; not visible in the November stills"
+   }
+  },
+  {
+   "name": "end effector: tubing loop (video)",
+   "group": "epson",
+   "finish": "tube_green",
+   "colour": "#3fae7a",
+   "faces": 800,
+   "bounds_mm": [
+    [
+     1163.8,
+     335.3,
+     342.7
+    ],
+    [
+     1211.7,
+     383.2,
+     352.7
+    ]
+   ],
+   "source": {
+    "source": "estimate",
+    "note": "from the AURORA video's Sample Transfer shot (2026-07) and a Borys lab photo of this T6: collar, body, tubing loop and parallel gripper, scaled from the \u00f820 mm J3 shaft; tubing into the hollow shaft's top; not visible in the November stills"
+   }
+  },
+  {
+   "name": "end effector: tubing lead (video)",
+   "group": "epson",
+   "finish": "tube_green",
+   "colour": "#3fae7a",
+   "faces": 500,
+   "bounds_mm": [
+    [
+     1201.8,
+     330.9,
+     346.1
+    ],
+    [
+     1250.5,
+     360.7,
+     486.4
+    ]
+   ],
+   "source": {
+    "source": "estimate",
+    "note": "from the AURORA video's Sample Transfer shot (2026-07) and a Borys lab photo of this T6: collar, body, tubing loop and parallel gripper, scaled from the \u00f820 mm J3 shaft; tubing into the hollow shaft's top; not visible in the November stills"
+   }
+  },
+  {
+   "name": "end effector: parallel gripper (video)",
+   "group": "epson",
+   "finish": "black_anodised",
+   "colour": "#34363a",
+   "faces": 396,
+   "bounds_mm": [
+    [
+     1158.2,
+     329.7,
+     267.7
+    ],
+    [
+     1217.1,
+     388.9,
+     297.7
+    ]
+   ],
+   "source": {
+    "source": "estimate",
+    "note": "from the AURORA video's Sample Transfer shot (2026-07) and a Borys lab photo of this T6: collar, body, tubing loop and parallel gripper, scaled from the \u00f820 mm J3 shaft; tubing into the hollow shaft's top; not visible in the November stills"
+   }
+  },
+  {
+   "name": "end effector: finger plates (video)",
+   "group": "epson",
+   "finish": "black_anodised",
+   "colour": "#34363a",
+   "faces": 792,
+   "bounds_mm": [
+    [
+     1159.9,
+     331.4,
+     233.7
+    ],
+    [
+     1215.5,
+     387.2,
+     267.7
+    ]
+   ],
+   "source": {
+    "source": "estimate",
+    "note": "from the AURORA video's Sample Transfer shot (2026-07) and a Borys lab photo of this T6: collar, body, tubing loop and parallel gripper, scaled from the \u00f820 mm J3 shaft; tubing into the hollow shaft's top; not visible in the November stills"
+   }
+  },
+  {
+   "name": "Epson tubing into the shaft top (photo)",
+   "group": "epson",
+   "finish": "tube_green",
+   "colour": "#3fae7a",
+   "faces": 1980,
+   "bounds_mm": [
+    [
+     1007.7,
+     354.3,
+     659.0
+    ],
+    [
+     1192.7,
+     542.2,
+     778.1
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "Epson's own T6-B602S CAD (STEP from Epson's support page, meshed per link; fetched at build time, not redistributed as STEP), posed by fit_epson_cad.py: Overhead 1 silhouette with J2/J3 held near the two-view outline fit; the EPSON wordmarks are Epson's own relief, coloured; badge and labels as decals (typeset, positions estimated from Overhead 1); the black unit on arm 2 is placed from Overhead 2, make unknown"
+   }
+  },
+  {
    "name": "Epson riser block",
    "group": "epson",
    "finish": "alu_machined",
@@ -5058,6 +5277,52 @@
      1077.6,
      1105.3,
      182.2
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "Epson's own T6-B602S CAD (STEP from Epson's support page, meshed per link; fetched at build time, not redistributed as STEP), posed by fit_epson_cad.py: Overhead 1 silhouette with J2/J3 held near the two-view outline fit; the EPSON wordmarks are Epson's own relief, coloured; badge and labels as decals (typeset, positions estimated from Overhead 1); the black unit on arm 2 is placed from Overhead 2, make unknown"
+   }
+  },
+  {
+   "name": "Epson status lamp base (photo)",
+   "group": "epson",
+   "finish": "black_plastic",
+   "colour": "#1e1c1a",
+   "faces": 128,
+   "bounds_mm": [
+    [
+     864.4,
+     834.5,
+     666.2
+    ],
+    [
+     885.4,
+     855.5,
+     672.2
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "Epson's own T6-B602S CAD (STEP from Epson's support page, meshed per link; fetched at build time, not redistributed as STEP), posed by fit_epson_cad.py: Overhead 1 silhouette with J2/J3 held near the two-view outline fit; the EPSON wordmarks are Epson's own relief, coloured; badge and labels as decals (typeset, positions estimated from Overhead 1); the black unit on arm 2 is placed from Overhead 2, make unknown"
+   }
+  },
+  {
+   "name": "Epson status lamp lens (photo)",
+   "group": "epson",
+   "finish": "lamp_orange",
+   "colour": "#ff8a1e",
+   "faces": 640,
+   "bounds_mm": [
+    [
+     866.9,
+     837.0,
+     672.2
+    ],
+    [
+     882.9,
+     853.0,
+     685.2
     ]
    ],
    "source": {

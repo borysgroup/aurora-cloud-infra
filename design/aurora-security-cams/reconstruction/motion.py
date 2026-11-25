@@ -5,8 +5,7 @@ intersected with the space the box and the other equipment leave it.
 
 Every (J1, J2) pair on a 2 degree grid within the manual's limits is posed with Epson's own CAD
 (arm 1, arm 2 with the black unit, the J3 shaft fully up, and the end effector seen in the AURORA
-video) on the fitted base pose
-(out/epson_cad_pose.json). A pose is free when no point sampled on those links comes within one voxel
+video) on the fitted base pose (out/epson_cad_pose.json). A pose is free when no point sampled on those links comes within one voxel
 (10 mm) of the walls, the ceiling or any other part of the model. The shaft's lowered positions are
 not swept: the shaft is meant to reach the deck items. The user duct (the corrugated hose from the base to
 arm 2) is left out: it flexes with J2, and Epson's CAD has it in one shape only.
@@ -68,7 +67,7 @@ def outside_box(P):
 def link_samples(n=2500):
     L = E.links()
     out = {}
-    for k in ("arm1", "arm2", "shaft", "cable"):
+    for k in ("arm1", "arm2", "shaft"):
         pts, _ = trimesh.sample.sample_surface(L[k], n, seed=1)
         out[k] = pts
     u = E.unit_box()
@@ -82,14 +81,8 @@ def link_samples(n=2500):
     return out
 
 
-def sweep(pose, occ, samples, ceiling_squash=True):
+def sweep(pose, occ, samples):
     B = E.base_transform(pose)
-    cab = samples["cable"].copy()
-    if ceiling_squash:
-        top = GB_H - pose["z0"] - 8.0
-        lo = 443.8
-        if cab[:, 2].max() > top:
-            cab[:, 2] = np.where(cab[:, 2] > lo, lo + (cab[:, 2] - lo) * (top - lo) / (cab[:, 2].max() - lo), cab[:, 2])
     j1s = np.arange(-E.LIMITS["j1"], E.LIMITS["j1"] + 1e-6, STEP)
     j2s = np.arange(-E.LIMITS["j2"], E.LIMITS["j2"] + 1e-6, STEP)
     state = np.zeros((len(j1s), len(j2s)), np.uint8)     # 0 free, 1 wall/ceiling, 2 equipment

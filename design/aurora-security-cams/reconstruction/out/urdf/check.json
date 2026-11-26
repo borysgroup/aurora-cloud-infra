@@ -1,0 +1,20 @@
+{
+ "urdf": "out/urdf/aurora_glovebox.urdf",
+ "max_vertex_gap_mm": {
+  "parked": {
+   "epson_arm1": 0.0001,
+   "epson_arm2": 0.0001,
+   "epson_shaft": 0.0001
+  },
+  "video_transfer_612": {
+   "epson_arm1": 0.0001,
+   "epson_arm2": 0.0001,
+   "epson_shaft": 0.0001
+  },
+  "video_transfer_640": {
+   "epson_arm1": 0.0001,
+   "epson_arm2": 0.0001,
+   "epson_shaft": 0.0001
+  }
+ }
+}

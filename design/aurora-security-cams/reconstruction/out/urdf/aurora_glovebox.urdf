@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<!-- Aurora exfoliation glovebox: the reconstruction in design/aurora-security-cams/reconstruction as an articulated model. World frame = chamber frame (x from the antechamber-end wall, y from the open side, z up from the deck). Written by urdf_export.py. -->
+<robot name="aurora_glovebox">
+  <link name="world"/>
+  <link name="glovebox">
+    <visual><origin xyz="0.000000 0.000000 0.000000" rpy="0 0 0"/><geometry><mesh filename="meshes/glovebox.stl" scale="0.001 0.001 0.001"/></geometry><material name="glovebox_mat"><color rgba="0.72 0.70 0.66 1"/></material></visual>
+    <collision><origin xyz="0.000000 0.000000 0.000000" rpy="0 0 0"/><geometry><mesh filename="meshes/glovebox.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <joint name="world_to_glovebox" type="fixed">
+    <parent link="world"/><child link="glovebox"/>
+    <origin xyz="0.000000 0.000000 0.000000" rpy="0.000000 0.000000 0.000000"/>
+  </joint>
+  <link name="epson_base">
+    <visual><origin xyz="0.000000 0.000000 0.000000" rpy="0 0 0"/><geometry><mesh filename="meshes/epson_base.stl" scale="0.001 0.001 0.001"/></geometry><material name="epson_base_mat"><color rgba="0.83 0.85 0.84 1"/></material></visual>
+    <collision><origin xyz="0.000000 0.000000 0.000000" rpy="0 0 0"/><geometry><mesh filename="meshes/epson_base.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <!-- J1 axis at the base's underside; the base's front (Epson local +X) at yaw from +x -->
+  <joint name="epson_mount" type="fixed">
+    <parent link="glovebox"/><child link="epson_base"/>
+    <origin xyz="0.936700 0.875200 0.182200" rpy="0.000000 0.000000 4.453731"/>
+  </joint>
+  <link name="epson_arm1">
+    <visual><origin xyz="0.000000 0.000000 0.000000" rpy="0 0 0"/><geometry><mesh filename="meshes/epson_arm1.stl" scale="0.001 0.001 0.001"/></geometry><material name="epson_arm1_mat"><color rgba="0.83 0.85 0.84 1"/></material></visual>
+    <collision><origin xyz="0.000000 0.000000 0.000000" rpy="0 0 0"/><geometry><mesh filename="meshes/epson_arm1.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <!-- velocity: the spec sheet gives J1 and J2 only as a composite tool speed; J4's limit is used as a loose bound -->
+  <joint name="J1" type="revolute">
+    <parent link="epson_base"/><child link="epson_arm1"/>
+    <origin xyz="0.000000 0.000000 0.000000" rpy="0.000000 0.000000 0.000000"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-2.303835" upper="2.303835" effort="100" velocity="31.4159"/>
+  </joint>
+  <link name="epson_arm2">
+    <visual><origin xyz="0.000000 0.000000 0.000000" rpy="0 0 0"/><geometry><mesh filename="meshes/epson_arm2.stl" scale="0.001 0.001 0.001"/></geometry><material name="epson_arm2_mat"><color rgba="0.83 0.85 0.84 1"/></material></visual>
+    <collision><origin xyz="0.000000 0.000000 0.000000" rpy="0 0 0"/><geometry><mesh filename="meshes/epson_arm2.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <joint name="J2" type="revolute">
+    <parent link="epson_arm1"/><child link="epson_arm2"/>
+    <origin xyz="0.325000 0.000000 0.000000" rpy="0.000000 0.000000 0.000000"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-2.617994" upper="2.617994" effort="100" velocity="31.4159"/>
+  </joint>
+  <link name="epson_shaft">
+    <visual><origin xyz="0.000000 0.000000 0.000000" rpy="0 0 0"/><geometry><mesh filename="meshes/epson_shaft.stl" scale="0.001 0.001 0.001"/></geometry><material name="epson_shaft_mat"><color rgba="0.78 0.80 0.81 1"/></material></visual>
+    <collision><origin xyz="0.000000 0.000000 0.000000" rpy="0 0 0"/><geometry><mesh filename="meshes/epson_shaft.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <!-- J3 = travel down from the shaft's top stop (Epson's z, 0 to 200 mm) -->
+  <joint name="J3" type="prismatic">
+    <parent link="epson_arm2"/><child link="epson_shaft"/>
+    <origin xyz="0.275000 0.000000 0.000000" rpy="0.000000 0.000000 0.000000"/>
+    <axis xyz="0 0 -1"/>
+    <limit lower="0.000000" upper="0.200000" effort="100" velocity="1.0000"/>
+  </joint>
+  <link name="epson_tool">
+    <visual><origin xyz="0.000000 0.000000 0.000000" rpy="0 0 0"/><geometry><mesh filename="meshes/epson_tool.stl" scale="0.001 0.001 0.001"/></geometry><material name="epson_tool_mat"><color rgba="0.12 0.12 0.12 1"/></material></visual>
+    <collision><origin xyz="0.000000 0.000000 0.000000" rpy="0 0 0"/><geometry><mesh filename="meshes/epson_tool.stl" scale="0.001 0.001 0.001"/></geometry></collision>
+  </link>
+  <joint name="J4" type="revolute">
+    <parent link="epson_shaft"/><child link="epson_tool"/>
+    <origin xyz="0.000000 0.000000 0.000000" rpy="0.000000 0.000000 0.000000"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-6.283185" upper="6.283185" effort="100" velocity="31.4159"/>
+  </joint>
+</robot>

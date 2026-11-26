@@ -1,0 +1,5357 @@
+{
+ "frame": "aurora_chamber scene frame, mm: x from the antechamber-end wall, y from the open side, z up from the deck",
+ "robot_pose": {
+  "source": "Epson's T6-B602S CAD fitted to the SAM 2.1 silhouette in Overhead 1 (robot zone, half resolution), with J2 and J3 held near the two-view fit of the hand-built outline (scene.ROBOT; 60 mm prior)",
+  "iou_cam0": 0.633,
+  "iou_cam0_start": 0.573,
+  "base": {
+   "j1": [
+    936.7,
+    875.2
+   ],
+   "z0": 182.2,
+   "yaw": 255.18
+  },
+  "parked": {
+   "j1": 25.14,
+   "j2": 34.18,
+   "z": 0.0,
+   "u": 0.0
+  },
+  "j2_xy": [
+   994.9,
+   555.5
+  ],
+  "j3_xy": [
+   1187.7,
+   359.3
+  ],
+  "j3_from_two_view_fit_mm": 80.9
+ },
+ "tray": {
+  "centre": [
+   556.7273619257637,
+   398.1090465789925,
+   290.2657918191649
+  ],
+  "yaw_deg": 92.70639092816828,
+  "pitch_mm": 9.451144248772245,
+  "pitch_sd_mm": 1.1186467975921117,
+  "mirror": -1.0,
+  "size_mm": [
+   56.70686549263347,
+   94.51144248772245
+  ]
+ },
+ "cameras": {
+  "cam0": {
+   "centre": [
+    347.9,
+    294.0,
+    699.9
+   ],
+   "view_dir": [
+    0.733,
+    0.208,
+    -0.647
+   ]
+  },
+  "cam1": {
+   "centre": [
+    1015.1,
+    338.2,
+    702.2
+   ],
+   "view_dir": [
+    -0.558,
+    0.411,
+    -0.721
+   ]
+  }
+ },
+ "sources": {
+  "cables": {
+   "source": "one-view",
+   "note": "traced by colour in the published stills and lifted onto the model's depth (cables.py): right in the view they were traced from, lying on the surfaces under them from others"
+  },
+  "glovebox": {
+   "source": "chamber",
+   "note": "1200 x 1120 x 790 mm interior, sloped long windows (57 and 60 mm lean); window openings 1100 x 710 mm with welded studs every ~95 mm (acorn nuts outside); no glove ports where the chamber model assumes them (the frames show clear window there)"
+  },
+  "antechamber door": {
+   "source": "one-view",
+   "note": "hub and rim back-projected onto the wall plane from Overhead 2: radius 180-190 mm, matching the 15-inch antechamber (datasheet 190 mm)"
+  },
+  "QR sign": {
+   "source": "one-view",
+   "note": "bottom edge back-projected onto the wall from Overhead 2; the top is out of view; texture rectified from the 18:22 UTC Overhead 2 still (only its lower part is in view)"
+  },
+  "ducts": {
+   "source": "standard",
+   "note": "Panduit Type G 1 x 2 in slotted duct (32 x 54 mm, fingers on a 12.7 mm pitch, cover off as in the frames), along the edges seen in both views"
+  },
+  "breadboards": {
+   "source": "one-view",
+   "note": "edges back-projected onto their planes; Thorlabs metric skin with M6 holes on 25 mm, 12.5 mm from the edges (the hole rows measure 24.5-26.4 mm at these heights); sizes rounded to Thorlabs metric sizes where the edges are hidden"
+  },
+  "chip tray": {
+   "source": "two-view",
+   "note": "6 x 10 pockets fitted in both views; pitch 9.5 mm, centre and yaw from the joint calibration; chips placed per pocket from chip_tray.json (3 empty, 1 rotated); pockets 0.8 of the pitch and 3 mm deep (estimate); the handwritten edge is a texture rectified from Overhead 1"
+  },
+  "gantry": {
+   "source": "one-view",
+   "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+  },
+  "ClearPath": {
+   "source": "datasheet",
+   "note": "Teknic's STEP for the CPM-231x (keyed shaft), from teknic.com without a login; identified by its pin-fin rear cap, QR label and status LED; placed where the hand-built unit was (back-projected from Overhead 1); the stack length (231x) is assumed"
+  },
+  "exfoliator": {
+   "source": "two-view",
+   "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance; reel hubs with a 12-spline bore and the pin-fin drive from Overhead 2 and Overhead 1 close-ups (estimate)"
+  },
+  "microscope": {
+   "source": "datasheet",
+   "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+  },
+  "tape measure": {
+   "source": "one-view",
+   "note": "back-projected onto the deck from Overhead 2; case about 90 x 90 x 50 with a black bumper (FatMax-style, estimate)"
+  },
+  "cameras": {
+   "source": "two-view",
+   "note": "Amcrest IP5M-T1179EW ball (85 mm, datasheet) at each camera's calibrated centre, facing its view direction; the turret base and mount are out of view and not modelled"
+  },
+  "end effector": {
+   "source": "estimate",
+   "note": "from the AURORA video's Sample Transfer shot (2026-07) and a Borys lab photo of this T6: collar, body, tubing loop and parallel gripper, scaled from the \u00f820 mm J3 shaft; tubing into the hollow shaft's top; not visible in the November stills"
+  },
+  "epson": {
+   "source": "datasheet",
+   "note": "Epson's own T6-B602S CAD (STEP from Epson's support page, meshed per link; fetched at build time, not redistributed as STEP), posed by fit_epson_cad.py: Overhead 1 silhouette with J2/J3 held near the two-view outline fit; the EPSON wordmarks are Epson's own relief, coloured; badge and labels as decals (typeset, positions estimated from Overhead 1); the black unit on arm 2 is placed from Overhead 2, make unknown"
+  }
+ },
+ "parts": [
+  {
+   "name": "cables, cable blue (traced)",
+   "group": "cables",
+   "finish": "cable_blue",
+   "colour": "#2a5fc0",
+   "faces": 87540,
+   "bounds_mm": [
+    [
+     -1.1,
+     43.9,
+     -0.1
+    ],
+    [
+     1201.0,
+     1089.1,
+     456.2
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "traced by colour in the published stills and lifted onto the model's depth (cables.py): right in the view they were traced from, lying on the surfaces under them from others"
+   }
+  },
+  {
+   "name": "cables, tube green (traced)",
+   "group": "cables",
+   "finish": "tube_green",
+   "colour": "#3fae7a",
+   "faces": 22840,
+   "bounds_mm": [
+    [
+     506.6,
+     244.6,
+     87.1
+    ],
+    [
+     774.5,
+     1116.7,
+     277.7
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "traced by colour in the published stills and lifted onto the model's depth (cables.py): right in the view they were traced from, lying on the surfaces under them from others"
+   }
+  },
+  {
+   "name": "cables, wire red (traced)",
+   "group": "cables",
+   "finish": "wire_red",
+   "colour": "#c02020",
+   "faces": 20420,
+   "bounds_mm": [
+    [
+     -0.8,
+     121.8,
+     5.9
+    ],
+    [
+     653.8,
+     1005.0,
+     444.2
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "traced by colour in the published stills and lifted onto the model's depth (cables.py): right in the view they were traced from, lying on the surfaces under them from others"
+   }
+  },
+  {
+   "name": "deck",
+   "group": "glovebox",
+   "finish": "stainless_deck",
+   "colour": "#b5b0a3",
+   "faces": 12,
+   "bounds_mm": [
+    [
+     0.0,
+     0.0,
+     -6.0
+    ],
+    [
+     1200.0,
+     1120.0,
+     0.0
+    ]
+   ],
+   "source": {
+    "source": "chamber",
+    "note": "1200 x 1120 x 790 mm interior, sloped long windows (57 and 60 mm lean); window openings 1100 x 710 mm with welded studs every ~95 mm (acorn nuts outside); no glove ports where the chamber model assumes them (the frames show clear window there)"
+   }
+  },
+  {
+   "name": "antechamber-end wall",
+   "group": "glovebox",
+   "finish": "stainless_wall",
+   "colour": "#bdb39c",
+   "faces": 12,
+   "bounds_mm": [
+    [
+     -6.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1120.0,
+     790.0
+    ]
+   ],
+   "source": {
+    "source": "chamber",
+    "note": "1200 x 1120 x 790 mm interior, sloped long windows (57 and 60 mm lean); window openings 1100 x 710 mm with welded studs every ~95 mm (acorn nuts outside); no glove ports where the chamber model assumes them (the frames show clear window there)"
+   }
+  },
+  {
+   "name": "ceiling",
+   "group": "glovebox",
+   "finish": "stainless_wall",
+   "colour": "#bdb39c",
+   "faces": 12,
+   "bounds_mm": [
+    [
+     0.0,
+     57.0,
+     790.0
+    ],
+    [
+     1200.0,
+     1060.0,
+     796.0
+    ]
+   ],
+   "source": {
+    "source": "chamber",
+    "note": "1200 x 1120 x 790 mm interior, sloped long windows (57 and 60 mm lean); window openings 1100 x 710 mm with welded studs every ~95 mm (acorn nuts outside); no glove ports where the chamber model assumes them (the frames show clear window there)"
+   }
+  },
+  {
+   "name": "far-end window frame",
+   "group": "glovebox",
+   "finish": "stainless_frame",
+   "colour": "#b9b5aa",
+   "faces": 224,
+   "bounds_mm": [
+    [
+     1200.0,
+     0.0,
+     0.0
+    ],
+    [
+     1206.0,
+     1120.0,
+     790.0
+    ]
+   ],
+   "source": {
+    "source": "chamber",
+    "note": "1200 x 1120 x 790 mm interior, sloped long windows (57 and 60 mm lean); window openings 1100 x 710 mm with welded studs every ~95 mm (acorn nuts outside); no glove ports where the chamber model assumes them (the frames show clear window there)"
+   }
+  },
+  {
+   "name": "far-end window",
+   "group": "glovebox",
+   "finish": "window",
+   "colour": "#e9f1f1",
+   "faces": 108,
+   "bounds_mm": [
+    [
+     1201.0,
+     38.0,
+     23.0
+    ],
+    [
+     1209.0,
+     1082.0,
+     752.0
+    ]
+   ],
+   "source": {
+    "source": "chamber",
+    "note": "1200 x 1120 x 790 mm interior, sloped long windows (57 and 60 mm lean); window openings 1100 x 710 mm with welded studs every ~95 mm (acorn nuts outside); no glove ports where the chamber model assumes them (the frames show clear window there)"
+   }
+  },
+  {
+   "name": "open side window flange",
+   "group": "glovebox",
+   "finish": "stainless_frame",
+   "colour": "#b9b5aa",
+   "faces": 224,
+   "bounds_mm": [
+    [
+     0.0,
+     -3.0,
+     -0.2
+    ],
+    [
+     1200.0,
+     60.0,
+     790.2
+    ]
+   ],
+   "source": {
+    "source": "chamber",
+    "note": "1200 x 1120 x 790 mm interior, sloped long windows (57 and 60 mm lean); window openings 1100 x 710 mm with welded studs every ~95 mm (acorn nuts outside); no glove ports where the chamber model assumes them (the frames show clear window there)"
+   }
+  },
+  {
+   "name": "open side window",
+   "group": "glovebox",
+   "finish": "window",
+   "colour": "#e9f1f1",
+   "faces": 108,
+   "bounds_mm": [
+    [
+     30.0,
+     -8.4,
+     35.3
+    ],
+    [
+     1170.0,
+     53.6,
+     785.7
+    ]
+   ],
+   "source": {
+    "source": "chamber",
+    "note": "1200 x 1120 x 790 mm interior, sloped long windows (57 and 60 mm lean); window openings 1100 x 710 mm with welded studs every ~95 mm (acorn nuts outside); no glove ports where the chamber model assumes them (the frames show clear window there)"
+   }
+  },
+  {
+   "name": "open side clamp bars",
+   "group": "glovebox",
+   "finish": "stainless_frame",
+   "colour": "#b9b5aa",
+   "faces": 432,
+   "bounds_mm": [
+    [
+     20.0,
+     -15.1,
+     25.9
+    ],
+    [
+     1180.0,
+     46.4,
+     796.1
+    ]
+   ],
+   "source": {
+    "source": "chamber",
+    "note": "1200 x 1120 x 790 mm interior, sloped long windows (57 and 60 mm lean); window openings 1100 x 710 mm with welded studs every ~95 mm (acorn nuts outside); no glove ports where the chamber model assumes them (the frames show clear window there)"
+   }
+  },
+  {
+   "name": "open side acorn nuts",
+   "group": "glovebox",
+   "finish": "steel_ground",
+   "colour": "#c8ccce",
+   "faces": 9880,
+   "bounds_mm": [
+    [
+     29.1,
+     -23.6,
+     36.2
+    ],
+    [
+     1170.9,
+     39.7,
+     786.6
+    ]
+   ],
+   "source": {
+    "source": "chamber",
+    "note": "1200 x 1120 x 790 mm interior, sloped long windows (57 and 60 mm lean); window openings 1100 x 710 mm with welded studs every ~95 mm (acorn nuts outside); no glove ports where the chamber model assumes them (the frames show clear window there)"
+   }
+  },
+  {
+   "name": "far side window flange",
+   "group": "glovebox",
+   "finish": "stainless_frame",
+   "colour": "#b9b5aa",
+   "faces": 224,
+   "bounds_mm": [
+    [
+     0.0,
+     1057.0,
+     -0.2
+    ],
+    [
+     1200.0,
+     1123.0,
+     790.2
+    ]
+   ],
+   "source": {
+    "source": "chamber",
+    "note": "1200 x 1120 x 790 mm interior, sloped long windows (57 and 60 mm lean); window openings 1100 x 710 mm with welded studs every ~95 mm (acorn nuts outside); no glove ports where the chamber model assumes them (the frames show clear window there)"
+   }
+  },
+  {
+   "name": "far side window",
+   "group": "glovebox",
+   "finish": "window",
+   "colour": "#e9f1f1",
+   "faces": 108,
+   "bounds_mm": [
+    [
+     30.0,
+     1063.4,
+     35.3
+    ],
+    [
+     1170.0,
+     1128.3,
+     785.8
+    ]
+   ],
+   "source": {
+    "source": "chamber",
+    "note": "1200 x 1120 x 790 mm interior, sloped long windows (57 and 60 mm lean); window openings 1100 x 710 mm with welded studs every ~95 mm (acorn nuts outside); no glove ports where the chamber model assumes them (the frames show clear window there)"
+   }
+  },
+  {
+   "name": "far side clamp bars",
+   "group": "glovebox",
+   "finish": "stainless_frame",
+   "colour": "#b9b5aa",
+   "faces": 432,
+   "bounds_mm": [
+    [
+     20.0,
+     1070.6,
+     25.9
+    ],
+    [
+     1180.0,
+     1135.0,
+     796.2
+    ]
+   ],
+   "source": {
+    "source": "chamber",
+    "note": "1200 x 1120 x 790 mm interior, sloped long windows (57 and 60 mm lean); window openings 1100 x 710 mm with welded studs every ~95 mm (acorn nuts outside); no glove ports where the chamber model assumes them (the frames show clear window there)"
+   }
+  },
+  {
+   "name": "far side acorn nuts",
+   "group": "glovebox",
+   "finish": "steel_ground",
+   "colour": "#c8ccce",
+   "faces": 9880,
+   "bounds_mm": [
+    [
+     29.1,
+     1077.3,
+     36.2
+    ],
+    [
+     1170.9,
+     1143.5,
+     786.7
+    ]
+   ],
+   "source": {
+    "source": "chamber",
+    "note": "1200 x 1120 x 790 mm interior, sloped long windows (57 and 60 mm lean); window openings 1100 x 710 mm with welded studs every ~95 mm (acorn nuts outside); no glove ports where the chamber model assumes them (the frames show clear window there)"
+   }
+  },
+  {
+   "name": "antechamber door",
+   "group": "glovebox",
+   "finish": "stainless_door",
+   "colour": "#c4c4b8",
+   "faces": 4096,
+   "bounds_mm": [
+    [
+     0.0,
+     274.0,
+     40.0
+    ],
+    [
+     16.0,
+     646.0,
+     412.0
+    ]
+   ],
+   "source": {
+    "source": "chamber",
+    "note": "1200 x 1120 x 790 mm interior, sloped long windows (57 and 60 mm lean); window openings 1100 x 710 mm with welded studs every ~95 mm (acorn nuts outside); no glove ports where the chamber model assumes them (the frames show clear window there)"
+   }
+  },
+  {
+   "name": "antechamber door hub",
+   "group": "glovebox",
+   "finish": "alu_machined",
+   "colour": "#d7dcdb",
+   "faces": 1440,
+   "bounds_mm": [
+    [
+     16.0,
+     430.0,
+     196.0
+    ],
+    [
+     52.0,
+     490.0,
+     256.0
+    ]
+   ],
+   "source": {
+    "source": "chamber",
+    "note": "1200 x 1120 x 790 mm interior, sloped long windows (57 and 60 mm lean); window openings 1100 x 710 mm with welded studs every ~95 mm (acorn nuts outside); no glove ports where the chamber model assumes them (the frames show clear window there)"
+   }
+  },
+  {
+   "name": "antechamber door bar",
+   "group": "glovebox",
+   "finish": "stainless_frame",
+   "colour": "#b9b5aa",
+   "faces": 396,
+   "bounds_mm": [
+    [
+     25.0,
+     337.2,
+     119.8
+    ],
+    [
+     35.0,
+     582.8,
+     332.2
+    ]
+   ],
+   "source": {
+    "source": "chamber",
+    "note": "1200 x 1120 x 790 mm interior, sloped long windows (57 and 60 mm lean); window openings 1100 x 710 mm with welded studs every ~95 mm (acorn nuts outside); no glove ports where the chamber model assumes them (the frames show clear window there)"
+   }
+  },
+  {
+   "name": "antechamber door screw",
+   "group": "glovebox",
+   "finish": "steel_ground",
+   "colour": "#c8ccce",
+   "faces": 12096,
+   "bounds_mm": [
+    [
+     40.0,
+     454.0,
+     220.0
+    ],
+    [
+     150.0,
+     466.0,
+     232.0
+    ]
+   ],
+   "source": {
+    "source": "chamber",
+    "note": "1200 x 1120 x 790 mm interior, sloped long windows (57 and 60 mm lean); window openings 1100 x 710 mm with welded studs every ~95 mm (acorn nuts outside); no glove ports where the chamber model assumes them (the frames show clear window there)"
+   }
+  },
+  {
+   "name": "QR sign (photo texture, Overhead 2)",
+   "group": "glovebox",
+   "finish": "decal",
+   "colour": "#ffffff",
+   "faces": 2,
+   "bounds_mm": [
+    [
+     2.0,
+     705.0,
+     274.0
+    ],
+    [
+     2.0,
+     950.0,
+     470.0
+    ]
+   ],
+   "source": {
+    "source": "chamber",
+    "note": "1200 x 1120 x 790 mm interior, sloped long windows (57 and 60 mm lean); window openings 1100 x 710 mm with welded studs every ~95 mm (acorn nuts outside); no glove ports where the chamber model assumes them (the frames show clear window there)"
+   }
+  },
+  {
+   "name": "duct, far window",
+   "group": "ducts",
+   "finish": "grey_pvc",
+   "colour": "#8f8c88",
+   "faces": 2148,
+   "bounds_mm": [
+    [
+     60.0,
+     1076.0,
+     0.0
+    ],
+    [
+     1160.0,
+     1108.0,
+     54.0
+    ]
+   ],
+   "source": {
+    "source": "standard",
+    "note": "Panduit Type G 1 x 2 in slotted duct (32 x 54 mm, fingers on a 12.7 mm pitch, cover off as in the frames), along the edges seen in both views"
+   }
+  },
+  {
+   "name": "duct, antechamber wall",
+   "group": "ducts",
+   "finish": "grey_pvc",
+   "colour": "#8f8c88",
+   "faces": 1524,
+   "bounds_mm": [
+    [
+     8.0,
+     300.0,
+     0.0
+    ],
+    [
+     40.0,
+     1070.0,
+     54.0
+    ]
+   ],
+   "source": {
+    "source": "standard",
+    "note": "Panduit Type G 1 x 2 in slotted duct (32 x 54 mm, fingers on a 12.7 mm pitch, cover off as in the frames), along the edges seen in both views"
+   }
+  },
+  {
+   "name": "main breadboard",
+   "group": "breadboards",
+   "finish": "black_anodised",
+   "colour": "#34363a",
+   "faces": 26872,
+   "bounds_mm": [
+    [
+     838.0,
+     380.0,
+     63.0
+    ],
+    [
+     1200.0,
+     1080.0,
+     75.7
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "edges back-projected onto their planes; Thorlabs metric skin with M6 holes on 25 mm, 12.5 mm from the edges (the hole rows measure 24.5-26.4 mm at these heights); sizes rounded to Thorlabs metric sizes where the edges are hidden"
+   }
+  },
+  {
+   "name": "main breadboard hole floors",
+   "group": "breadboards",
+   "finish": "hole_floor",
+   "colour": "#0b0b0c",
+   "faces": 17248,
+   "bounds_mm": [
+    [
+     847.6,
+     389.6,
+     71.7
+    ],
+    [
+     1178.4,
+     1070.4,
+     71.9
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "edges back-projected onto their planes; Thorlabs metric skin with M6 holes on 25 mm, 12.5 mm from the edges (the hole rows measure 24.5-26.4 mm at these heights); sizes rounded to Thorlabs metric sizes where the edges are hidden"
+   }
+  },
+  {
+   "name": "main breadboard posts",
+   "group": "breadboards",
+   "finish": "steel_post",
+   "colour": "#c6cacc",
+   "faces": 3200,
+   "bounds_mm": [
+    [
+     865.3,
+     407.3,
+     0.0
+    ],
+    [
+     1172.7,
+     1052.7,
+     63.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "edges back-projected onto their planes; Thorlabs metric skin with M6 holes on 25 mm, 12.5 mm from the edges (the hole rows measure 24.5-26.4 mm at these heights); sizes rounded to Thorlabs metric sizes where the edges are hidden"
+   }
+  },
+  {
+   "name": "exfoliator breadboard",
+   "group": "breadboards",
+   "finish": "black_anodised",
+   "colour": "#34363a",
+   "faces": 19800,
+   "bounds_mm": [
+    [
+     230.0,
+     240.0,
+     147.3
+    ],
+    [
+     680.0,
+     660.0,
+     160.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "edges back-projected onto their planes; Thorlabs metric skin with M6 holes on 25 mm, 12.5 mm from the edges (the hole rows measure 24.5-26.4 mm at these heights); sizes rounded to Thorlabs metric sizes where the edges are hidden"
+   }
+  },
+  {
+   "name": "exfoliator breadboard hole floors",
+   "group": "breadboards",
+   "finish": "hole_floor",
+   "colour": "#0b0b0c",
+   "faces": 12672,
+   "bounds_mm": [
+    [
+     239.6,
+     249.6,
+     156.0
+    ],
+    [
+     670.4,
+     630.4,
+     156.2
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "edges back-projected onto their planes; Thorlabs metric skin with M6 holes on 25 mm, 12.5 mm from the edges (the hole rows measure 24.5-26.4 mm at these heights); sizes rounded to Thorlabs metric sizes where the edges are hidden"
+   }
+  },
+  {
+   "name": "exfoliator breadboard posts",
+   "group": "breadboards",
+   "finish": "steel_post",
+   "colour": "#c6cacc",
+   "faces": 3200,
+   "bounds_mm": [
+    [
+     257.3,
+     267.3,
+     0.0
+    ],
+    [
+     652.7,
+     632.7,
+     147.3
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "edges back-projected onto their planes; Thorlabs metric skin with M6 holes on 25 mm, 12.5 mm from the edges (the hole rows measure 24.5-26.4 mm at these heights); sizes rounded to Thorlabs metric sizes where the edges are hidden"
+   }
+  },
+  {
+   "name": "loose breadboard",
+   "group": "breadboards",
+   "finish": "black_anodised",
+   "colour": "#34363a",
+   "faces": 3888,
+   "bounds_mm": [
+    [
+     700.0,
+     545.0,
+     17.3
+    ],
+    [
+     925.0,
+     695.0,
+     30.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "edges back-projected onto their planes; Thorlabs metric skin with M6 holes on 25 mm, 12.5 mm from the edges (the hole rows measure 24.5-26.4 mm at these heights); sizes rounded to Thorlabs metric sizes where the edges are hidden"
+   }
+  },
+  {
+   "name": "loose breadboard hole floors",
+   "group": "breadboards",
+   "finish": "hole_floor",
+   "colour": "#0b0b0c",
+   "faces": 2376,
+   "bounds_mm": [
+    [
+     709.6,
+     554.6,
+     26.0
+    ],
+    [
+     915.4,
+     685.4,
+     26.2
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "edges back-projected onto their planes; Thorlabs metric skin with M6 holes on 25 mm, 12.5 mm from the edges (the hole rows measure 24.5-26.4 mm at these heights); sizes rounded to Thorlabs metric sizes where the edges are hidden"
+   }
+  },
+  {
+   "name": "chip tray",
+   "group": "gantry",
+   "finish": "tray_white",
+   "colour": "#c9cfd0",
+   "faces": 7176,
+   "bounds_mm": [
+    [
+     500.0,
+     359.3,
+     282.3
+    ],
+    [
+     613.5,
+     436.9,
+     290.3
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "6 x 10 pockets fitted in both views; pitch 9.5 mm, centre and yaw from the joint calibration; chips placed per pocket from chip_tray.json (3 empty, 1 rotated); pockets 0.8 of the pitch and 3 mm deep (estimate); the handwritten edge is a texture rectified from Overhead 1"
+   }
+  },
+  {
+   "name": "chip tray holder",
+   "group": "gantry",
+   "finish": "alu_blasted",
+   "colour": "#b9bfc0",
+   "faces": 332,
+   "bounds_mm": [
+    [
+     488.5,
+     347.9,
+     274.3
+    ],
+    [
+     625.0,
+     448.3,
+     286.3
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "6 x 10 pockets fitted in both views; pitch 9.5 mm, centre and yaw from the joint calibration; chips placed per pocket from chip_tray.json (3 empty, 1 rotated); pockets 0.8 of the pitch and 3 mm deep (estimate); the handwritten edge is a texture rectified from Overhead 1"
+   }
+  },
+  {
+   "name": "chips",
+   "group": "gantry",
+   "finish": "chip",
+   "colour": "#2c1832",
+   "faces": 1596,
+   "bounds_mm": [
+    [
+     509.8,
+     369.2,
+     288.7
+    ],
+    [
+     603.7,
+     427.1,
+     289.7
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "chip tray handwriting (photo texture, Overhead 1)",
+   "group": "gantry",
+   "finish": "decal",
+   "colour": "#ffffff",
+   "faces": 2,
+   "bounds_mm": [
+    [
+     601.6,
+     366.0,
+     290.4
+    ],
+    [
+     613.3,
+     435.0,
+     290.4
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "6 x 10 pockets fitted in both views; pitch 9.5 mm, centre and yaw from the joint calibration; chips placed per pocket from chip_tray.json (3 empty, 1 rotated); pockets 0.8 of the pitch and 3 mm deep (estimate); the handwritten edge is a texture rectified from Overhead 1"
+   }
+  },
+  {
+   "name": "Y axis base",
+   "group": "gantry",
+   "finish": "alu_blasted",
+   "colour": "#cfd4d3",
+   "faces": 28,
+   "bounds_mm": [
+    [
+     555.0,
+     242.0,
+     148.0
+    ],
+    [
+     645.0,
+     512.0,
+     172.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "Y axis rail",
+   "group": "gantry",
+   "finish": "steel_ground",
+   "colour": "#c8ccce",
+   "faces": 44,
+   "bounds_mm": [
+    [
+     624.5,
+     247.0,
+     172.0
+    ],
+    [
+     639.5,
+     507.0,
+     187.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "Y axis rail bolts",
+   "group": "gantry",
+   "finish": "black_oxide",
+   "colour": "#2b2c2e",
+   "faces": 192,
+   "bounds_mm": [
+    [
+     628.6,
+     258.6,
+     187.0
+    ],
+    [
+     635.4,
+     445.4,
+     187.2
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "Y axis rail",
+   "group": "gantry",
+   "finish": "steel_ground",
+   "colour": "#c8ccce",
+   "faces": 44,
+   "bounds_mm": [
+    [
+     560.5,
+     247.0,
+     172.0
+    ],
+    [
+     575.5,
+     507.0,
+     187.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "Y axis rail bolts",
+   "group": "gantry",
+   "finish": "black_oxide",
+   "colour": "#2b2c2e",
+   "faces": 192,
+   "bounds_mm": [
+    [
+     564.6,
+     258.6,
+     187.0
+    ],
+    [
+     571.4,
+     445.4,
+     187.2
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "Y axis screw",
+   "group": "gantry",
+   "finish": "steel_ground",
+   "colour": "#c8ccce",
+   "faces": 20776,
+   "bounds_mm": [
+    [
+     592.0,
+     274.0,
+     186.0
+    ],
+    [
+     608.0,
+     480.0,
+     202.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "Y axis screw journals",
+   "group": "gantry",
+   "finish": "steel_ground",
+   "colour": "#c8ccce",
+   "faces": 192,
+   "bounds_mm": [
+    [
+     594.0,
+     244.0,
+     188.0
+    ],
+    [
+     606.0,
+     506.0,
+     200.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "Y axis end supports",
+   "group": "gantry",
+   "finish": "black_oxide",
+   "colour": "#2b2c2e",
+   "faces": 336,
+   "bounds_mm": [
+    [
+     570.0,
+     249.5,
+     169.0
+    ],
+    [
+     630.0,
+     502.0,
+     212.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "Y axis lock nut",
+   "group": "gantry",
+   "finish": "black_oxide",
+   "colour": "#2b2c2e",
+   "faces": 24,
+   "bounds_mm": [
+    [
+     590.5,
+     246.0,
+     183.0
+    ],
+    [
+     609.5,
+     254.0,
+     205.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "Y axis rail blocks",
+   "group": "gantry",
+   "finish": "steel_ground",
+   "colour": "#c8ccce",
+   "faces": 1584,
+   "bounds_mm": [
+    [
+     551.0,
+     347.0,
+     181.0
+    ],
+    [
+     649.0,
+     430.0,
+     200.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "Y axis block seals",
+   "group": "gantry",
+   "finish": "black_plastic",
+   "colour": "#1e1c1a",
+   "faces": 3168,
+   "bounds_mm": [
+    [
+     552.0,
+     343.0,
+     182.5
+    ],
+    [
+     648.0,
+     434.0,
+     198.5
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "Y axis carriage plate",
+   "group": "gantry",
+   "finish": "alu_blasted",
+   "colour": "#cfd4d3",
+   "faces": 396,
+   "bounds_mm": [
+    [
+     553.0,
+     338.5,
+     200.0
+    ],
+    [
+     647.0,
+     438.5,
+     210.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "Y axis ball nut",
+   "group": "gantry",
+   "finish": "black_oxide",
+   "colour": "#2b2c2e",
+   "faces": 1632,
+   "bounds_mm": [
+    [
+     576.0,
+     367.5,
+     174.0
+    ],
+    [
+     624.0,
+     409.5,
+     214.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "Y axis nut wiper",
+   "group": "gantry",
+   "finish": "black_plastic",
+   "colour": "#1e1c1a",
+   "faces": 192,
+   "bounds_mm": [
+    [
+     590.5,
+     364.5,
+     184.5
+    ],
+    [
+     609.5,
+     367.5,
+     203.5
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "X axis base",
+   "group": "gantry",
+   "finish": "alu_blasted",
+   "colour": "#cfd4d3",
+   "faces": 28,
+   "bounds_mm": [
+    [
+     263.3,
+     459.3,
+     168.0
+    ],
+    [
+     701.7,
+     565.7,
+     192.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "X axis rail",
+   "group": "gantry",
+   "finish": "steel_ground",
+   "colour": "#c8ccce",
+   "faces": 44,
+   "bounds_mm": [
+    [
+     270.9,
+     465.0,
+     192.0
+    ],
+    [
+     696.5,
+     496.1,
+     207.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "X axis rail bolts",
+   "group": "gantry",
+   "finish": "black_oxide",
+   "colour": "#2b2c2e",
+   "faces": 336,
+   "bounds_mm": [
+    [
+     282.8,
+     469.6,
+     207.0
+    ],
+    [
+     649.4,
+     490.1,
+     207.2
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "X axis rail",
+   "group": "gantry",
+   "finish": "steel_ground",
+   "colour": "#c8ccce",
+   "faces": 44,
+   "bounds_mm": [
+    [
+     268.5,
+     528.9,
+     192.0
+    ],
+    [
+     694.1,
+     560.0,
+     207.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "X axis rail bolts",
+   "group": "gantry",
+   "finish": "black_oxide",
+   "colour": "#2b2c2e",
+   "faces": 336,
+   "bounds_mm": [
+    [
+     280.4,
+     533.6,
+     207.0
+    ],
+    [
+     646.9,
+     554.0,
+     207.2
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "X axis screw",
+   "group": "gantry",
+   "finish": "steel_ground",
+   "colour": "#c8ccce",
+   "faces": 37464,
+   "bounds_mm": [
+    [
+     296.7,
+     497.5,
+     206.0
+    ],
+    [
+     668.3,
+     527.4,
+     222.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "X axis screw journals",
+   "group": "gantry",
+   "finish": "steel_ground",
+   "colour": "#c8ccce",
+   "faces": 192,
+   "bounds_mm": [
+    [
+     266.8,
+     498.3,
+     208.0
+    ],
+    [
+     694.2,
+     525.5,
+     220.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "X axis end supports",
+   "group": "gantry",
+   "finish": "black_oxide",
+   "colour": "#2b2c2e",
+   "faces": 336,
+   "bounds_mm": [
+    [
+     271.4,
+     474.5,
+     189.0
+    ],
+    [
+     691.1,
+     550.4,
+     232.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "X axis lock nut",
+   "group": "gantry",
+   "finish": "black_oxide",
+   "colour": "#2b2c2e",
+   "faces": 24,
+   "bounds_mm": [
+    [
+     268.7,
+     494.9,
+     203.0
+    ],
+    [
+     277.4,
+     514.2,
+     225.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "X axis rail blocks",
+   "group": "gantry",
+   "finish": "steel_ground",
+   "colour": "#c8ccce",
+   "faces": 1584,
+   "bounds_mm": [
+    [
+     518.2,
+     465.0,
+     201.0
+    ],
+    [
+     604.8,
+     566.0,
+     220.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "X axis block seals",
+   "group": "gantry",
+   "finish": "black_plastic",
+   "colour": "#1e1c1a",
+   "faces": 3168,
+   "bounds_mm": [
+    [
+     514.3,
+     465.9,
+     202.5
+    ],
+    [
+     608.7,
+     565.1,
+     218.5
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "X axis carriage plate",
+   "group": "gantry",
+   "finish": "alu_blasted",
+   "colour": "#cfd4d3",
+   "faces": 396,
+   "bounds_mm": [
+    [
+     509.8,
+     466.7,
+     220.0
+    ],
+    [
+     613.2,
+     564.3,
+     230.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "X axis ball nut",
+   "group": "gantry",
+   "finish": "black_oxide",
+   "colour": "#2b2c2e",
+   "faces": 1632,
+   "bounds_mm": [
+    [
+     540.0,
+     491.9,
+     194.0
+    ],
+    [
+     583.4,
+     540.3,
+     234.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "X axis nut wiper",
+   "group": "gantry",
+   "finish": "black_plastic",
+   "colour": "#1e1c1a",
+   "faces": 192,
+   "bounds_mm": [
+    [
+     537.2,
+     505.1,
+     204.5
+    ],
+    [
+     540.9,
+     524.2,
+     223.5
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "top axis base",
+   "group": "gantry",
+   "finish": "alu_blasted",
+   "colour": "#cfd4d3",
+   "faces": 28,
+   "bounds_mm": [
+    [
+     135.0,
+     270.0,
+     181.0
+    ],
+    [
+     225.0,
+     460.0,
+     205.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "top axis rail",
+   "group": "gantry",
+   "finish": "steel_ground",
+   "colour": "#c8ccce",
+   "faces": 44,
+   "bounds_mm": [
+    [
+     204.5,
+     275.0,
+     205.0
+    ],
+    [
+     219.5,
+     455.0,
+     220.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "top axis rail bolts",
+   "group": "gantry",
+   "finish": "black_oxide",
+   "colour": "#2b2c2e",
+   "faces": 144,
+   "bounds_mm": [
+    [
+     208.6,
+     286.6,
+     220.0
+    ],
+    [
+     215.4,
+     413.4,
+     220.2
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "top axis rail",
+   "group": "gantry",
+   "finish": "steel_ground",
+   "colour": "#c8ccce",
+   "faces": 44,
+   "bounds_mm": [
+    [
+     140.5,
+     275.0,
+     205.0
+    ],
+    [
+     155.5,
+     455.0,
+     220.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "top axis rail bolts",
+   "group": "gantry",
+   "finish": "black_oxide",
+   "colour": "#2b2c2e",
+   "faces": 144,
+   "bounds_mm": [
+    [
+     144.6,
+     286.6,
+     220.0
+    ],
+    [
+     151.4,
+     413.4,
+     220.2
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "top axis screw",
+   "group": "gantry",
+   "finish": "steel_ground",
+   "colour": "#c8ccce",
+   "faces": 12712,
+   "bounds_mm": [
+    [
+     172.0,
+     302.0,
+     219.0
+    ],
+    [
+     188.0,
+     428.0,
+     235.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "top axis screw journals",
+   "group": "gantry",
+   "finish": "steel_ground",
+   "colour": "#c8ccce",
+   "faces": 192,
+   "bounds_mm": [
+    [
+     174.0,
+     272.0,
+     221.0
+    ],
+    [
+     186.0,
+     454.0,
+     233.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "top axis end supports",
+   "group": "gantry",
+   "finish": "black_oxide",
+   "colour": "#2b2c2e",
+   "faces": 336,
+   "bounds_mm": [
+    [
+     150.0,
+     277.5,
+     202.0
+    ],
+    [
+     210.0,
+     450.0,
+     245.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "top axis lock nut",
+   "group": "gantry",
+   "finish": "black_oxide",
+   "colour": "#2b2c2e",
+   "faces": 24,
+   "bounds_mm": [
+    [
+     170.5,
+     274.0,
+     216.0
+    ],
+    [
+     189.5,
+     282.0,
+     238.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "top axis rail blocks",
+   "group": "gantry",
+   "finish": "steel_ground",
+   "colour": "#c8ccce",
+   "faces": 1584,
+   "bounds_mm": [
+    [
+     131.0,
+     323.5,
+     214.0
+    ],
+    [
+     229.0,
+     406.5,
+     233.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "top axis block seals",
+   "group": "gantry",
+   "finish": "black_plastic",
+   "colour": "#1e1c1a",
+   "faces": 3168,
+   "bounds_mm": [
+    [
+     132.0,
+     319.5,
+     215.5
+    ],
+    [
+     228.0,
+     410.5,
+     231.5
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "top axis carriage plate",
+   "group": "gantry",
+   "finish": "alu_blasted",
+   "colour": "#cfd4d3",
+   "faces": 396,
+   "bounds_mm": [
+    [
+     133.0,
+     315.0,
+     233.0
+    ],
+    [
+     227.0,
+     415.0,
+     243.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "top axis ball nut",
+   "group": "gantry",
+   "finish": "black_oxide",
+   "colour": "#2b2c2e",
+   "faces": 1632,
+   "bounds_mm": [
+    [
+     156.0,
+     344.0,
+     207.0
+    ],
+    [
+     204.0,
+     386.0,
+     247.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "top axis nut wiper",
+   "group": "gantry",
+   "finish": "black_plastic",
+   "colour": "#1e1c1a",
+   "faces": 192,
+   "bounds_mm": [
+    [
+     170.5,
+     341.0,
+     217.5
+    ],
+    [
+     189.5,
+     344.0,
+     236.5
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "Y axis motor end caps",
+   "group": "gantry",
+   "finish": "black_anodised",
+   "colour": "#2a2b2d",
+   "faces": 264,
+   "bounds_mm": [
+    [
+     571.4,
+     520.0,
+     165.4
+    ],
+    [
+     628.6,
+     596.0,
+     222.6
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "Y axis motor stator",
+   "group": "gantry",
+   "finish": "black_oxide",
+   "colour": "#1d1d1f",
+   "faces": 168,
+   "bounds_mm": [
+    [
+     571.6,
+     530.0,
+     165.6
+    ],
+    [
+     628.4,
+     585.6,
+     222.4
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "Y axis motor boss",
+   "group": "gantry",
+   "finish": "alu_machined",
+   "colour": "#d7dcdb",
+   "faces": 960,
+   "bounds_mm": [
+    [
+     581.0,
+     518.4,
+     175.0
+    ],
+    [
+     619.0,
+     520.0,
+     213.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "Y axis motor shaft",
+   "group": "gantry",
+   "finish": "steel_ground",
+   "colour": "#c8ccce",
+   "faces": 80,
+   "bounds_mm": [
+    [
+     597.3,
+     498.4,
+     190.8
+    ],
+    [
+     603.2,
+     518.4,
+     197.2
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "Y axis motor mounting holes",
+   "group": "gantry",
+   "finish": "hole_floor",
+   "colour": "#0b0b0c",
+   "faces": 176,
+   "bounds_mm": [
+    [
+     574.0,
+     522.9,
+     168.0
+    ],
+    [
+     626.0,
+     523.2,
+     220.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "Y axis motor cable exit",
+   "group": "gantry",
+   "finish": "black_plastic",
+   "colour": "#1e1c1a",
+   "faces": 12,
+   "bounds_mm": [
+    [
+     594.0,
+     587.0,
+     222.6
+    ],
+    [
+     606.0,
+     595.0,
+     227.6
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "Y axis motor lead",
+   "group": "gantry",
+   "finish": "wire_red",
+   "colour": "#c02020",
+   "faces": 208,
+   "bounds_mm": [
+    [
+     602.8,
+     590.2,
+     227.0
+    ],
+    [
+     604.4,
+     611.5,
+     257.7
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "Y axis motor lead",
+   "group": "gantry",
+   "finish": "wire_blue",
+   "colour": "#2050c0",
+   "faces": 208,
+   "bounds_mm": [
+    [
+     600.4,
+     590.2,
+     227.0
+    ],
+    [
+     602.0,
+     611.5,
+     257.7
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "Y axis motor lead",
+   "group": "gantry",
+   "finish": "wire_green",
+   "colour": "#20a040",
+   "faces": 208,
+   "bounds_mm": [
+    [
+     598.0,
+     590.2,
+     227.0
+    ],
+    [
+     599.6,
+     611.5,
+     257.7
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "Y axis motor lead",
+   "group": "gantry",
+   "finish": "wire_black",
+   "colour": "#101010",
+   "faces": 208,
+   "bounds_mm": [
+    [
+     595.6,
+     590.2,
+     227.0
+    ],
+    [
+     597.2,
+     611.5,
+     257.7
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "Y axis motor label",
+   "group": "gantry",
+   "finish": "decal",
+   "colour": "#ffffff",
+   "faces": 2,
+   "bounds_mm": [
+    [
+     580.0,
+     596.2,
+     174.0
+    ],
+    [
+     620.0,
+     596.2,
+     214.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "X axis motor end caps",
+   "group": "gantry",
+   "finish": "black_anodised",
+   "colour": "#2a2b2d",
+   "faces": 264,
+   "bounds_mm": [
+    [
+     186.0,
+     475.4,
+     185.4
+    ],
+    [
+     262.0,
+     532.6,
+     242.6
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "X axis motor stator",
+   "group": "gantry",
+   "finish": "black_oxide",
+   "colour": "#1d1d1f",
+   "faces": 168,
+   "bounds_mm": [
+    [
+     196.4,
+     475.6,
+     185.6
+    ],
+    [
+     252.0,
+     532.4,
+     242.4
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "X axis motor boss",
+   "group": "gantry",
+   "finish": "alu_machined",
+   "colour": "#d7dcdb",
+   "faces": 960,
+   "bounds_mm": [
+    [
+     262.0,
+     485.0,
+     195.0
+    ],
+    [
+     263.6,
+     523.0,
+     233.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "X axis motor shaft",
+   "group": "gantry",
+   "finish": "steel_ground",
+   "colour": "#c8ccce",
+   "faces": 80,
+   "bounds_mm": [
+    [
+     263.6,
+     501.3,
+     210.8
+    ],
+    [
+     283.6,
+     507.2,
+     217.2
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "X axis motor mounting holes",
+   "group": "gantry",
+   "finish": "hole_floor",
+   "colour": "#0b0b0c",
+   "faces": 176,
+   "bounds_mm": [
+    [
+     258.8,
+     478.0,
+     188.0
+    ],
+    [
+     259.1,
+     530.0,
+     240.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "X axis motor cable exit",
+   "group": "gantry",
+   "finish": "black_plastic",
+   "colour": "#1e1c1a",
+   "faces": 12,
+   "bounds_mm": [
+    [
+     187.0,
+     498.0,
+     242.6
+    ],
+    [
+     195.0,
+     510.0,
+     247.6
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "X axis motor lead",
+   "group": "gantry",
+   "finish": "wire_red",
+   "colour": "#c02020",
+   "faces": 208,
+   "bounds_mm": [
+    [
+     170.5,
+     506.8,
+     247.0
+    ],
+    [
+     191.8,
+     508.4,
+     277.7
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "X axis motor lead",
+   "group": "gantry",
+   "finish": "wire_blue",
+   "colour": "#2050c0",
+   "faces": 208,
+   "bounds_mm": [
+    [
+     170.5,
+     504.4,
+     247.0
+    ],
+    [
+     191.8,
+     506.0,
+     277.7
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "X axis motor lead",
+   "group": "gantry",
+   "finish": "wire_green",
+   "colour": "#20a040",
+   "faces": 208,
+   "bounds_mm": [
+    [
+     170.5,
+     502.0,
+     247.0
+    ],
+    [
+     191.8,
+     503.6,
+     277.7
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "X axis motor lead",
+   "group": "gantry",
+   "finish": "wire_black",
+   "colour": "#101010",
+   "faces": 208,
+   "bounds_mm": [
+    [
+     170.5,
+     499.6,
+     247.0
+    ],
+    [
+     191.8,
+     501.2,
+     277.7
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "X axis motor label",
+   "group": "gantry",
+   "finish": "decal",
+   "colour": "#ffffff",
+   "faces": 2,
+   "bounds_mm": [
+    [
+     185.8,
+     484.0,
+     194.0
+    ],
+    [
+     185.8,
+     524.0,
+     234.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "Y axis coupling",
+   "group": "gantry",
+   "finish": "alu_machined",
+   "colour": "#d7dcdb",
+   "faces": 960,
+   "bounds_mm": [
+    [
+     587.5,
+     510.0,
+     181.5
+    ],
+    [
+     612.5,
+     520.0,
+     206.5
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "X axis coupling",
+   "group": "gantry",
+   "finish": "alu_machined",
+   "colour": "#d7dcdb",
+   "faces": 960,
+   "bounds_mm": [
+    [
+     259.7,
+     491.9,
+     201.5
+    ],
+    [
+     269.3,
+     517.1,
+     226.5
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "tray carriage",
+   "group": "gantry",
+   "finish": "black_anodised",
+   "colour": "#34363a",
+   "faces": 396,
+   "bounds_mm": [
+    [
+     509.4,
+     341.2,
+     230.3
+    ],
+    [
+     604.1,
+     455.0,
+     270.3
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "printed carriage",
+   "group": "gantry",
+   "finish": "yellow_pla",
+   "colour": "#e6d200",
+   "faces": 396,
+   "bounds_mm": [
+    [
+     255.1,
+     425.1,
+     255.0
+    ],
+    [
+     389.9,
+     499.9,
+     320.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "printed carriage inserts",
+   "group": "gantry",
+   "finish": "copper",
+   "colour": "#c87a4a",
+   "faces": 256,
+   "bounds_mm": [
+    [
+     262.4,
+     432.4,
+     320.0
+    ],
+    [
+     382.6,
+     492.6,
+     320.4
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "carriage motor 1 end caps",
+   "group": "gantry",
+   "finish": "black_anodised",
+   "colour": "#2a2b2d",
+   "faces": 264,
+   "bounds_mm": [
+    [
+     308.8,
+     433.8,
+     320.0
+    ],
+    [
+     351.2,
+     476.2,
+     368.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "carriage motor 1 stator",
+   "group": "gantry",
+   "finish": "black_oxide",
+   "colour": "#1d1d1f",
+   "faces": 168,
+   "bounds_mm": [
+    [
+     309.0,
+     434.0,
+     328.0
+    ],
+    [
+     351.0,
+     476.0,
+     359.6
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "carriage motor 1 boss",
+   "group": "gantry",
+   "finish": "alu_machined",
+   "colour": "#d7dcdb",
+   "faces": 960,
+   "bounds_mm": [
+    [
+     319.0,
+     444.0,
+     318.0
+    ],
+    [
+     341.0,
+     466.0,
+     320.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "carriage motor 1 shaft",
+   "group": "gantry",
+   "finish": "steel_ground",
+   "colour": "#c8ccce",
+   "faces": 80,
+   "bounds_mm": [
+    [
+     328.0,
+     452.5,
+     298.0
+    ],
+    [
+     332.5,
+     457.5,
+     318.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "carriage motor 1 mounting holes",
+   "group": "gantry",
+   "finish": "hole_floor",
+   "colour": "#0b0b0c",
+   "faces": 176,
+   "bounds_mm": [
+    [
+     313.0,
+     438.0,
+     322.9
+    ],
+    [
+     347.0,
+     472.0,
+     323.2
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "carriage motor 1 cable exit",
+   "group": "gantry",
+   "finish": "black_plastic",
+   "colour": "#1e1c1a",
+   "faces": 12,
+   "bounds_mm": [
+    [
+     324.0,
+     428.8,
+     360.8
+    ],
+    [
+     336.0,
+     433.8,
+     367.2
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "carriage motor 1 lead",
+   "group": "gantry",
+   "finish": "wire_red",
+   "colour": "#c02020",
+   "faces": 208,
+   "bounds_mm": [
+    [
+     332.8,
+     398.7,
+     363.2
+    ],
+    [
+     334.4,
+     429.5,
+     384.5
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "carriage motor 1 lead",
+   "group": "gantry",
+   "finish": "wire_blue",
+   "colour": "#2050c0",
+   "faces": 208,
+   "bounds_mm": [
+    [
+     330.4,
+     398.7,
+     363.2
+    ],
+    [
+     332.0,
+     429.5,
+     384.5
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "carriage motor 1 lead",
+   "group": "gantry",
+   "finish": "wire_green",
+   "colour": "#20a040",
+   "faces": 208,
+   "bounds_mm": [
+    [
+     328.0,
+     398.7,
+     363.2
+    ],
+    [
+     329.6,
+     429.5,
+     384.5
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "carriage motor 1 lead",
+   "group": "gantry",
+   "finish": "wire_black",
+   "colour": "#101010",
+   "faces": 208,
+   "bounds_mm": [
+    [
+     325.6,
+     398.7,
+     363.2
+    ],
+    [
+     327.2,
+     429.5,
+     384.5
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "carriage motor 2 end caps",
+   "group": "gantry",
+   "finish": "black_anodised",
+   "colour": "#2a2b2d",
+   "faces": 264,
+   "bounds_mm": [
+    [
+     369.8,
+     493.8,
+     320.0
+    ],
+    [
+     412.2,
+     536.2,
+     368.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "carriage motor 2 stator",
+   "group": "gantry",
+   "finish": "black_oxide",
+   "colour": "#1d1d1f",
+   "faces": 168,
+   "bounds_mm": [
+    [
+     370.0,
+     494.0,
+     328.0
+    ],
+    [
+     412.0,
+     536.0,
+     359.6
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "carriage motor 2 boss",
+   "group": "gantry",
+   "finish": "alu_machined",
+   "colour": "#d7dcdb",
+   "faces": 960,
+   "bounds_mm": [
+    [
+     380.0,
+     504.0,
+     318.0
+    ],
+    [
+     402.0,
+     526.0,
+     320.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "carriage motor 2 shaft",
+   "group": "gantry",
+   "finish": "steel_ground",
+   "colour": "#c8ccce",
+   "faces": 80,
+   "bounds_mm": [
+    [
+     389.0,
+     512.5,
+     298.0
+    ],
+    [
+     393.5,
+     517.5,
+     318.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "carriage motor 2 mounting holes",
+   "group": "gantry",
+   "finish": "hole_floor",
+   "colour": "#0b0b0c",
+   "faces": 176,
+   "bounds_mm": [
+    [
+     374.0,
+     498.0,
+     322.9
+    ],
+    [
+     408.0,
+     532.0,
+     323.2
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "carriage motor 2 cable exit",
+   "group": "gantry",
+   "finish": "black_plastic",
+   "colour": "#1e1c1a",
+   "faces": 12,
+   "bounds_mm": [
+    [
+     385.0,
+     488.8,
+     360.8
+    ],
+    [
+     397.0,
+     493.8,
+     367.2
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "carriage motor 2 lead",
+   "group": "gantry",
+   "finish": "wire_red",
+   "colour": "#c02020",
+   "faces": 208,
+   "bounds_mm": [
+    [
+     393.8,
+     458.7,
+     363.2
+    ],
+    [
+     395.4,
+     489.5,
+     384.5
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "carriage motor 2 lead",
+   "group": "gantry",
+   "finish": "wire_blue",
+   "colour": "#2050c0",
+   "faces": 208,
+   "bounds_mm": [
+    [
+     391.4,
+     458.7,
+     363.2
+    ],
+    [
+     393.0,
+     489.5,
+     384.5
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "carriage motor 2 lead",
+   "group": "gantry",
+   "finish": "wire_green",
+   "colour": "#20a040",
+   "faces": 208,
+   "bounds_mm": [
+    [
+     389.0,
+     458.7,
+     363.2
+    ],
+    [
+     390.6,
+     489.5,
+     384.5
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "carriage motor 2 lead",
+   "group": "gantry",
+   "finish": "wire_black",
+   "colour": "#101010",
+   "faces": 208,
+   "bounds_mm": [
+    [
+     386.6,
+     458.7,
+     363.2
+    ],
+    [
+     388.2,
+     489.5,
+     384.5
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "drag chain links",
+   "group": "gantry",
+   "finish": "black_plastic",
+   "colour": "#1e1c1a",
+   "faces": 3024,
+   "bounds_mm": [
+    [
+     204.8,
+     288.7,
+     249.0
+    ],
+    [
+     302.2,
+     477.8,
+     356.5
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "drag chain crossbars",
+   "group": "gantry",
+   "finish": "black_plastic",
+   "colour": "#2a2826",
+   "faces": 3024,
+   "bounds_mm": [
+    [
+     206.2,
+     291.5,
+     254.9
+    ],
+    [
+     295.3,
+     475.7,
+     354.8
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "drag chain 2 links",
+   "group": "gantry",
+   "finish": "black_plastic",
+   "colour": "#1e1c1a",
+   "faces": 3240,
+   "bounds_mm": [
+    [
+     413.1,
+     547.3,
+     197.3
+    ],
+    [
+     621.6,
+     631.7,
+     278.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "drag chain 2 crossbars",
+   "group": "gantry",
+   "finish": "black_plastic",
+   "colour": "#2a2826",
+   "faces": 3240,
+   "bounds_mm": [
+    [
+     415.1,
+     551.1,
+     201.4
+    ],
+    [
+     619.6,
+     630.3,
+     276.5
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "posts (147 mm), plate edge, both screw axes and the Y motor back-projected from Overhead 2 at their heights; NEMA 23 (57.2 mm) and NEMA 17 (42.3 mm) to the NEMA flange drawings; SFU1605 screws (16 mm, 5 mm lead) on BK12/BF12 supports, HGR15 rails and blocks (catalogue sizes); chain links 26 x 18 mm on a 17 mm pitch (igus-style, estimate)"
+   }
+  },
+  {
+   "name": "supply reel (blue tape) flange",
+   "group": "exfoliator",
+   "finish": "red_plastic",
+   "colour": "#b3150d",
+   "faces": 2112,
+   "bounds_mm": [
+    [
+     652.0,
+     261.0,
+     351.0
+    ],
+    [
+     655.5,
+     357.0,
+     447.0
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance; reel hubs with a 12-spline bore and the pin-fin drive from Overhead 2 and Overhead 1 close-ups (estimate)"
+   }
+  },
+  {
+   "name": "supply reel (blue tape) flange",
+   "group": "exfoliator",
+   "finish": "red_plastic",
+   "colour": "#b3150d",
+   "faces": 2112,
+   "bounds_mm": [
+    [
+     682.5,
+     261.0,
+     351.0
+    ],
+    [
+     686.0,
+     357.0,
+     447.0
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance; reel hubs with a 12-spline bore and the pin-fin drive from Overhead 2 and Overhead 1 close-ups (estimate)"
+   }
+  },
+  {
+   "name": "supply reel (blue tape) tape",
+   "group": "exfoliator",
+   "finish": "tape_blue",
+   "colour": "#6a90cf",
+   "faces": 2112,
+   "bounds_mm": [
+    [
+     655.5,
+     267.0,
+     357.0
+    ],
+    [
+     682.5,
+     351.0,
+     441.0
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance; reel hubs with a 12-spline bore and the pin-fin drive from Overhead 2 and Overhead 1 close-ups (estimate)"
+   }
+  },
+  {
+   "name": "supply reel (blue tape) hub",
+   "group": "exfoliator",
+   "finish": "red_plastic",
+   "colour": "#b3150d",
+   "faces": 544,
+   "bounds_mm": [
+    [
+     652.0,
+     287.0,
+     377.0
+    ],
+    [
+     686.0,
+     331.0,
+     421.0
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance; reel hubs with a 12-spline bore and the pin-fin drive from Overhead 2 and Overhead 1 close-ups (estimate)"
+   }
+  },
+  {
+   "name": "take-up reel (white tape) flange",
+   "group": "exfoliator",
+   "finish": "red_plastic",
+   "colour": "#b3150d",
+   "faces": 2112,
+   "bounds_mm": [
+    [
+     653.0,
+     94.0,
+     353.0
+    ],
+    [
+     656.5,
+     190.0,
+     449.0
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance; reel hubs with a 12-spline bore and the pin-fin drive from Overhead 2 and Overhead 1 close-ups (estimate)"
+   }
+  },
+  {
+   "name": "take-up reel (white tape) flange",
+   "group": "exfoliator",
+   "finish": "red_plastic",
+   "colour": "#b3150d",
+   "faces": 2112,
+   "bounds_mm": [
+    [
+     683.5,
+     94.0,
+     353.0
+    ],
+    [
+     687.0,
+     190.0,
+     449.0
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance; reel hubs with a 12-spline bore and the pin-fin drive from Overhead 2 and Overhead 1 close-ups (estimate)"
+   }
+  },
+  {
+   "name": "take-up reel (white tape) tape",
+   "group": "exfoliator",
+   "finish": "tape_white",
+   "colour": "#e4ebec",
+   "faces": 2112,
+   "bounds_mm": [
+    [
+     656.5,
+     100.0,
+     359.0
+    ],
+    [
+     683.5,
+     184.0,
+     443.0
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance; reel hubs with a 12-spline bore and the pin-fin drive from Overhead 2 and Overhead 1 close-ups (estimate)"
+   }
+  },
+  {
+   "name": "take-up reel (white tape) hub",
+   "group": "exfoliator",
+   "finish": "red_plastic",
+   "colour": "#b3150d",
+   "faces": 544,
+   "bounds_mm": [
+    [
+     653.0,
+     120.0,
+     379.0
+    ],
+    [
+     687.0,
+     164.0,
+     423.0
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance; reel hubs with a 12-spline bore and the pin-fin drive from Overhead 2 and Overhead 1 close-ups (estimate)"
+   }
+  },
+  {
+   "name": "exfoliator housing",
+   "group": "exfoliator",
+   "finish": "alu_machined",
+   "colour": "#d7dcdb",
+   "faces": 396,
+   "bounds_mm": [
+    [
+     700.0,
+     70.0,
+     160.0
+    ],
+    [
+     790.0,
+     270.0,
+     330.0
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance; reel hubs with a 12-spline bore and the pin-fin drive from Overhead 2 and Overhead 1 close-ups (estimate)"
+   }
+  },
+  {
+   "name": "housing screws",
+   "group": "exfoliator",
+   "finish": "steel_ground",
+   "colour": "#c8ccce",
+   "faces": 2112,
+   "bounds_mm": [
+    [
+     708.7,
+     81.7,
+     330.0
+    ],
+    [
+     781.3,
+     258.3,
+     334.0
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance; reel hubs with a 12-spline bore and the pin-fin drive from Overhead 2 and Overhead 1 close-ups (estimate)"
+   }
+  },
+  {
+   "name": "press stepper end caps",
+   "group": "exfoliator",
+   "finish": "black_anodised",
+   "colour": "#2a2b2d",
+   "faces": 264,
+   "bounds_mm": [
+    [
+     716.4,
+     201.4,
+     330.0
+    ],
+    [
+     773.6,
+     258.6,
+     410.0
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance; reel hubs with a 12-spline bore and the pin-fin drive from Overhead 2 and Overhead 1 close-ups (estimate)"
+   }
+  },
+  {
+   "name": "press stepper stator",
+   "group": "exfoliator",
+   "finish": "black_oxide",
+   "colour": "#1d1d1f",
+   "faces": 168,
+   "bounds_mm": [
+    [
+     716.6,
+     201.6,
+     340.0
+    ],
+    [
+     773.4,
+     258.4,
+     399.6
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance; reel hubs with a 12-spline bore and the pin-fin drive from Overhead 2 and Overhead 1 close-ups (estimate)"
+   }
+  },
+  {
+   "name": "press stepper boss",
+   "group": "exfoliator",
+   "finish": "alu_machined",
+   "colour": "#d7dcdb",
+   "faces": 960,
+   "bounds_mm": [
+    [
+     726.0,
+     211.0,
+     328.4
+    ],
+    [
+     764.0,
+     249.0,
+     330.0
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance; reel hubs with a 12-spline bore and the pin-fin drive from Overhead 2 and Overhead 1 close-ups (estimate)"
+   }
+  },
+  {
+   "name": "press stepper shaft",
+   "group": "exfoliator",
+   "finish": "steel_ground",
+   "colour": "#c8ccce",
+   "faces": 80,
+   "bounds_mm": [
+    [
+     742.3,
+     226.8,
+     308.4
+    ],
+    [
+     748.2,
+     233.2,
+     328.4
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance; reel hubs with a 12-spline bore and the pin-fin drive from Overhead 2 and Overhead 1 close-ups (estimate)"
+   }
+  },
+  {
+   "name": "press stepper mounting holes",
+   "group": "exfoliator",
+   "finish": "hole_floor",
+   "colour": "#0b0b0c",
+   "faces": 176,
+   "bounds_mm": [
+    [
+     719.0,
+     204.0,
+     332.9
+    ],
+    [
+     771.0,
+     256.0,
+     333.2
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance; reel hubs with a 12-spline bore and the pin-fin drive from Overhead 2 and Overhead 1 close-ups (estimate)"
+   }
+  },
+  {
+   "name": "press stepper cable exit",
+   "group": "exfoliator",
+   "finish": "black_plastic",
+   "colour": "#1e1c1a",
+   "faces": 12,
+   "bounds_mm": [
+    [
+     739.0,
+     196.4,
+     401.0
+    ],
+    [
+     751.0,
+     201.4,
+     409.0
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance; reel hubs with a 12-spline bore and the pin-fin drive from Overhead 2 and Overhead 1 close-ups (estimate)"
+   }
+  },
+  {
+   "name": "press stepper lead",
+   "group": "exfoliator",
+   "finish": "wire_red",
+   "colour": "#c02020",
+   "faces": 208,
+   "bounds_mm": [
+    [
+     747.8,
+     166.3,
+     404.2
+    ],
+    [
+     749.4,
+     197.0,
+     425.5
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance; reel hubs with a 12-spline bore and the pin-fin drive from Overhead 2 and Overhead 1 close-ups (estimate)"
+   }
+  },
+  {
+   "name": "press stepper lead",
+   "group": "exfoliator",
+   "finish": "wire_blue",
+   "colour": "#2050c0",
+   "faces": 208,
+   "bounds_mm": [
+    [
+     745.4,
+     166.3,
+     404.2
+    ],
+    [
+     747.0,
+     197.0,
+     425.5
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance; reel hubs with a 12-spline bore and the pin-fin drive from Overhead 2 and Overhead 1 close-ups (estimate)"
+   }
+  },
+  {
+   "name": "press stepper lead",
+   "group": "exfoliator",
+   "finish": "wire_green",
+   "colour": "#20a040",
+   "faces": 208,
+   "bounds_mm": [
+    [
+     743.0,
+     166.3,
+     404.2
+    ],
+    [
+     744.6,
+     197.0,
+     425.5
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance; reel hubs with a 12-spline bore and the pin-fin drive from Overhead 2 and Overhead 1 close-ups (estimate)"
+   }
+  },
+  {
+   "name": "press stepper lead",
+   "group": "exfoliator",
+   "finish": "wire_black",
+   "colour": "#101010",
+   "faces": 208,
+   "bounds_mm": [
+    [
+     740.6,
+     166.3,
+     404.2
+    ],
+    [
+     742.2,
+     197.0,
+     425.5
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance; reel hubs with a 12-spline bore and the pin-fin drive from Overhead 2 and Overhead 1 close-ups (estimate)"
+   }
+  },
+  {
+   "name": "press stepper label",
+   "group": "exfoliator",
+   "finish": "decal",
+   "colour": "#ffffff",
+   "faces": 2,
+   "bounds_mm": [
+    [
+     725.0,
+     210.0,
+     410.2
+    ],
+    [
+     765.0,
+     250.0,
+     410.2
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance; reel hubs with a 12-spline bore and the pin-fin drive from Overhead 2 and Overhead 1 close-ups (estimate)"
+   }
+  },
+  {
+   "name": "ClearPath CPM NEMA 23 servo (Teknic CAD)",
+   "group": "exfoliator",
+   "finish": "alu_blasted",
+   "colour": "#cfd4d3",
+   "faces": 60000,
+   "bounds_mm": [
+    [
+     598.0,
+     270.1,
+     249.2
+    ],
+    [
+     703.7,
+     329.9,
+     331.1
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "Teknic's STEP for the CPM-231x (keyed shaft), from teknic.com without a login; identified by its pin-fin rear cap, QR label and status LED; placed where the hand-built unit was (back-projected from Overhead 1); the stack length (231x) is assumed"
+   }
+  },
+  {
+   "name": "ClearPath connector",
+   "group": "exfoliator",
+   "finish": "black_plastic",
+   "colour": "#1e1c1a",
+   "faces": 396,
+   "bounds_mm": [
+    [
+     637.0,
+     290.0,
+     331.0
+    ],
+    [
+     663.0,
+     310.0,
+     345.0
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "Teknic's STEP for the CPM-231x (keyed shaft), from teknic.com without a login; identified by its pin-fin rear cap, QR label and status LED; placed where the hand-built unit was (back-projected from Overhead 1); the stack length (231x) is assumed"
+   }
+  },
+  {
+   "name": "ClearPath label (photo texture, Overhead 1)",
+   "group": "exfoliator",
+   "finish": "decal",
+   "colour": "#ffffff",
+   "faces": 2,
+   "bounds_mm": [
+    [
+     597.4,
+     270.0,
+     303.0
+    ],
+    [
+     597.4,
+     330.0,
+     329.0
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "Teknic's STEP for the CPM-231x (keyed shaft), from teknic.com without a login; identified by its pin-fin rear cap, QR label and status LED; placed where the hand-built unit was (back-projected from Overhead 1); the stack length (231x) is assumed"
+   }
+  },
+  {
+   "name": "exfoliator stage base",
+   "group": "exfoliator",
+   "finish": "alu_blasted",
+   "colour": "#cfd4d3",
+   "faces": 28,
+   "bounds_mm": [
+    [
+     641.0,
+     219.7,
+     154.0
+    ],
+    [
+     816.0,
+     515.3,
+     178.0
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance; reel hubs with a 12-spline bore and the pin-fin drive from Overhead 2 and Overhead 1 close-ups (estimate)"
+   }
+  },
+  {
+   "name": "exfoliator stage rail",
+   "group": "exfoliator",
+   "finish": "steel_ground",
+   "colour": "#c8ccce",
+   "faces": 44,
+   "bounds_mm": [
+    [
+     647.8,
+     226.2,
+     178.0
+    ],
+    [
+     748.6,
+     488.4,
+     193.0
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance; reel hubs with a 12-spline bore and the pin-fin drive from Overhead 2 and Overhead 1 close-ups (estimate)"
+   }
+  },
+  {
+   "name": "exfoliator stage rail bolts",
+   "group": "exfoliator",
+   "finish": "black_oxide",
+   "colour": "#2b2c2e",
+   "faces": 240,
+   "bounds_mm": [
+    [
+     656.3,
+     240.9,
+     193.0
+    ],
+    [
+     739.6,
+     475.2,
+     193.2
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance; reel hubs with a 12-spline bore and the pin-fin drive from Overhead 2 and Overhead 1 close-ups (estimate)"
+   }
+  },
+  {
+   "name": "exfoliator stage rail",
+   "group": "exfoliator",
+   "finish": "steel_ground",
+   "colour": "#c8ccce",
+   "faces": 44,
+   "bounds_mm": [
+    [
+     708.4,
+     246.6,
+     178.0
+    ],
+    [
+     809.2,
+     508.8,
+     193.0
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance; reel hubs with a 12-spline bore and the pin-fin drive from Overhead 2 and Overhead 1 close-ups (estimate)"
+   }
+  },
+  {
+   "name": "exfoliator stage rail bolts",
+   "group": "exfoliator",
+   "finish": "black_oxide",
+   "colour": "#2b2c2e",
+   "faces": 240,
+   "bounds_mm": [
+    [
+     716.9,
+     261.3,
+     193.0
+    ],
+    [
+     800.2,
+     495.6,
+     193.2
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance; reel hubs with a 12-spline bore and the pin-fin drive from Overhead 2 and Overhead 1 close-ups (estimate)"
+   }
+  },
+  {
+   "name": "exfoliator stage screw",
+   "group": "exfoliator",
+   "finish": "steel_ground",
+   "colour": "#c8ccce",
+   "faces": 21952,
+   "bounds_mm": [
+    [
+     686.2,
+     262.2,
+     192.0
+    ],
+    [
+     770.8,
+     472.8,
+     208.0
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance; reel hubs with a 12-spline bore and the pin-fin drive from Overhead 2 and Overhead 1 close-ups (estimate)"
+   }
+  },
+  {
+   "name": "exfoliator stage screw journals",
+   "group": "exfoliator",
+   "finish": "steel_ground",
+   "colour": "#c8ccce",
+   "faces": 192,
+   "bounds_mm": [
+    [
+     678.6,
+     238.1,
+     194.0
+    ],
+    [
+     776.2,
+     501.0,
+     206.0
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance; reel hubs with a 12-spline bore and the pin-fin drive from Overhead 2 and Overhead 1 close-ups (estimate)"
+   }
+  },
+  {
+   "name": "exfoliator stage end supports",
+   "group": "exfoliator",
+   "finish": "black_oxide",
+   "colour": "#2b2c2e",
+   "faces": 336,
+   "bounds_mm": [
+    [
+     657.6,
+     234.0,
+     175.0
+    ],
+    [
+     798.6,
+     503.4,
+     218.0
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance; reel hubs with a 12-spline bore and the pin-fin drive from Overhead 2 and Overhead 1 close-ups (estimate)"
+   }
+  },
+  {
+   "name": "exfoliator stage lock nut",
+   "group": "exfoliator",
+   "finish": "black_oxide",
+   "colour": "#2b2c2e",
+   "faces": 24,
+   "bounds_mm": [
+    [
+     675.9,
+     486.5,
+     189.0
+    ],
+    [
+     696.5,
+     500.2,
+     211.0
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance; reel hubs with a 12-spline bore and the pin-fin drive from Overhead 2 and Overhead 1 close-ups (estimate)"
+   }
+  },
+  {
+   "name": "exfoliator stage rail blocks",
+   "group": "exfoliator",
+   "finish": "steel_ground",
+   "colour": "#c8ccce",
+   "faces": 1584,
+   "bounds_mm": [
+    [
+     665.3,
+     324.3,
+     187.0
+    ],
+    [
+     784.0,
+     433.6,
+     206.0
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance; reel hubs with a 12-spline bore and the pin-fin drive from Overhead 2 and Overhead 1 close-ups (estimate)"
+   }
+  },
+  {
+   "name": "exfoliator stage block seals",
+   "group": "exfoliator",
+   "finish": "black_plastic",
+   "colour": "#1e1c1a",
+   "faces": 3168,
+   "bounds_mm": [
+    [
+     664.9,
+     320.8,
+     188.5
+    ],
+    [
+     784.4,
+     437.1,
+     204.5
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance; reel hubs with a 12-spline bore and the pin-fin drive from Overhead 2 and Overhead 1 close-ups (estimate)"
+   }
+  },
+  {
+   "name": "exfoliator stage carriage plate",
+   "group": "exfoliator",
+   "finish": "alu_blasted",
+   "colour": "#cfd4d3",
+   "faces": 396,
+   "bounds_mm": [
+    [
+     664.6,
+     317.0,
+     206.0
+    ],
+    [
+     784.7,
+     440.9,
+     216.0
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance; reel hubs with a 12-spline bore and the pin-fin drive from Overhead 2 and Overhead 1 close-ups (estimate)"
+   }
+  },
+  {
+   "name": "exfoliator stage ball nut",
+   "group": "exfoliator",
+   "finish": "black_oxide",
+   "colour": "#2b2c2e",
+   "faces": 1632,
+   "bounds_mm": [
+    [
+     704.9,
+     351.4,
+     180.0
+    ],
+    [
+     754.1,
+     403.1,
+     220.0
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance; reel hubs with a 12-spline bore and the pin-fin drive from Overhead 2 and Overhead 1 close-ups (estimate)"
+   }
+  },
+  {
+   "name": "exfoliator stage nut wiper",
+   "group": "exfoliator",
+   "finish": "black_plastic",
+   "colour": "#1e1c1a",
+   "faces": 192,
+   "bounds_mm": [
+    [
+     708.0,
+     395.8,
+     190.5
+    ],
+    [
+     727.0,
+     404.7,
+     209.5
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance; reel hubs with a 12-spline bore and the pin-fin drive from Overhead 2 and Overhead 1 close-ups (estimate)"
+   }
+  },
+  {
+   "name": "exfoliator stage label",
+   "group": "exfoliator",
+   "finish": "decal",
+   "colour": "#ffffff",
+   "faces": 2,
+   "bounds_mm": [
+    [
+     685.4,
+     296.1,
+     160.0
+    ],
+    [
+     704.5,
+     353.0,
+     172.0
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "reel centres triangulated; housing, motors and stage back-projected from Overhead 1; reel diameter 85-95 mm from the image size at the triangulated distance; reel hubs with a 12-spline bore and the pin-fin drive from Overhead 2 and Overhead 1 close-ups (estimate)"
+   }
+  },
+  {
+   "name": "ASI stage, lower (X) carriage",
+   "group": "microscope",
+   "finish": "black_anodised",
+   "colour": "#34363a",
+   "faces": 108,
+   "bounds_mm": [
+    [
+     958.0,
+     271.0,
+     130.0
+    ],
+    [
+     1187.0,
+     487.0,
+     152.0
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+   }
+  },
+  {
+   "name": "ASI stage, upper (Y) carriage",
+   "group": "microscope",
+   "finish": "black_anodised",
+   "colour": "#34363a",
+   "faces": 224,
+   "bounds_mm": [
+    [
+     972.5,
+     271.0,
+     152.0
+    ],
+    [
+     1172.5,
+     487.0,
+     175.0
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+   }
+  },
+  {
+   "name": "ASI stage riser",
+   "group": "microscope",
+   "finish": "black_anodised",
+   "colour": "#34363a",
+   "faces": 396,
+   "bounds_mm": [
+    [
+     988.0,
+     289.0,
+     75.7
+    ],
+    [
+     1158.0,
+     469.0,
+     130.0
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+   }
+  },
+  {
+   "name": "sample insert (acrylic)",
+   "group": "microscope",
+   "finish": "window",
+   "colour": "#e9f1f1",
+   "faces": 108,
+   "bounds_mm": [
+    [
+     1035.0,
+     338.0,
+     169.0
+    ],
+    [
+     1151.0,
+     420.0,
+     175.0
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+   }
+  },
+  {
+   "name": "insert screws",
+   "group": "microscope",
+   "finish": "steel_ground",
+   "colour": "#c8ccce",
+   "faces": 2112,
+   "bounds_mm": [
+    [
+     1036.5,
+     340.5,
+     175.0
+    ],
+    [
+     1146.0,
+     417.5,
+     178.0
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+   }
+  },
+  {
+   "name": "20x objective",
+   "group": "microscope",
+   "finish": "black_anodised",
+   "colour": "#202224",
+   "faces": 4608,
+   "bounds_mm": [
+    [
+     1104.8,
+     365.8,
+     250.0
+    ],
+    [
+     1131.2,
+     392.2,
+     295.0
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+   }
+  },
+  {
+   "name": "objective 20x band",
+   "group": "microscope",
+   "finish": "green_anod",
+   "colour": "#2f9a4a",
+   "faces": 384,
+   "bounds_mm": [
+    [
+     1105.1,
+     366.1,
+     280.0
+    ],
+    [
+     1130.9,
+     391.9,
+     283.5
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+   }
+  },
+  {
+   "name": "objective knurl",
+   "group": "microscope",
+   "finish": "black_anodised",
+   "colour": "#1b1c1e",
+   "faces": 956,
+   "bounds_mm": [
+    [
+     1104.1,
+     365.1,
+     281.5
+    ],
+    [
+     1131.9,
+     392.9,
+     290.5
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+   }
+  },
+  {
+   "name": "objective front lens",
+   "group": "microscope",
+   "finish": "lens_glass",
+   "colour": "#20262a",
+   "faces": 128,
+   "bounds_mm": [
+    [
+     1114.8,
+     375.8,
+     249.8
+    ],
+    [
+     1121.2,
+     382.2,
+     250.6
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+   }
+  },
+  {
+   "name": "nosepiece",
+   "group": "microscope",
+   "finish": "olympus_paint",
+   "colour": "#d9ddd9",
+   "faces": 1920,
+   "bounds_mm": [
+    [
+     1076.0,
+     337.0,
+     295.0
+    ],
+    [
+     1160.0,
+     421.0,
+     325.0
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+   }
+  },
+  {
+   "name": "BX3-URA illuminator (Evident CAD)",
+   "group": "microscope",
+   "finish": "olympus_paint",
+   "colour": "#d2d8d2",
+   "faces": 120000,
+   "bounds_mm": [
+    [
+     1015.8,
+     118.0,
+     287.0
+    ],
+    [
+     1215.3,
+     527.1,
+     413.8
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+   }
+  },
+  {
+   "name": "U-DP dual port (Evident CAD)",
+   "group": "microscope",
+   "finish": "olympus_paint",
+   "colour": "#d2d8d2",
+   "faces": 30000,
+   "bounds_mm": [
+    [
+     1037.0,
+     328.0,
+     413.8
+    ],
+    [
+     1188.0,
+     423.0,
+     476.8
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+   }
+  },
+  {
+   "name": "U-TLU tube (Evident CAD)",
+   "group": "microscope",
+   "finish": "black_anodised",
+   "colour": "#1b1b1c",
+   "faces": 8348,
+   "bounds_mm": [
+    [
+     1088.0,
+     349.0,
+     476.8
+    ],
+    [
+     1148.0,
+     409.0,
+     540.4
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+   }
+  },
+  {
+   "name": "microscope camera",
+   "group": "microscope",
+   "finish": "black_anodised",
+   "colour": "#151515",
+   "faces": 960,
+   "bounds_mm": [
+    [
+     1084.0,
+     345.0,
+     540.4
+    ],
+    [
+     1152.0,
+     413.0,
+     625.8
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+   }
+  },
+  {
+   "name": "microscope mounting plate",
+   "group": "microscope",
+   "finish": "alu_blasted",
+   "colour": "#c9ccc9",
+   "faces": 224,
+   "bounds_mm": [
+    [
+     1178.0,
+     259.0,
+     75.7
+    ],
+    [
+     1193.0,
+     499.0,
+     365.0
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+   }
+  },
+  {
+   "name": "microscope breadboard",
+   "group": "microscope",
+   "finish": "black_anodised",
+   "colour": "#34363a",
+   "faces": 4500,
+   "bounds_mm": [
+    [
+     965.0,
+     150.0,
+     367.3
+    ],
+    [
+     1200.0,
+     345.0,
+     380.0
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+   }
+  },
+  {
+   "name": "microscope breadboard hole floors",
+   "group": "microscope",
+   "finish": "hole_floor",
+   "colour": "#0b0b0c",
+   "faces": 2772,
+   "bounds_mm": [
+    [
+     974.6,
+     159.6,
+     376.0
+    ],
+    [
+     1180.4,
+     315.4,
+     376.2
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+   }
+  },
+  {
+   "name": "light source",
+   "group": "microscope",
+   "finish": "black_anodised",
+   "colour": "#151515",
+   "faces": 960,
+   "bounds_mm": [
+    [
+     1022.0,
+     90.0,
+     362.0
+    ],
+    [
+     1098.0,
+     150.0,
+     438.0
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+   }
+  },
+  {
+   "name": "light source fins",
+   "group": "microscope",
+   "finish": "black_anodised",
+   "colour": "#151515",
+   "faces": 3456,
+   "bounds_mm": [
+    [
+     1019.0,
+     100.0,
+     359.0
+    ],
+    [
+     1101.0,
+     142.0,
+     441.0
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+   }
+  },
+  {
+   "name": "Thorlabs platform",
+   "group": "microscope",
+   "finish": "black_anodised",
+   "colour": "#202124",
+   "faces": 396,
+   "bounds_mm": [
+    [
+     815.0,
+     371.0,
+     75.7
+    ],
+    [
+     990.0,
+     515.0,
+     200.0
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+   }
+  },
+  {
+   "name": "THORLABS logo",
+   "group": "microscope",
+   "finish": "decal",
+   "colour": "#ffffff",
+   "faces": 2,
+   "bounds_mm": [
+    [
+     814.6,
+     398.0,
+     143.5
+    ],
+    [
+     814.6,
+     488.0,
+     156.5
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+   }
+  },
+  {
+   "name": "docking fixture side",
+   "group": "microscope",
+   "finish": "black_anodised",
+   "colour": "#1e1c1a",
+   "faces": 340,
+   "bounds_mm": [
+    [
+     885.0,
+     645.0,
+     75.7
+    ],
+    [
+     975.0,
+     657.0,
+     270.0
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+   }
+  },
+  {
+   "name": "docking fixture side",
+   "group": "microscope",
+   "finish": "black_anodised",
+   "colour": "#1e1c1a",
+   "faces": 340,
+   "bounds_mm": [
+    [
+     885.0,
+     763.0,
+     75.7
+    ],
+    [
+     975.0,
+     775.0,
+     270.0
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+   }
+  },
+  {
+   "name": "docking fixture top",
+   "group": "microscope",
+   "finish": "black_anodised",
+   "colour": "#1e1c1a",
+   "faces": 396,
+   "bounds_mm": [
+    [
+     885.0,
+     645.0,
+     270.0
+    ],
+    [
+     975.0,
+     775.0,
+     282.0
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+   }
+  },
+  {
+   "name": "docking fixture screws",
+   "group": "microscope",
+   "finish": "steel_ground",
+   "colour": "#c8ccce",
+   "faces": 2112,
+   "bounds_mm": [
+    [
+     893.5,
+     659.5,
+     282.0
+    ],
+    [
+     966.5,
+     760.5,
+     288.0
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+   }
+  },
+  {
+   "name": "docking fixture side",
+   "group": "microscope",
+   "finish": "black_anodised",
+   "colour": "#1e1c1a",
+   "faces": 340,
+   "bounds_mm": [
+    [
+     1000.0,
+     625.0,
+     75.7
+    ],
+    [
+     1093.0,
+     637.0,
+     270.0
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+   }
+  },
+  {
+   "name": "docking fixture side",
+   "group": "microscope",
+   "finish": "black_anodised",
+   "colour": "#1e1c1a",
+   "faces": 340,
+   "bounds_mm": [
+    [
+     1000.0,
+     748.0,
+     75.7
+    ],
+    [
+     1093.0,
+     760.0,
+     270.0
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+   }
+  },
+  {
+   "name": "docking fixture top",
+   "group": "microscope",
+   "finish": "black_anodised",
+   "colour": "#1e1c1a",
+   "faces": 396,
+   "bounds_mm": [
+    [
+     1000.0,
+     625.0,
+     270.0
+    ],
+    [
+     1093.0,
+     760.0,
+     282.0
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+   }
+  },
+  {
+   "name": "docking fixture screws",
+   "group": "microscope",
+   "finish": "steel_ground",
+   "colour": "#c8ccce",
+   "faces": 2112,
+   "bounds_mm": [
+    [
+     1009.0,
+     640.3,
+     282.0
+    ],
+    [
+     1084.0,
+     744.7,
+     288.0
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "BX3-URA, U-DP and U-TLU from Evident's own CAD (appearance models, STEP from Evident's OEM downloads, fetched at build time; evident_cad.py), stacked on the optical axis; ASI OE-1250 stage size; positions from the objective on the Overhead 1 ray at z 250, elevated breadboard back-projected at z 380, Thorlabs platform front edge at z 180-220; fillets, drum scale, objective profile and the THORLABS mark from the Overhead 1 frame (estimate)"
+   }
+  },
+  {
+   "name": "tape measure case",
+   "group": "deck",
+   "finish": "yellow_abs",
+   "colour": "#f0c800",
+   "faces": 396,
+   "bounds_mm": [
+    [
+     202.2,
+     812.5,
+     2.0
+    ],
+    [
+     307.8,
+     917.5,
+     48.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "back-projected onto the deck from Overhead 2; case about 90 x 90 x 50 with a black bumper (FatMax-style, estimate)"
+   }
+  },
+  {
+   "name": "tape measure bumper",
+   "group": "deck",
+   "finish": "black_rubber",
+   "colour": "#151515",
+   "faces": 396,
+   "bounds_mm": [
+    [
+     216.9,
+     806.5,
+     0.0
+    ],
+    [
+     313.1,
+     888.8,
+     50.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "back-projected onto the deck from Overhead 2; case about 90 x 90 x 50 with a black bumper (FatMax-style, estimate)"
+   }
+  },
+  {
+   "name": "tape measure blade tip",
+   "group": "deck",
+   "finish": "steel_ground",
+   "colour": "#d8c040",
+   "faces": 396,
+   "bounds_mm": [
+    [
+     303.3,
+     844.0,
+     5.0
+    ],
+    [
+     320.7,
+     868.7,
+     15.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "back-projected onto the deck from Overhead 2; case about 90 x 90 x 50 with a black bumper (FatMax-style, estimate)"
+   }
+  },
+  {
+   "name": "tape measure lock",
+   "group": "deck",
+   "finish": "black_rubber",
+   "colour": "#151515",
+   "faces": 396,
+   "bounds_mm": [
+    [
+     280.8,
+     842.8,
+     45.0
+    ],
+    [
+     302.5,
+     860.2,
+     53.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "back-projected onto the deck from Overhead 2; case about 90 x 90 x 50 with a black bumper (FatMax-style, estimate)"
+   }
+  },
+  {
+   "name": "tape measure belt clip",
+   "group": "deck",
+   "finish": "steel_ground",
+   "colour": "#303030",
+   "faces": 396,
+   "bounds_mm": [
+    [
+     206.7,
+     887.3,
+     10.0
+    ],
+    [
+     259.3,
+     918.9,
+     44.0
+    ]
+   ],
+   "source": {
+    "source": "one-view",
+    "note": "back-projected onto the deck from Overhead 2; case about 90 x 90 x 50 with a black bumper (FatMax-style, estimate)"
+   }
+  },
+  {
+   "name": "Amcrest camera cam0 housing",
+   "group": "cameras",
+   "finish": "epson_paint",
+   "colour": "#e6e8e6",
+   "faces": 1792,
+   "bounds_mm": [
+    [
+     283.6,
+     245.3,
+     676.8
+    ],
+    [
+     368.3,
+     330.3,
+     761.8
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "Amcrest IP5M-T1179EW ball (85 mm, datasheet) at each camera's calibrated centre, facing its view direction; the turret base and mount are out of view and not modelled"
+   }
+  },
+  {
+   "name": "Amcrest camera cam0 face",
+   "group": "cameras",
+   "finish": "black_plastic",
+   "colour": "#101010",
+   "faces": 256,
+   "bounds_mm": [
+    [
+     316.5,
+     256.9,
+     677.6
+    ],
+    [
+     366.5,
+     327.6,
+     733.5
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "Amcrest IP5M-T1179EW ball (85 mm, datasheet) at each camera's calibrated centre, facing its view direction; the turret base and mount are out of view and not modelled"
+   }
+  },
+  {
+   "name": "Amcrest camera cam0 lens",
+   "group": "cameras",
+   "finish": "lens_glass",
+   "colour": "#20262a",
+   "faces": 192,
+   "bounds_mm": [
+    [
+     334.6,
+     281.6,
+     695.3
+    ],
+    [
+     351.4,
+     303.1,
+     713.4
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "Amcrest IP5M-T1179EW ball (85 mm, datasheet) at each camera's calibrated centre, facing its view direction; the turret base and mount are out of view and not modelled"
+   }
+  },
+  {
+   "name": "Amcrest camera cam1 housing",
+   "group": "cameras",
+   "finish": "epson_paint",
+   "colour": "#e6e8e6",
+   "faces": 1792,
+   "bounds_mm": [
+    [
+     989.4,
+     283.4,
+     681.5
+    ],
+    [
+     1074.3,
+     368.2,
+     766.2
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "Amcrest IP5M-T1179EW ball (85 mm, datasheet) at each camera's calibrated centre, facing its view direction; the turret base and mount are out of view and not modelled"
+   }
+  },
+  {
+   "name": "Amcrest camera cam1 face",
+   "group": "cameras",
+   "finish": "black_plastic",
+   "colour": "#101010",
+   "faces": 256,
+   "bounds_mm": [
+    [
+     989.7,
+     301.5,
+     683.1
+    ],
+    [
+     1050.3,
+     367.7,
+     734.0
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "Amcrest IP5M-T1179EW ball (85 mm, datasheet) at each camera's calibrated centre, facing its view direction; the turret base and mount are out of view and not modelled"
+   }
+  },
+  {
+   "name": "Amcrest camera cam1 lens",
+   "group": "cameras",
+   "finish": "lens_glass",
+   "colour": "#20262a",
+   "faces": 192,
+   "bounds_mm": [
+    [
+     1009.6,
+     324.9,
+     698.5
+    ],
+    [
+     1028.7,
+     344.9,
+     715.6
+    ]
+   ],
+   "source": {
+    "source": "two-view",
+    "note": "Amcrest IP5M-T1179EW ball (85 mm, datasheet) at each camera's calibrated centre, facing its view direction; the turret base and mount are out of view and not modelled"
+   }
+  },
+  {
+   "name": "Epson base (Epson CAD)",
+   "group": "epson",
+   "finish": "epson_paint",
+   "colour": "#d4dad5",
+   "faces": 90000,
+   "bounds_mm": [
+    [
+     849.0,
+     796.7,
+     175.2
+    ],
+    [
+     1057.1,
+     1074.5,
+     666.2
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "Epson's own T6-B602S CAD (STEP from Epson's support page, meshed per link; fetched at build time, not redistributed as STEP), posed by fit_epson_cad.py: Overhead 1 silhouette with J2/J3 held near the two-view outline fit; the EPSON wordmarks are Epson's own relief, coloured; badge and labels as decals (typeset, positions estimated from Overhead 1); the black unit on arm 2 is placed from Overhead 2, make unknown"
+   }
+  },
+  {
+   "name": "Epson arm1 (Epson CAD)",
+   "group": "epson",
+   "finish": "epson_paint",
+   "colour": "#d4dad5",
+   "faces": 30000,
+   "bounds_mm": [
+    [
+     876.1,
+     503.9,
+     375.7
+    ],
+    [
+     1046.5,
+     935.8,
+     442.7
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "Epson's own T6-B602S CAD (STEP from Epson's support page, meshed per link; fetched at build time, not redistributed as STEP), posed by fit_epson_cad.py: Overhead 1 silhouette with J2/J3 held near the two-view outline fit; the EPSON wordmarks are Epson's own relief, coloured; badge and labels as decals (typeset, positions estimated from Overhead 1); the black unit on arm 2 is placed from Overhead 2, make unknown"
+   }
+  },
+  {
+   "name": "Epson arm2 (Epson CAD)",
+   "group": "epson",
+   "finish": "epson_paint",
+   "colour": "#d4dad5",
+   "faces": 60000,
+   "bounds_mm": [
+    [
+     929.6,
+     301.7,
+     404.7
+    ],
+    [
+     1245.3,
+     621.0,
+     653.1
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "Epson's own T6-B602S CAD (STEP from Epson's support page, meshed per link; fetched at build time, not redistributed as STEP), posed by fit_epson_cad.py: Overhead 1 silhouette with J2/J3 held near the two-view outline fit; the EPSON wordmarks are Epson's own relief, coloured; badge and labels as decals (typeset, positions estimated from Overhead 1); the black unit on arm 2 is placed from Overhead 2, make unknown"
+   }
+  },
+  {
+   "name": "Epson shaft (Epson CAD)",
+   "group": "epson",
+   "finish": "steel_ground",
+   "colour": "#c8ccce",
+   "faces": 8000,
+   "bounds_mm": [
+    [
+     1167.7,
+     339.3,
+     355.7
+    ],
+    [
+     1207.7,
+     379.3,
+     765.7
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "Epson's own T6-B602S CAD (STEP from Epson's support page, meshed per link; fetched at build time, not redistributed as STEP), posed by fit_epson_cad.py: Overhead 1 silhouette with J2/J3 held near the two-view outline fit; the EPSON wordmarks are Epson's own relief, coloured; badge and labels as decals (typeset, positions estimated from Overhead 1); the black unit on arm 2 is placed from Overhead 2, make unknown"
+   }
+  },
+  {
+   "name": "Epson cable (Epson CAD)",
+   "group": "epson",
+   "finish": "black_rubber",
+   "colour": "#151515",
+   "faces": 13404,
+   "bounds_mm": [
+    [
+     912.3,
+     530.2,
+     626.0
+    ],
+    [
+     1019.4,
+     900.4,
+     782.0
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "Epson's own T6-B602S CAD (STEP from Epson's support page, meshed per link; fetched at build time, not redistributed as STEP), posed by fit_epson_cad.py: Overhead 1 silhouette with J2/J3 held near the two-view outline fit; the EPSON wordmarks are Epson's own relief, coloured; badge and labels as decals (typeset, positions estimated from Overhead 1); the black unit on arm 2 is placed from Overhead 2, make unknown"
+   }
+  },
+  {
+   "name": "black unit on arm 2",
+   "group": "epson",
+   "finish": "black_plastic",
+   "colour": "#151515",
+   "faces": 396,
+   "bounds_mm": [
+    [
+     989.9,
+     408.9,
+     647.5
+    ],
+    [
+     1140.1,
+     559.3,
+     692.5
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "Epson's own T6-B602S CAD (STEP from Epson's support page, meshed per link; fetched at build time, not redistributed as STEP), posed by fit_epson_cad.py: Overhead 1 silhouette with J2/J3 held near the two-view outline fit; the EPSON wordmarks are Epson's own relief, coloured; badge and labels as decals (typeset, positions estimated from Overhead 1); the black unit on arm 2 is placed from Overhead 2, make unknown"
+   }
+  },
+  {
+   "name": "end effector: shaft collar (video)",
+   "group": "epson",
+   "finish": "blue_anod",
+   "colour": "#1f3f9a",
+   "faces": 512,
+   "bounds_mm": [
+    [
+     1158.7,
+     330.3,
+     385.7
+    ],
+    [
+     1216.7,
+     388.3,
+     409.7
+    ]
+   ],
+   "source": {
+    "source": "estimate",
+    "note": "from the AURORA video's Sample Transfer shot (2026-07) and a Borys lab photo of this T6: collar, body, tubing loop and parallel gripper, scaled from the \u00f820 mm J3 shaft; tubing into the hollow shaft's top; not visible in the November stills"
+   }
+  },
+  {
+   "name": "end effector: body (video)",
+   "group": "epson",
+   "finish": "alu_machined",
+   "colour": "#d7dcdb",
+   "faces": 1280,
+   "bounds_mm": [
+    [
+     1170.2,
+     341.8,
+     297.7
+    ],
+    [
+     1205.2,
+     376.8,
+     359.7
+    ]
+   ],
+   "source": {
+    "source": "estimate",
+    "note": "from the AURORA video's Sample Transfer shot (2026-07) and a Borys lab photo of this T6: collar, body, tubing loop and parallel gripper, scaled from the \u00f820 mm J3 shaft; tubing into the hollow shaft's top; not visible in the November stills"
+   }
+  },
+  {
+   "name": "end effector: tubing loop (video)",
+   "group": "epson",
+   "finish": "tube_green",
+   "colour": "#3fae7a",
+   "faces": 800,
+   "bounds_mm": [
+    [
+     1163.8,
+     335.3,
+     342.7
+    ],
+    [
+     1211.7,
+     383.2,
+     352.7
+    ]
+   ],
+   "source": {
+    "source": "estimate",
+    "note": "from the AURORA video's Sample Transfer shot (2026-07) and a Borys lab photo of this T6: collar, body, tubing loop and parallel gripper, scaled from the \u00f820 mm J3 shaft; tubing into the hollow shaft's top; not visible in the November stills"
+   }
+  },
+  {
+   "name": "end effector: tubing lead (video)",
+   "group": "epson",
+   "finish": "tube_green",
+   "colour": "#3fae7a",
+   "faces": 500,
+   "bounds_mm": [
+    [
+     1201.8,
+     330.9,
+     346.1
+    ],
+    [
+     1250.5,
+     360.7,
+     486.4
+    ]
+   ],
+   "source": {
+    "source": "estimate",
+    "note": "from the AURORA video's Sample Transfer shot (2026-07) and a Borys lab photo of this T6: collar, body, tubing loop and parallel gripper, scaled from the \u00f820 mm J3 shaft; tubing into the hollow shaft's top; not visible in the November stills"
+   }
+  },
+  {
+   "name": "end effector: parallel gripper (video)",
+   "group": "epson",
+   "finish": "black_anodised",
+   "colour": "#34363a",
+   "faces": 396,
+   "bounds_mm": [
+    [
+     1158.2,
+     329.7,
+     267.7
+    ],
+    [
+     1217.1,
+     388.9,
+     297.7
+    ]
+   ],
+   "source": {
+    "source": "estimate",
+    "note": "from the AURORA video's Sample Transfer shot (2026-07) and a Borys lab photo of this T6: collar, body, tubing loop and parallel gripper, scaled from the \u00f820 mm J3 shaft; tubing into the hollow shaft's top; not visible in the November stills"
+   }
+  },
+  {
+   "name": "end effector: finger plates (video)",
+   "group": "epson",
+   "finish": "black_anodised",
+   "colour": "#34363a",
+   "faces": 792,
+   "bounds_mm": [
+    [
+     1159.9,
+     331.4,
+     233.7
+    ],
+    [
+     1215.5,
+     387.2,
+     267.7
+    ]
+   ],
+   "source": {
+    "source": "estimate",
+    "note": "from the AURORA video's Sample Transfer shot (2026-07) and a Borys lab photo of this T6: collar, body, tubing loop and parallel gripper, scaled from the \u00f820 mm J3 shaft; tubing into the hollow shaft's top; not visible in the November stills"
+   }
+  },
+  {
+   "name": "Epson tubing into the shaft top (photo)",
+   "group": "epson",
+   "finish": "tube_green",
+   "colour": "#3fae7a",
+   "faces": 1980,
+   "bounds_mm": [
+    [
+     1007.7,
+     354.3,
+     659.0
+    ],
+    [
+     1192.7,
+     542.2,
+     778.1
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "Epson's own T6-B602S CAD (STEP from Epson's support page, meshed per link; fetched at build time, not redistributed as STEP), posed by fit_epson_cad.py: Overhead 1 silhouette with J2/J3 held near the two-view outline fit; the EPSON wordmarks are Epson's own relief, coloured; badge and labels as decals (typeset, positions estimated from Overhead 1); the black unit on arm 2 is placed from Overhead 2, make unknown"
+   }
+  },
+  {
+   "name": "Epson riser block",
+   "group": "epson",
+   "finish": "alu_machined",
+   "colour": "#d7dcdb",
+   "faces": 396,
+   "bounds_mm": [
+    [
+     832.1,
+     782.3,
+     75.7
+    ],
+    [
+     1077.6,
+     1105.3,
+     182.2
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "Epson's own T6-B602S CAD (STEP from Epson's support page, meshed per link; fetched at build time, not redistributed as STEP), posed by fit_epson_cad.py: Overhead 1 silhouette with J2/J3 held near the two-view outline fit; the EPSON wordmarks are Epson's own relief, coloured; badge and labels as decals (typeset, positions estimated from Overhead 1); the black unit on arm 2 is placed from Overhead 2, make unknown"
+   }
+  },
+  {
+   "name": "Epson status lamp base (photo)",
+   "group": "epson",
+   "finish": "black_plastic",
+   "colour": "#1e1c1a",
+   "faces": 128,
+   "bounds_mm": [
+    [
+     864.4,
+     834.5,
+     666.2
+    ],
+    [
+     885.4,
+     855.5,
+     672.2
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "Epson's own T6-B602S CAD (STEP from Epson's support page, meshed per link; fetched at build time, not redistributed as STEP), posed by fit_epson_cad.py: Overhead 1 silhouette with J2/J3 held near the two-view outline fit; the EPSON wordmarks are Epson's own relief, coloured; badge and labels as decals (typeset, positions estimated from Overhead 1); the black unit on arm 2 is placed from Overhead 2, make unknown"
+   }
+  },
+  {
+   "name": "Epson status lamp lens (photo)",
+   "group": "epson",
+   "finish": "lamp_orange",
+   "colour": "#ff8a1e",
+   "faces": 640,
+   "bounds_mm": [
+    [
+     866.9,
+     837.0,
+     672.2
+    ],
+    [
+     882.9,
+     853.0,
+     685.2
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "Epson's own T6-B602S CAD (STEP from Epson's support page, meshed per link; fetched at build time, not redistributed as STEP), posed by fit_epson_cad.py: Overhead 1 silhouette with J2/J3 held near the two-view outline fit; the EPSON wordmarks are Epson's own relief, coloured; badge and labels as decals (typeset, positions estimated from Overhead 1); the black unit on arm 2 is placed from Overhead 2, make unknown"
+   }
+  },
+  {
+   "name": "EPSON wordmarks, arm 2 (Epson CAD relief)",
+   "group": "epson",
+   "finish": "epson_print",
+   "colour": "#1d2f73",
+   "faces": 1854,
+   "bounds_mm": [
+    [
+     990.2,
+     418.6,
+     539.7
+    ],
+    [
+     1130.1,
+     559.6,
+     557.7
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "Epson's own T6-B602S CAD (STEP from Epson's support page, meshed per link; fetched at build time, not redistributed as STEP), posed by fit_epson_cad.py: Overhead 1 silhouette with J2/J3 held near the two-view outline fit; the EPSON wordmarks are Epson's own relief, coloured; badge and labels as decals (typeset, positions estimated from Overhead 1); the black unit on arm 2 is placed from Overhead 2, make unknown"
+   }
+  },
+  {
+   "name": "EPSON badge, base",
+   "group": "epson",
+   "finish": "decal",
+   "colour": "#ffffff",
+   "faces": 2,
+   "bounds_mm": [
+    [
+     863.7,
+     856.1,
+     222.7
+    ],
+    [
+     872.6,
+     888.9,
+     231.7
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "Epson's own T6-B602S CAD (STEP from Epson's support page, meshed per link; fetched at build time, not redistributed as STEP), posed by fit_epson_cad.py: Overhead 1 silhouette with J2/J3 held near the two-view outline fit; the EPSON wordmarks are Epson's own relief, coloured; badge and labels as decals (typeset, positions estimated from Overhead 1); the black unit on arm 2 is placed from Overhead 2, make unknown"
+   }
+  },
+  {
+   "name": "warning label, base",
+   "group": "epson",
+   "finish": "decal",
+   "colour": "#ffffff",
+   "faces": 2,
+   "bounds_mm": [
+    [
+     997.4,
+     845.8,
+     255.7
+    ],
+    [
+     1004.2,
+     870.9,
+     278.7
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "Epson's own T6-B602S CAD (STEP from Epson's support page, meshed per link; fetched at build time, not redistributed as STEP), posed by fit_epson_cad.py: Overhead 1 silhouette with J2/J3 held near the two-view outline fit; the EPSON wordmarks are Epson's own relief, coloured; badge and labels as decals (typeset, positions estimated from Overhead 1); the black unit on arm 2 is placed from Overhead 2, make unknown"
+   }
+  },
+  {
+   "name": "rating label, base",
+   "group": "epson",
+   "finish": "decal",
+   "colour": "#ffffff",
+   "faces": 2,
+   "bounds_mm": [
+    [
+     899.4,
+     988.3,
+     272.2
+    ],
+    [
+     909.9,
+     1027.0,
+     332.2
+    ]
+   ],
+   "source": {
+    "source": "datasheet",
+    "note": "Epson's own T6-B602S CAD (STEP from Epson's support page, meshed per link; fetched at build time, not redistributed as STEP), posed by fit_epson_cad.py: Overhead 1 silhouette with J2/J3 held near the two-view outline fit; the EPSON wordmarks are Epson's own relief, coloured; badge and labels as decals (typeset, positions estimated from Overhead 1); the black unit on arm 2 is placed from Overhead 2, make unknown"
+   }
+  }
+ ]
+}

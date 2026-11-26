@@ -1,0 +1,104 @@
+{
+ "robot": "Epson T6-B602S (SCARA, controller in the base)",
+ "limits_manual": {
+  "j1_deg": [
+   -132,
+   132
+  ],
+  "j2_deg": [
+   -150,
+   150
+  ],
+  "j3_stroke_mm": 200,
+  "j4_deg": [
+   -360,
+   360
+  ],
+  "arm1_mm": 325.0,
+  "arm2_mm": 275.0,
+  "source": "Epson T-B series manual (Rev.13): joint ranges and arm lengths"
+ },
+ "base_pose": {
+  "j1": [
+   936.7,
+   875.2
+  ],
+  "z0": 182.2,
+  "yaw": 255.18
+ },
+ "parked": {
+  "j1": 25.14,
+  "j2": 34.18,
+  "z": 0.0,
+  "u": 0.0
+ },
+ "parked_pose_conflicts": {
+  "arm1": {
+   "points_outside_box": 0,
+   "points_in_equipment": 0,
+   "max_x_mm": 1045.8
+  },
+  "arm2": {
+   "points_outside_box": 259,
+   "points_in_equipment": 442,
+   "max_x_mm": 1244.6,
+   "near_parts": {
+    "U-DP dual port (Evident CAD)": 14,
+    "microscope camera": 6,
+    "far-end window": 4,
+    "U-TLU tube (Evident CAD)": 2
+   }
+  },
+  "unit": {
+   "points_outside_box": 0,
+   "points_in_equipment": 0,
+   "max_x_mm": 1141.7
+  },
+  "shaft": {
+   "points_outside_box": 84,
+   "points_in_equipment": 1476,
+   "max_x_mm": 1207.3,
+   "near_parts": {
+    "far-end window": 15,
+    "BX3-URA illuminator (Evident CAD)": 4,
+    "far-end window frame": 3,
+    "U-DP dual port (Evident CAD)": 2,
+    "microscope mounting plate": 1
+   }
+  },
+  "ee_shaft": {
+   "points_outside_box": 295,
+   "points_in_equipment": 842,
+   "max_x_mm": 1217.1,
+   "near_parts": {
+    "microscope mounting plate": 18,
+    "far-end window": 6,
+    "BX3-URA illuminator (Evident CAD)": 1,
+    "nosepiece": 1
+   }
+  }
+ },
+ "grid_step_deg": 2.0,
+ "clearance_mm": 10.0,
+ "fraction_of_manual_range": {
+  "free": 0.245,
+  "walls_or_ceiling": 0.561,
+  "equipment": 0.193,
+  "largest_connected_free_region": 0.242
+ },
+ "j1_free_range_deg": [
+  -98.0,
+  50.0
+ ],
+ "j3_reach_xy_mm": {
+  "x": [
+   336.8,
+   1128.5
+  ],
+  "y": [
+   275.3,
+   1013.1
+  ]
+ },
+ "note": "Shaft fully up (J3 = 0); points sampled on Epson's CAD links within 10 mm of the box or another part count as a collision. Uses the model, so it is as good as the model's part positions."
+}

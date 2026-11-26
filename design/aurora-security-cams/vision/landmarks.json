@@ -1,0 +1,149 @@
+{
+ "_note": "pixel positions in the streamed 1920x1080 frames (distorted), read off zoomed crops. 'model' is the aurora_chamber expression giving the scene-frame point (mm); sigma_mm is the model's stated uncertainty (plus the riser range where it enters). Lines: 3D line (point + direction) in the scene frame, observed as snapped edge points (plumb_lines.json edge).",
+ "cam1": {
+  "points": [
+   {
+    "name": "sign_BL",
+    "px": [
+     730,
+     73
+    ],
+    "model": "SIGN[0]",
+    "param": "SIGN_SIZE (origin of the drop frame)",
+    "sigma_mm": 5,
+    "use": false,
+    "why_not_used": "inconsistent with the door hub, the tray and both wall ducts (leave-one-out: with the sign the tray misses by 65-72 px and the ducts by 140-390 px; without it all fit within 8 px). In the frame the sign is right of (+y from) the door; the model has it left of the hub"
+   },
+   {
+    "name": "sign_BR",
+    "px": [
+     931,
+     32
+    ],
+    "model": "SIGN[0] + [0, SIGN_SIZE[0], 0]",
+    "param": "SIGN_SIZE",
+    "sigma_mm": 5,
+    "use": false,
+    "why_not_used": "inconsistent with the door hub, the tray and both wall ducts (leave-one-out: with the sign the tray misses by 65-72 px and the ducts by 140-390 px; without it all fit within 8 px). In the frame the sign is right of (+y from) the door; the model has it left of the hub"
+   },
+   {
+    "name": "ante_door_hub",
+    "px": [
+     505,
+     165
+    ],
+    "model": "ANTE_DOOR_C",
+    "param": "ANTE_DOOR_DROP",
+    "sigma_mm": 20
+   },
+   {
+    "name": "tray_centre",
+    "px": [
+     568,
+     474
+    ],
+    "model": "[579.9, PLATE_C[1], PLATE_C[2] + TRAY_SIZE[2]]",
+    "param": "PLATE_DROP (y, z of the rear stage) + TRAY_SIZE; x = 580 mm from cam0's ray through the tray centre (cam0 px 880, 940) at z = 229 (frames within 2 s; the stage only moves along x)",
+    "sigma_mm": 20
+   }
+  ],
+  "lines": [
+   {
+    "name": "duct_farwin",
+    "edge": "duct_farwin",
+    "p0": [
+     600,
+     1112,
+     60
+    ],
+    "dir": [
+     1,
+     0,
+     0
+    ],
+    "param": "GB_D, BACK_LEAN (far window at the deck); duct height assumed 60 +/- 25 mm",
+    "sigma_mm": 30
+   },
+   {
+    "name": "duct_antewall",
+    "edge": "duct_antewall",
+    "p0": [
+     8,
+     600,
+     60
+    ],
+    "dir": [
+     0,
+     1,
+     0
+    ],
+    "param": "DROP_WALL_Y (antechamber-end wall, x = 0); duct height assumed 60 +/- 25 mm",
+    "sigma_mm": 25
+   }
+  ]
+ },
+ "cam0": {
+  "points": [
+   {
+    "name": "micro_objective",
+    "px": [
+     1100,
+     345
+    ],
+    "model": "MICRO_OBJ_C",
+    "param": "MICRO_OBJ_DROP",
+    "sigma_mm": 30
+   },
+   {
+    "name": "epson_j1_arm1",
+    "px": [
+     467,
+     318
+    ],
+    "model": "[SCARA_XY[0], SCARA_XY[1], RISER_H + T6['arm1'][0]]",
+    "param": "J1_DROP, RISER_H, T6",
+    "sigma_mm": 35
+   },
+   {
+    "name": "spool_centre",
+    "px": [
+     1140,
+     610
+    ],
+    "model": "SPOOL_C",
+    "param": "SPOOL_DROP",
+    "sigma_mm": 20
+   },
+   {
+    "name": "tray_centre",
+    "px": [
+     880,
+     940
+    ],
+    "model": "[579.9, PLATE_C[1], PLATE_C[2] + TRAY_SIZE[2]]",
+    "param": "PLATE_DROP y, z + TRAY_SIZE (x from this camera's own ray; checks y only)",
+    "sigma_mm": 20,
+    "use": false,
+    "why_not_used": "check only: its x comes from this camera's own ray"
+   }
+  ],
+  "lines": [
+   {
+    "name": "duct_farwin",
+    "edge": "duct_left",
+    "p0": [
+     600,
+     1112,
+     60
+    ],
+    "dir": [
+     1,
+     0,
+     0
+    ],
+    "param": "GB_D, BACK_LEAN (far window at the deck); duct height assumed 60 +/- 25 mm",
+    "sigma_mm": 30
+   }
+  ]
+ }
+}

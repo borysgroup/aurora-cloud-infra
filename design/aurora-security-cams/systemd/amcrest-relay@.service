@@ -1,0 +1,31 @@
+# Relay Amcrest security cam %i (slot in cams.env: 0 = .150, Exfoliation
+# Overhead 1; 1 = .151, Exfoliation Overhead 2) to YouTube from the Pi 5.
+# Installed 2026-11-19; see design/aurora-security-cams/README.md in
+# borysgroup/aurora-cloud-infra.
+[Unit]
+Description=Relay Amcrest security cam %i to YouTube
+Wants=network-online.target amcrest-eth0.service
+After=network-online.target amcrest-eth0.service
+# Each start asks the Lambda for a new broadcast, so cap restarts.
+StartLimitIntervalSec=3600
+StartLimitBurst=3
+
+[Service]
+Type=simple
+User=vcl
+Environment=PYTHONUNBUFFERED=1
+# CAM_NAME, WORKFLOW_NAME, PRIVACY_STATUS, RTSP_SUBTYPE (no secrets)
+EnvironmentFile=/home/vcl/.config/aurora-security-cams/relay-%i.env
+ExecStart=/usr/bin/python3 -I /home/vcl/aurora-security-cams/amcrest_relay.py --cam %i
+# The picam stream on this Pi comes first.
+Nice=10
+Restart=always
+RestartSec=30
+# Holds the mode-600 ffconcat file with the camera login while running.
+RuntimeDirectory=amcrest-relay-%i
+RuntimeDirectoryMode=0700
+# Long enough for the Lambda "end" call on the way down.
+TimeoutStopSec=60
+
+[Install]
+WantedBy=multi-user.target

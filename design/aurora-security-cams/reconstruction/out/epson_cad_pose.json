@@ -1,0 +1,28 @@
+{
+ "source": "Epson's T6-B602S CAD fitted to the SAM 2.1 silhouette in Overhead 1 (robot zone, half resolution), with J2 and J3 held near the two-view fit of the hand-built outline (scene.ROBOT; 60 mm prior)",
+ "iou_cam0": 0.633,
+ "iou_cam0_start": 0.573,
+ "base": {
+  "j1": [
+   936.7,
+   875.2
+  ],
+  "z0": 182.2,
+  "yaw": 255.18
+ },
+ "parked": {
+  "j1": 25.14,
+  "j2": 34.18,
+  "z": 0.0,
+  "u": 0.0
+ },
+ "j2_xy": [
+  994.9,
+  555.5
+ ],
+ "j3_xy": [
+  1187.7,
+  359.3
+ ],
+ "j3_from_two_view_fit_mm": 80.9
+}

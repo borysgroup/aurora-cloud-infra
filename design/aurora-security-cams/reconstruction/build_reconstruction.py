@@ -1,0 +1,167 @@
+"""Build the glovebox reconstruction, export it, and render it from both cameras and from outside.
+
+    xvfb-run -a python build_reconstruction.py [--photos DIR] [--blender PATH] [--samples N]
+
+Writes out/glovebox.glb (one node per part, each with its finish as a PBR material and the printed marks
+as textured decals), out/stl/<group>.stl (decimated to at most 40k faces per group, for GitHub's STL
+viewer), out/parts.json (name, group, finish, colour, bounds and the source of each part's numbers), and:
+  out/overlay_cam0.jpg, out/overlay_cam1.jpg     the model blended over the published frame, edges in yellow
+                                                 (quick OpenGL render, lens distortion applied)
+With Blender 4.2 (--blender, or $BLENDER), also the Cycles renders (blender_render.py):
+  out/view_cam0.jpg, out/view_cam1.jpg           the published frame next to the model through the same
+                                                 camera and lens
+  out/render_open_side.jpg, render_far_end.jpg,  the model from outside (ceiling and open-side window
+  render_top.jpg                                 hidden) and from above
+  out/render_epson.jpg, render_gantry.jpg        two views inside the box
+--photos defaults to the published 18:22 UTC stills in ../captures (already blurred).
+"""
+import argparse
+import json
+import os
+import shutil
+import subprocess
+
+import cv2
+import numpy as np
+import trimesh
+
+import render
+import scene
+from cameras import C, CAL, CAM0, CAM1, LAM
+from lensmodel import undistort_px
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+OUT = os.path.join(HERE, "out")
+STILLS = {"cam0": "2026-11-19_1822Z_cam0_192.168.3.150.jpg", "cam1": "2026-11-19_1822Z_cam1_192.168.3.151.jpg"}
+
+
+def distort_canvas(canvas, s, size=(1920, 1080)):
+    """Pinhole render on a canvas twice the frame (times s) -> the camera's distorted frame at scale s."""
+    Wo, Ho = int(round(size[0] * s)), int(round(size[1] * s))
+    uu, vv = np.meshgrid((np.arange(Wo) + 0.5) / s - 0.5, (np.arange(Ho) + 0.5) / s - 0.5)
+    pu = undistort_px(np.c_[uu.ravel(), vv.ravel()], C, LAM)
+    ch, cw = canvas.shape[:2]
+    mx = ((pu[:, 0] - C[0]) * s + (cw - 1) / 2).reshape(Ho, Wo).astype(np.float32)
+    my = ((pu[:, 1] - C[1]) * s + (ch - 1) / 2).reshape(Ho, Wo).astype(np.float32)
+    return cv2.remap(canvas, mx, my, cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT)
+
+
+def blender_renders(blender, glb, photos, samples, views=(), video_frames=None):
+    import tempfile
+    tmp = tempfile.mkdtemp(prefix="_blender_", dir=OUT)
+    subprocess.run([blender, "-b", "--factory-startup", "-P", os.path.join(HERE, "blender_render.py"), "--", glb, tmp,
+                    *views, "--samples", str(samples)], check=True)
+    for cam in (CAM0, CAM1):
+        if not os.path.exists(os.path.join(tmp, f"{cam.name}_pinhole.png")):
+            continue
+        canvas = cv2.imread(os.path.join(tmp, f"{cam.name}_pinhole.png"))
+        img = distort_canvas(canvas, 0.5)
+        photo = cv2.resize(cv2.imread(os.path.join(photos, STILLS[cam.name])), (img.shape[1], img.shape[0]))
+        img = white_balance(img, photo, cam.name)
+        cv2.imwrite(os.path.join(OUT, f"view_{cam.name}.jpg"), np.hstack([photo, img]), [cv2.IMWRITE_JPEG_QUALITY, 90])
+    for v in ("open_side", "far_end", "epson", "gantry", "top"):
+        p = os.path.join(tmp, f"{v}.png")
+        if os.path.exists(p):
+            cv2.imwrite(os.path.join(OUT, f"render_{v}.jpg"), cv2.imread(p), [cv2.IMWRITE_JPEG_QUALITY, 90])
+    for v in views:
+        p = os.path.join(tmp, f"{v}_pinhole.png")
+        if v.startswith("video_") and os.path.exists(p):
+            _, shot, kf = v.split("_")
+            vc = json.load(open(os.path.join(OUT, "video_cameras.json")))["shots"][shot]
+            img = distort_video(cv2.imread(p), vc["f_px"], vc["k1"], 0.5)
+            fr = os.path.join(video_frames or "", f"{int(kf):04d}.jpg")
+            if video_frames and os.path.exists(fr):
+                img = np.hstack([cv2.resize(cv2.imread(fr), (img.shape[1], img.shape[0])), img])
+            cv2.imwrite(os.path.join(OUT, f"{v}.jpg"), img, [cv2.IMWRITE_JPEG_QUALITY, 90])
+    shutil.rmtree(tmp)
+
+
+def white_balance(img, photo, cam_name):
+    """The camera's white balance, which the model can't know: per-channel gains that bring the render's
+    colour balance (not its exposure) over the glovebox interior to the photo's."""
+    m = cv2.imread(os.path.join(HERE, "..", "vision", "masks", f"inside_{cam_name}.png"), 0)
+    if m is None:
+        return img
+    m = cv2.resize(m, (img.shape[1], img.shape[0]), interpolation=cv2.INTER_NEAREST) > 127
+    a = photo[m].reshape(-1, 3).astype(float).mean(0)
+    b = img[m].reshape(-1, 3).astype(float).mean(0) + 1e-6
+    g = (a / a.mean()) / (b / b.mean())
+    return np.clip(img.astype(float) * g, 0, 255).astype(np.uint8)
+
+
+def distort_video(canvas, f, k1, s, size=(1920, 1080)):
+    """Pinhole render on a canvas 1.25 x the frame (times s) -> the video camera's SIMPLE_RADIAL frame."""
+    Wo, Ho = int(round(size[0] * s)), int(round(size[1] * s))
+    uu, vv = np.meshgrid((np.arange(Wo) + 0.5) / s - 0.5, (np.arange(Ho) + 0.5) / s - 0.5)
+    xd, yd = (uu - size[0] / 2) / f, (vv - size[1] / 2) / f
+    xu, yu = xd.copy(), yd.copy()
+    for _ in range(8):                       # invert x_d = x_u (1 + k1 r_u^2)
+        r2 = xu * xu + yu * yu
+        xu, yu = xd / (1 + k1 * r2), yd / (1 + k1 * r2)
+    ch, cw = canvas.shape[:2]
+    mx = (xu * f * s + (cw - 1) / 2).astype(np.float32)
+    my = (yu * f * s + (ch - 1) / 2).astype(np.float32)
+    return cv2.remap(canvas, mx, my, cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT)
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--photos", default=os.path.join(HERE, "..", "captures"))
+    ap.add_argument("--blender", default=os.environ.get("BLENDER", shutil.which("blender")))
+    ap.add_argument("--samples", type=int, default=32)
+    ap.add_argument("--views", nargs="*", default=[], help="Blender views to render (default: all)")
+    ap.add_argument("--renders-only", action="store_true", help="re-render out/glovebox.glb without rebuilding it")
+    ap.add_argument("--video-frames", help="frames of the AURORA video (NNNN.jpg) to set beside the video_* renders")
+    a = ap.parse_args()
+    if a.renders_only:
+        blender_renders(a.blender, os.path.join(OUT, "glovebox.glb"), a.photos, a.samples, a.views, a.video_frames)
+        return
+    os.makedirs(os.path.join(OUT, "stl"), exist_ok=True)
+    parts = scene.build(CAL)
+
+    # exports
+    glb = os.path.join(OUT, "glovebox.glb")
+    scene.export(parts, glb)
+    groups = {}
+    for p in parts:
+        if getattr(p, "image", None) is None:
+            groups.setdefault(p.group, []).append(p.mesh)
+    for g, ms in groups.items():
+        m = trimesh.util.concatenate(ms)
+        if len(m.faces) > 40000:
+            m = m.simplify_quadric_decimation(face_count=40000)
+        m.export(os.path.join(OUT, "stl", f"{g}.stl"))
+    rows = []
+    for p in parts:
+        lo, hi = p.mesh.bounds
+        key = next((k for k in scene.SOURCES if p.name.lower().startswith(k.lower()) or k.lower() in p.name.lower()
+                    or k == p.group), None)
+        rows.append(dict(name=p.name, group=p.group, finish=getattr(p, "material", None), colour=p.color,
+                         faces=int(len(p.mesh.faces)),
+                         bounds_mm=[np.round(lo, 1).tolist(), np.round(hi, 1).tolist()],
+                         source=scene.SOURCES.get(key, scene.SOURCES.get(p.group, {})) if key else
+                         scene.SOURCES.get(p.group, {})))
+    pose_file = os.path.join(OUT, "epson_cad_pose.json")
+    json.dump(dict(frame="aurora_chamber scene frame, mm: x from the antechamber-end wall, y from the open side, "
+                         "z up from the deck", robot_pose=json.load(open(pose_file)) if os.path.exists(pose_file)
+                   else scene.ROBOT, tray=CAL["tray"],
+                   cameras={k: dict(centre=np.round(CAL["cameras"][k]["centre"], 1).tolist(),
+                                    view_dir=np.round(CAL["cameras"][k]["view_dir"], 3).tolist()) for k in ("cam0", "cam1")},
+                   sources=scene.SOURCES, parts=rows), open(os.path.join(OUT, "parts.json"), "w"), indent=1)
+
+    # quick OpenGL renders over the published (blurred) frames: the geometric check
+    for cam in (CAM0, CAM1):
+        photo = cv2.imread(os.path.join(a.photos, STILLS[cam.name]))
+        img, m = render.render_camera([p for p in parts if p.group != "cameras"], cam)
+        ov = render.overlay(photo, img, m, alpha=0.5)
+        cv2.imwrite(os.path.join(OUT, f"overlay_{cam.name}.jpg"), cv2.resize(ov, (1280, 720)),
+                    [cv2.IMWRITE_JPEG_QUALITY, 88])
+    if a.blender:
+        blender_renders(a.blender, glb, a.photos, a.samples, a.views, a.video_frames)
+    else:
+        print("Blender not found (--blender or $BLENDER): skipped the Cycles renders")
+    print(f"{len(parts)} parts, {sum(len(p.mesh.faces) for p in parts)} faces; wrote {OUT}")
+
+
+if __name__ == "__main__":
+    main()

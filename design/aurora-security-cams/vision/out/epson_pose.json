@@ -1,0 +1,18 @@
+{
+ "source": "Nelder-Mead on Epson's T6-B602S CAD vs the SAM 2.1 silhouette in Overhead 1 (robot zone, half resolution)",
+ "iou_cam0": 0.779,
+ "base": {
+  "j1": [
+   911.5,
+   852.2
+  ],
+  "z0": 135.0,
+  "yaw": 252.81
+ },
+ "parked": {
+  "j1": 62.32,
+  "j2": 45.01,
+  "z": 0.0,
+  "u": 0.0
+ }
+}
